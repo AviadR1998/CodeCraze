@@ -18,27 +18,17 @@ public class MainMenu : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        
+
     }
 
-    private void OnGUI()
+    void OnEnable()
     {
-        /*for (int i = 0; i < buttonsMain.Length; i++)
-        {
-            buttonsMain[i].transform.position = new Vector3(Screen.width / 2, (Screen.height * (8 - i) / 9) + (-(Screen.height / 26) * i), 0);
-            buttonsMain[i].GetComponent<RectTransform>().sizeDelta = new Vector2(Screen.width / 6, 1);
-        }*/
-        //buttonsMain[0].transform.position = new Vector3(Screen.width / 2, Screen.height * 4 / 5 - 20, 0);
-        //buttonsMain[0].GetComponent<RectTransform>().sizeDelta = new Vector2(Screen.width / 6, Screen.height / 500000);
+
     }
 
-    // Update is called once per frame
-    /*void Update()
-    {
-        
-    }*/
-
-    public void signIn() { }
+    public void signIn() {
+    
+    }
 
     public void logIn()
     {
