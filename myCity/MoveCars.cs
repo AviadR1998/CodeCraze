@@ -34,7 +34,6 @@ public class MoveCars : MonoBehaviour
     { 
         yield return new WaitForSeconds(0.28f);
         canDrive = true;
-        
     }
 
     private void OnTriggerExit(Collider other)

@@ -8,13 +8,16 @@ public class RaceCar : MonoBehaviour
 {
     public GameObject raceCar;
     public GameObject finishLine;
+    public GameObject[] colorsLight;
 
     private List<GameObject> obstaclesR;
     private List<GameObject> obstaclesL;
+    private List<GameObject> allObstacles;
     private GameObject nearestObs;
     private float speed, driveAxisZ;
     private int sideNearest;
-    private bool finish;
+    private bool finish, canDrive;
+    private Material normalRed, normalGreen, glowingRed, glowingGreen, normalYellow, glowingYellow;
 
     void answerQuestion()
     {
@@ -103,27 +106,65 @@ public class RaceCar : MonoBehaviour
             {
                 newObj.transform.position = new Vector3(startX + distanceX, startY, rightZ);
                 obstaclesR.Add(newObj);
+                allObstacles.Add(newObj);
             }
             else
             {
                 newObj.transform.position = new Vector3(startX + distanceX, startY, leftZ);
                 obstaclesL.Add(newObj);
+                allObstacles.Add(newObj);
             }
             distanceX += 35;
         }
     }
 
+    private IEnumerator delayDrive()
+    {
+        yield return new WaitForSeconds(2f);
+        colorsLight[2].GetComponent<Renderer>().material = glowingYellow;
+        colorsLight[3].GetComponent<Renderer>().material = glowingYellow;
+        yield return new WaitForSeconds(2f);
+        colorsLight[0].GetComponent<Renderer>().material = normalRed;
+        colorsLight[1].GetComponent<Renderer>().material = normalRed;
+        colorsLight[2].GetComponent<Renderer>().material = normalYellow;
+        colorsLight[3].GetComponent<Renderer>().material = normalYellow;
+        colorsLight[4].GetComponent<Renderer>().material = glowingGreen;
+        colorsLight[5].GetComponent<Renderer>().material = glowingGreen;
+        canDrive = true;
+    }
+
     // Start is called before the first frame update
     void Start()
     {
-        finish = false;
-        speed = 7;
+        InvokeRepeating("answerQuestion", 5f, 7f);
+    }
+
+    void OnEnable()
+    {
+        raceCar.transform.position = new Vector3(-675, 11.2f, 362f);
+        normalRed = Resources.Load("Red", typeof(Material)) as Material;
+        normalGreen = Resources.Load("Green", typeof(Material)) as Material;
+        glowingRed = Resources.Load("GlowingRed", typeof(Material)) as Material;
+        glowingGreen = Resources.Load("GlowingGreen", typeof(Material)) as Material;
+        glowingYellow = Resources.Load("GlowingYellow", typeof(Material)) as Material;
+        normalYellow = Resources.Load("Yellow", typeof(Material)) as Material;
+        colorsLight[0].GetComponent<Renderer>().material = glowingRed;
+        colorsLight[1].GetComponent<Renderer>().material = glowingRed;
+        colorsLight[2].GetComponent<Renderer>().material = normalYellow;
+        colorsLight[3].GetComponent<Renderer>().material = normalYellow;
+        colorsLight[4].GetComponent<Renderer>().material = normalGreen;
+        colorsLight[5].GetComponent<Renderer>().material = normalGreen;
+
+        canDrive = finish = false;
+        speed = 10f;
         driveAxisZ = 0;
+        allObstacles = new List<GameObject>();
         obstaclesL = new List<GameObject>();
         obstaclesR = new List<GameObject>();
         createObs();
         tryAvoidNext();
-        InvokeRepeating("answerQuestion", 1f, 7f);
+        StartCoroutine(delayDrive());
+
     }
 
     private void OnTriggerEnter(Collider other)
@@ -134,7 +175,7 @@ public class RaceCar : MonoBehaviour
             {
                 speed -= 5;
             }
-            if (other.tag.ToString() == "Finish" && speed > 10)
+            if (other.tag.ToString() == "Finish")
             {
                 finish = true;
             }
@@ -144,7 +185,7 @@ public class RaceCar : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (!finish)
+        if (!finish && canDrive)
         {
             raceCar.transform.position += new Vector3(speed * Time.deltaTime, 0, driveAxisZ * Time.deltaTime);
 
@@ -160,6 +201,14 @@ public class RaceCar : MonoBehaviour
             {
                 tryAvoidNext();
             }
+        }
+    }
+
+    void OnDisable()
+    {
+        for (int i = 0; i < allObstacles.Count; i++)
+        {
+            Destroy(allObstacles[i]);
         }
     }
 }
