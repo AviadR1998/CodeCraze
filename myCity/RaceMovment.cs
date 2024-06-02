@@ -6,11 +6,6 @@ using UnityEditor.PackageManager.Requests;
 using UnityEngine;
 using UnityEngine.Networking;
 
-/*[Serializable]
-public class TextJSON
-{
-    public string text;
-}*/
 [Serializable]
 public class Parts
 {
@@ -66,6 +61,7 @@ public class RaceMovment : MonoBehaviour
 
     void answerQuestion()
     {
+        //StartCoroutine(callGemini());
         int rnd = UnityEngine.Random.Range(0, 5);
         if (rnd == 0)
         {
@@ -87,10 +83,10 @@ public class RaceMovment : MonoBehaviour
     IEnumerator callGemini()
     {
         string response;
-        string sndJason = "{\"contents\": {\"parts\": {\"text\": \"give me an easy multiple-choice programing question in java with 4 different answers that only 1 answer is correct and wgive me the answer\"}}}";
+        string sndJason = "{\"contents\": {\"parts\": {\"text\": \"give me 10 new(try to think about new question) different easy multiple-choice programing question in java with 4 different answers that only 1 answer from the 4 you gave is correct(please check if the answer is correct) and give me the answer. please write me your response in the next format: question (1/2/3/4/5/6/7/8/9/10):... answers: A).... B).... C).... D).... the answer is: (A/B/C/D)\"}}}";
         Dictionary<string,string> headers = new Dictionary<string,string>();
         headers.Add("Content-Type", "application/json");
-        WWW www = new WWW("https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent?key=" + tokenGemini, System.Text.Encoding.UTF8.GetBytes(sndJason), headers);
+        WWW www = new WWW("https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=" + tokenGemini, System.Text.Encoding.UTF8.GetBytes(sndJason), headers); //pro
         yield return www;
         print(JsonUtility.FromJson<GiminiJSON>(www.text).candidates[0].content.parts[0].text);
     }
@@ -146,6 +142,14 @@ public class RaceMovment : MonoBehaviour
             GameObject.Find("Main Camera").transform.position += new Vector3(0, 2f, 0);
             GameObject.Find("Main Camera").transform.LookAt(GameObject.Find("EndRace(unseen)").transform);
             first = true;
+        }
+        if (Input.GetKey("p"))
+        {
+            speed += 5;
+        }
+        if (Input.GetKey("m"))
+        {
+            speed -= 5;
         }
         if ((Input.GetKey("right") || Input.GetKey("d")) && player.transform.position.z > 360.5)
         {

@@ -26,7 +26,7 @@ public class MainMenu : MonoBehaviour
 
     }
 
-    public void signIn() {
+    public void register() {
     
     }
 

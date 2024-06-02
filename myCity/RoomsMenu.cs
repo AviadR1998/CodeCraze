@@ -19,6 +19,7 @@ public class RoomsMenu : MonoBehaviour
     public GameObject waitingRoom;
     public GameObject raceField;
     public GameObject player;
+    public GameObject arrow;
     public TMP_Text player1;
     public TMP_Text player2;
 
@@ -50,6 +51,7 @@ public class RoomsMenu : MonoBehaviour
 
     public void playSolo()
     {
+        arrow.SetActive(false);
         raceField.SetActive(true);
         player.GetComponent<CharacterController>().enabled = false;
         player.GetComponent<Movement>().enabled = false;
@@ -77,7 +79,7 @@ public class RoomsMenu : MonoBehaviour
 
     IEnumerator createRoomPost()
     {
-        string uri = "http://localhost:5000/api/Rooms/Create/nir";
+        string uri = "http://localhost:5000/api/Rooms/Create/" + "nir";
         WWWForm form = new WWWForm();
         //form.AddField("username", "nir");
         using (UnityWebRequest request = UnityWebRequest.Post(uri, form))
@@ -90,6 +92,23 @@ public class RoomsMenu : MonoBehaviour
 
             }
                 
+        }
+    }
+
+    IEnumerator DeleteRoom()
+    {
+        string uri = "http://localhost:5000/api/Rooms/Delete/" + "nir";
+        WWWForm form = new WWWForm();
+        using (UnityWebRequest request = UnityWebRequest.Delete(uri))
+        {
+            yield return request.SendWebRequest();
+            if (request.isNetworkError || request.isHttpError)
+                response = request.error;
+            else
+            {
+
+            }
+
         }
     }
 
@@ -178,6 +197,7 @@ public class RoomsMenu : MonoBehaviour
         player.GetComponent<Movement>().enabled = true;
         GameObject.Find("Main Camera").transform.position -= new Vector3(0, 2f, 0);
         player.transform.position = new Vector3(-720, 14, 273);
+        arrow.SetActive(true);
         raceField.SetActive(false);
         player.GetComponent<CharacterController>().enabled = true;
         player.GetComponent<RaceMovment>().enabled = false;
