@@ -16,6 +16,9 @@ public class Login : MonoBehaviour
     public TMP_InputField usernameField;
     public TMP_InputField passwordField;
     public GameObject errorMessage;
+    public GameObject canvas;
+    public GameObject loginPage;
+
 
     // Start is called before the first frame update
     void Start()
@@ -26,6 +29,8 @@ public class Login : MonoBehaviour
     void OnEnable()
     {
         token = "";
+        usernameField.text="";
+        passwordField.text="";
         errorMessage.SetActive(false);
     }
 
@@ -51,7 +56,9 @@ public class Login : MonoBehaviour
             else
             {
                 token = request.downloadHandler.text;
-                print(token);
+                canvas.transform.GetComponent<Image>().sprite = Resources.Load("MainMenu", typeof(Sprite)) as Sprite;
+                mainMenu.SetActive(true); 
+                loginPage.SetActive(false);
             }
         }
     }
@@ -59,6 +66,12 @@ public class Login : MonoBehaviour
     public void login()
     {
         StartCoroutine(loginRequest());
+    }
+
+    public void backToFirstMenu() {
+        canvas.transform.GetComponent<Image>().sprite = Resources.Load("FirstMenu", typeof(Sprite)) as Sprite;
+          firstMenu.SetActive(true); 
+          loginPage.SetActive(false);
     }
 
     // Update is called once per frame

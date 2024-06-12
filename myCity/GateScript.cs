@@ -7,6 +7,7 @@ public class GateScript : MonoBehaviour
 {
     public GameObject ticketMachine;
     public GameObject orderPanel;
+    public GameObject orderCanvas;
     public TMP_Text orderText;
     public GameObject gate;
     public TMP_Text helpMessage;
@@ -28,6 +29,7 @@ public class GateScript : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        helpMessage.text = "The driver: Help!";
         InvokeRepeating("angryDriver", 0f, 2f);
     }
 
@@ -45,7 +47,7 @@ public class GateScript : MonoBehaviour
                 CancelInvoke("angryDriver");
                 helpMessage.text = "The driver: Thanks!!!";
                 WhileMissions.canTalk = true;
-                orderPanel.SetActive(false);
+                orderCanvas.SetActive(false);
                 ticketMachine.GetComponent<GateScript>().enabled = false;
             }
         }

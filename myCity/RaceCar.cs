@@ -21,7 +21,7 @@ public class RaceCar : MonoBehaviour
 
     void answerQuestion()
     {
-        int rnd = Random.Range(0, 5);
+        int rnd = Random.Range(0, 3);
         if (rnd == 0)
         {
             if (speed > 10)
@@ -136,11 +136,12 @@ public class RaceCar : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        InvokeRepeating("answerQuestion", 5f, 7f);
+        
     }
 
     void OnEnable()
     {
+        InvokeRepeating("answerQuestion", 13f, 10f);
         raceCar.transform.position = new Vector3(-675, 11.2f, 362f);
         normalRed = Resources.Load("Red", typeof(Material)) as Material;
         normalGreen = Resources.Load("Green", typeof(Material)) as Material;
@@ -177,6 +178,7 @@ public class RaceCar : MonoBehaviour
             }
             if (other.tag.ToString() == "Finish")
             {
+                CancelInvoke("answerQuestion");
                 finish = true;
             }
         }

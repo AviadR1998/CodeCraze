@@ -22,6 +22,7 @@ public class WhileMissions : MonoBehaviour
     public delegate void EndFunc();
     public GameObject ticketMachine;
     public GameObject canvasMission;
+    public GameObject orderCanvas;
     public GameObject player;
     public GameObject talkingPanel;
     public TMP_Text talkingText;
@@ -49,6 +50,7 @@ public class WhileMissions : MonoBehaviour
         list.Add(new TextPartition("but before that I want to thank you by teaching you a new programing skil.\n", ""));
         list.Add(new TextPartition("Let look what we have been in here? we saw somethink like the while command.\n", ""));
         list.Add(new TextPartition("Lets make a pseudocode for it!! And that's how you write a while statement!!", "public static void main(String[] args) {\n\ttheGateIsDown = true;\n\twhile(theGateIsDown) {\n\t\tSystem.out.println(\"Help!\");\n\t\thonk();//not an official coomand\n\t}\n}"));
+        list.Add(new TextPartition("Lets see what we have in here!! we have a boolean var that caled 'theGateIsDown' and it is set to true at the beggining and the code will run while 'theGateIsDown' is true", "public static void main(String[] args) {\n\tboolean theGateIsDown = true;\n\twhile(theGateIsDown) {\n\t\tSystem.out.println(\"Help!\");\n\t\thonk();//not an official coomand\n\t}\n}"));
         list.Add(new TextPartition("Let see another example. We see here....", ""));
         list.Add(new TextPartition("Lets start parctice!", ""));
         texts.Add(list);
@@ -60,7 +62,8 @@ public class WhileMissions : MonoBehaviour
 
     void introducing()
     {
-        talkingPanel.SetActive(false);
+        canvasMission.SetActive(false);
+        orderCanvas.SetActive(true);
         ticketMachine.GetComponent<GateScript>().enabled = true;
         currentSubMission++;
         player.GetComponent<Movement>().enabled = true;
@@ -76,23 +79,6 @@ public class WhileMissions : MonoBehaviour
             currentSubText = 0;
             Cursor.lockState = CursorLockMode.Confined;
             Cursor.visible = true;
-            /*switch (currentSubMission)
-            {
-                case 0:
-                    canvasMission.SetActive(true);
-                    player.GetComponent<Movement>().enabled = false;
-                    talkingText.text = texts[currentSubMission][currentSubText].talking;
-                    practicalText.text = texts[currentSubMission][currentSubText].practical;
-                    canTalk = false;
-                    break;
-                case 1:
-                    talkingPanel.SetActive(true);
-                    player.GetComponent<Movement>().enabled = false;
-                    talkingText.text = texts[currentSubMission][currentSubText].talking;
-                    practicalText.text = texts[currentSubMission][currentSubText].practical;
-                    canTalk = false;
-                break;
-            }*/
             canvasMission.SetActive(true);
             talkingPanel.SetActive(true);
             player.GetComponent<Movement>().enabled = false;

@@ -24,9 +24,14 @@ public class MoveCars : MonoBehaviour
         {
             collideLine = true;
         }
-        if (obj.tag.ToString() != other.tag.ToString())
+        if (other.tag.ToString() != "Arrow" && obj.tag.ToString() != other.tag.ToString())
         {
             canDrive = false;
+        }
+        if (collidePlayer && !collideLine)
+        {
+            GameObject.Find("ArrowAll").transform.position = GameObject.Find("Player").transform.position = new Vector3(-866.33f, 13.015f, 94.84f);
+            canDrive = true;
         }
     }
 

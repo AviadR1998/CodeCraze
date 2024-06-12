@@ -14,11 +14,13 @@ public class MainMenu : MonoBehaviour
     public GameObject[] buttonsOptions;
     public GameObject[] buttonsFirst;
     public GameObject canvas;
+    public GameObject loginPage;
+    public GameObject registerPage;
 
     // Start is called before the first frame update
     void Start()
     {
-
+        StartCoroutine(delayLogo());
     }
 
     void OnEnable()
@@ -27,25 +29,27 @@ public class MainMenu : MonoBehaviour
     }
 
     public void register() {
-    
+    canvas.transform.GetComponent<Image>().sprite = Resources.Load("Register", typeof(Sprite)) as Sprite;
+        firstMenu.SetActive(false);
+        registerPage.SetActive(true);
     }
 
     public void logIn()
     {
-        canvas.transform.GetComponent<Image>().sprite = Resources.Load("MainMenu", typeof(Sprite)) as Sprite;
+        canvas.transform.GetComponent<Image>().sprite = Resources.Load("Login", typeof(Sprite)) as Sprite;
         firstMenu.SetActive(false);
-        mainMenu.SetActive(true);
+        loginPage.SetActive(true);
     }
     public void logOut() 
     {
         canvas.transform.GetComponent<Image>().sprite = Resources.Load("FirstMenu", typeof(Sprite)) as Sprite;
-        mainMenu.SetActive(false);
         firstMenu.SetActive(true);
+        mainMenu.SetActive(false);
     }
 
     public void playCity()
     {
-        //SceneManager.LoadSceneAsync(1);
+        SceneManager.LoadSceneAsync(1);
     }
 
     public void options()
@@ -68,6 +72,13 @@ public class MainMenu : MonoBehaviour
     public void Quit()
     {
         Application.Quit();
+    }
+
+    private IEnumerator delayLogo()
+    {
+        yield return new WaitForSeconds(3f); 
+        canvas.transform.GetComponent<Image>().sprite = Resources.Load("FirstMenu", typeof(Sprite)) as Sprite;
+        firstMenu.SetActive(true);
     }
 }
     

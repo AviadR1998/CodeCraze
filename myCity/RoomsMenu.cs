@@ -20,6 +20,7 @@ public class RoomsMenu : MonoBehaviour
     public GameObject raceField;
     public GameObject player;
     public GameObject arrow;
+    public GameObject questionsAndAnswersPanel;
     public TMP_Text player1;
     public TMP_Text player2;
 
@@ -46,6 +47,7 @@ public class RoomsMenu : MonoBehaviour
         roomsMenu.SetActive(false);
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
+        Movement.raceOn = false;
         //remove room if exsist
     }
 
@@ -192,6 +194,7 @@ public class RoomsMenu : MonoBehaviour
     {
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
+        questionsAndAnswersPanel.SetActive(true);
         GameObject.Find("EndRaceMenu").SetActive(false);
         GameObject.Find("RaceDetails").SetActive(false);
         player.GetComponent<Movement>().enabled = true;

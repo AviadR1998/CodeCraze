@@ -24,7 +24,14 @@ public class ForMission : MonoBehaviour
         list.Add(new TextPartition("So listen carefully!\nthink that you want to roll the wheel for 8 times what have we done until now?", ""));
         list.Add(new TextPartition("Show me!! go press the red button to roll the wheel.\nDo it for 8 and come back to me!", ""));
         list.Add(new TextPartition("What are you waiting for GO!!!!", ""));
+        texts.Add(list);
+        list = new List<TextPartition>();
+        list.Add(new TextPartition("Well done! but don you think it was too exhausting you need to roll 8 times\nthink that you have that in the code", ""));
+        list.Add(new TextPartition("That you need to repeat your code 8 time for example:", "public static void main(String[] args) {\n\troll();//not an official coomand\n\troll();//not an official coomand\n\troll();//not an official coomand\n\troll();//not an official coomand\n\troll();//not an official coomand\n\troll();//not an official coomand\n\troll();//not an official coomand\n\troll();//not an official coomand\n\t}"));
+        list.Add(new TextPartition("So let try something different, Now the code lokes much better", "public static void main(String[] args) {\n\tfor (int i = 0; i < 8; i++) {\n\t\troll();//not an official coomand\n\t}\n}"));
+        list.Add(new TextPartition("Now lets look on what we see here we run the roll command 8 time but in one line\nwe have the for ", "public static void main(String[] args) {\n\tfor (int i = 0; i < 8; i++) {\n\t\troll();//not an official coomand\n\t}\n}"));
         canTalk = true;
+        texts.Add(list);
         currentSubMission = 0;
     }
 
