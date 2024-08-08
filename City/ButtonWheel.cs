@@ -8,6 +8,8 @@ public class ButtonWheel : MonoBehaviour
     public GameObject Wheel;
     public GameObject redButton;
     public GameObject orderCanvas;
+    public GameObject orderPanel;
+    public GameObject practicalPanel;
     public TMP_Text orderText;
     public GameObject child;
 
@@ -31,6 +33,8 @@ public class ButtonWheel : MonoBehaviour
         if (other.tag == "Player" && rolling < 8)
         {
             orderCanvas.SetActive(true);
+            orderPanel.SetActive(true);
+            practicalPanel.SetActive(false);
             orderText.text = "press 'R' button to roll the wheel!";
             if (Input.GetKeyDown("r") && canRoll)
             {
@@ -41,7 +45,8 @@ public class ButtonWheel : MonoBehaviour
                 {
                     orderCanvas.SetActive(false);
                     Movement.mission = child;
-                    redButton.GetComponent<ButtonWheel>().enabled = false;
+                    AdminMission.endOk = redButton.GetComponent<ButtonWheel>().enabled = false;
+                    AdminMission.canTalk = true;
                 }
             }
         }

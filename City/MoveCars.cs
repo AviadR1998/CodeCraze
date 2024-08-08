@@ -7,15 +7,21 @@ using UnityEngine;
 public class MoveCars : MonoBehaviour
 {
     public GameObject obj;
+    public GameObject[] wheels;
+
     public GameObject[] points;
     public float speed;
 
     private Vector3 actualPoints;
     private int nextPosition;
-    private bool canDrive, collideLine, collidePlayer;
+    private bool canDrive, collideLine, collidePlayer, collideCar;
 
     private void OnTriggerEnter(Collider other)
     {
+        if (other.tag.ToString() == "IfStopLine" && obj.tag.ToString() == "OrangeCar")
+        {
+            IfMissions.xLine = true;
+        }
         if (other.tag.ToString() == "Player")
         {
             collidePlayer = true;
@@ -28,10 +34,16 @@ public class MoveCars : MonoBehaviour
         {
             canDrive = false;
         }
+        if (other.tag.ToString() != "Arrow" && other.tag.ToString() != "Player" && other.tag.ToString() != "StopLine" && other.tag.ToString() != obj.tag.ToString())
+        {
+            collideCar = true;
+        }
         if (collidePlayer && !collideLine)
         {
+            Movement.canMove = false;
             GameObject.Find("ArrowAll").transform.position = GameObject.Find("Player").transform.position = new Vector3(-866.33f, 13.015f, 94.84f);
-            canDrive = true;
+            Movement.canMove = true;
+            canDrive = !collideCar;
         }
     }
 
@@ -50,6 +62,10 @@ public class MoveCars : MonoBehaviour
         if (other.tag.ToString() == "StopLine")
         {
             collideLine = false;
+        }
+        if (other.tag.ToString() != "Arrow" && other.tag.ToString() != "Player" && other.tag.ToString() != "StopLine" && other.tag.ToString() != obj.tag.ToString())
+        {
+            collideCar = false;
         }
         if (collidePlayer ||  collideLine)
         {
@@ -70,9 +86,17 @@ public class MoveCars : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        nextPosition = 0;
+        //nextPosition = 0;
+        //canDrive = true;
+        //collideCar = collideLine = collidePlayer = false;
+    }
+
+    private void OnEnable()
+    {
         canDrive = true;
-        collideLine = collidePlayer = false;
+        nextPosition = 0;
+        collideCar = collideLine = collidePlayer = false;
+        obj.transform.LookAt(points[0].transform);
     }
 
     // Update is called once per frame
@@ -80,6 +104,10 @@ public class MoveCars : MonoBehaviour
     {
         if (canDrive)
         {
+            for (int i = 0; i < wheels.Length; i++)
+            {
+                wheels[i].transform.Rotate(10, 0, 0);
+            }
             actualPoints = obj.transform.position;
             obj.transform.position = Vector3.MoveTowards(actualPoints, points[nextPosition].transform.position, speed * Time.deltaTime);
 
