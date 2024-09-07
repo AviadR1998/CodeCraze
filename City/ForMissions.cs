@@ -47,10 +47,16 @@ public class ForMission : MonoBehaviour
         list.Add(new TextPartition("the code is printing from 1 to 3", "1\n2\n3"));
         list.Add(new TextPartition("note: There are languages that doesnt support for each like C.", ""));
         list.Add(new TextPartition("I think we done here! good luck you will become the great i know it!!!!", "3\n2\n1\nGO!!!!"));
+        texts.Add(list);
+
+        list = new List<TextPartition>();
+        list.Add(new TextPartition("Hii i see your progress here and i want to chalange you by play a little game", ""));
+        list.Add(new TextPartition("Our game will start by asking a question and the one who will answer the question correct will get a chance to kick a score and the one who will get 3 points Win!", ""));
+        list.Add(new TextPartition("lets start!!", ""));
+
         AdminMission.texts = texts;
         AdminMission.currentSubMission = 0;
         AdminMission.canTalk = true;
-        texts.Add(list);
         funcs = new List<EndFunc>();
         funcs.Add(soccerGame);
         funcs.Add(part1);

@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using Unity.Mathematics;
 using Unity.VisualScripting;
 using UnityEngine;
@@ -26,6 +27,7 @@ public class Movement : MonoBehaviour
     public GameObject arrow;
     public static GameObject mission;
     public GameObject orderPanel;
+    public TMP_Text objFoundHotCold;
     float arrowSpeed = 6.2f;
     bool canPress;
     GameObject ballBox;
@@ -50,6 +52,12 @@ public class Movement : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
+        if (other.tag == "FindObj")
+        {
+            Destroy(IfMissions.findObj[IfMissions.currentFindObj]);
+            IfMissions.currentFindObj++;
+            objFoundHotCold.text = IfMissions.currentFindObj + "/3";
+        }
         if (other.tag == "RaceNPC")
         {
             roomsMenu.SetActive(true);

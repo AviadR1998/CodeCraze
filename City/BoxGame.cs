@@ -11,6 +11,9 @@ public class BoxGame : MonoBehaviour
     public GameObject explanationsCanvas;
     public GameObject orderPanel;
     public GameObject cheboxCanvas;
+    public GameObject camera;
+    public GameObject player;
+    public GameObject arrow;
     public TMP_Text checkboxText;
     public TMP_Text practicalText;
     public TMP_Text orderText;
@@ -41,7 +44,7 @@ public class BoxGame : MonoBehaviour
         list.Add(new TextPartition("Here the code will print the number 9 because we printing the number in the index 2 and this is 9", "public static void main(String[] args) {\n\tint[] numbers = {1, 5, 9, 2};\n\tSystem.out.println(numbers[2]);\n}"));
         list.Add(new TextPartition("Here the code will get a runtime exception because we are wanted to print a value out of the array boundaries ", "public static void main(String[] args) {\n\tint[] numbers = {1, 5, 9, 2};\n\tSystem.out.println(numbers[4]);\n}"));
         list.Add(new TextPartition("for example what the next code do?(dont press 'ok' until you dont sure)", "public static void main(String[] args) {\n\tint[] arr = {3, 4};\n\tint temp = arr[0];\n\tarr[0] = arr[1];\n\tarr[0] = temp;\n\tSystem.out.println(arr[0]);\n\tSystem.out.println(arr[1]);\n}"));
-        list.Add(new TextPartition("The code here will print 4 and then 3 becasue we are making a swap between the values of arr[0] and arr[1] ans they switching places.", "public static void main(String[] args) {\n\tint[] arr = {3, 4};\n\tint temp = arr[0];\n\tarr[0] = arr[1];\n\tarr[0] = temp;\n\tSystem.out.println(arr[0]);\n\tSystem.out.println(arr[1]);\t}"));
+        list.Add(new TextPartition("The code here will print 4 and then 3 becasue we are making a swap between the values of arr[0] and arr[1] ans they switching places.", "public static void main(String[] args) {\n\tint[] arr = {3, 4};\n\tint temp = arr[0];\n\tarr[0] = arr[1];\n\tarr[0] = temp;\n\tSystem.out.println(arr[0]);\n\tSystem.out.println(arr[1]);\n}"));
         list.Add(new TextPartition("We can define also 2d array, 3d array, ... and so on but usually you need up to 2d. Above 2d it is for some uncommon use", ""));
         list.Add(new TextPartition("you can define 2d array for example:\nyou can consider 2d array as a matrix with row and columns and here we have 2 rows and 4 columns", "public static void main(String[] args) {\n\tint[][] arr2d = {{1, 2, 3, 4}, {5, 6, 7, 8}};\n\tint[][] arr2d2 = new int[2][4]\n}"));
         list.Add(new TextPartition("for example what the next code do?(dont press 'ok' until you dont sure)", "\"public static void main(String[] args) {\n\tint[][] arr2d = {{1, 2},{3, 4}};\n\tint[] arr = new int[2];\n\tSystem.out.println(arr2d[0][0] + arr2d[1][0]);\n\tSystem.out.printlnarr2d[0][1] + arr2d[1][1]);\n}"));
@@ -174,6 +177,11 @@ public class BoxGame : MonoBehaviour
         if (cnt == 3)
         {
             checkboxText.text = "correct! you finished all the tasks here Good luck!!!";
+            player.transform.position += new Vector3(0, 0, 15);
+            arrow.transform.position += new Vector3(0, 0, 15);
+            camera.transform.position = new Vector3(0.1645798f, 0.0239689f, 0.01668368f) + player.transform.position;
+            player.GetComponent<CharacterController>().enabled = true;
+            player.GetComponent<Movement>().enabled = true;
             StartCoroutine(delayEnd());
             UnityEngine.Cursor.lockState = CursorLockMode.Locked;
             UnityEngine.Cursor.visible = false;
@@ -192,8 +200,16 @@ public class BoxGame : MonoBehaviour
 
     void level3()
     {
+        //
         UnityEngine.Cursor.lockState = CursorLockMode.Confined;
         UnityEngine.Cursor.visible = true;
+        player.GetComponent<CharacterController>().enabled = false;
+        player.GetComponent<Movement>().enabled = false;
+        player.transform.position += new Vector3(0, 0, -15);
+        arrow.transform.position += new Vector3(0, 0, -15);
+        camera.transform.position = new Vector3(-1070.866f, 22.4789f, 318.9044f);
+        camera.transform.rotation = Quaternion.Euler(17, 0, 0);
+        //
         orderCanvas.SetActive(false);
         cheboxCanvas.SetActive(true);
         checkboxText.text = "In which indexes the balls are?\nplease check the right boxes";
