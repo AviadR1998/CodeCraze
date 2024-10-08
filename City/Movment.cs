@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using Unity.Mathematics;
 using Unity.VisualScripting;
 using UnityEngine;
@@ -17,7 +18,7 @@ public class Movement : MonoBehaviour
     public float lookXLimit = 45f;
     Vector3 moveDirection = Vector3.zero;
     float rotationX = 0;
-    public bool canMove = true;
+    public static bool canMove = true, soccer = false;
     CharacterController characterController;
 
     public static bool raceOn;
@@ -26,15 +27,18 @@ public class Movement : MonoBehaviour
     public GameObject arrow;
     public static GameObject mission;
     public GameObject orderPanel;
+    public TMP_Text objFoundHotCold;
     float arrowSpeed = 6.2f;
     bool canPress;
     GameObject ballBox;
     static public bool hoverBall;
+    int cheatTransfer = 0;
+    Vector3[] cheatArr = new Vector3[3] {new Vector3(-1069.69f, 13.57452f, 340.8305f), new Vector3(-720, 14, 273), new Vector3(-951.55f, 15.18f, 306.67f)};
 
     // Start is called before the first frame update
     void Start()
     {
-        mission = GameObject.Find("WhileNPC");
+        mission = GameObject.Find("RaceNPC");
         characterController = GetComponent<CharacterController>();
         Cursor.lockState = CursorLockMode.Locked;
         hoverBall = Cursor.visible = false;
@@ -48,6 +52,12 @@ public class Movement : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
+        if (other.tag == "FindObj")
+        {
+            Destroy(IfMissions.findObj[IfMissions.currentFindObj]);
+            IfMissions.currentFindObj++;
+            objFoundHotCold.text = IfMissions.currentFindObj + "/3";
+        }
         if (other.tag == "RaceNPC")
         {
             roomsMenu.SetActive(true);
@@ -97,7 +107,7 @@ public class Movement : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (raceOn)
+        if (raceOn || soccer)
         {
             return;
         }
@@ -114,7 +124,8 @@ public class Movement : MonoBehaviour
         if (Input.GetKeyDown("z"))
         {
             player.GetComponent<CharacterController>().enabled = false;
-            player.transform.position = new Vector3(-1069.69f, 13.57452f, 340.8305f);
+            cheatTransfer = (cheatTransfer + 1) % 3;
+            player.transform.position = cheatArr[cheatTransfer];
             player.GetComponent<CharacterController>().enabled = true;
         }
 

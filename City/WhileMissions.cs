@@ -28,12 +28,13 @@ public class WhileMissions : MonoBehaviour
     public TMP_Text talkingText;
     public TMP_Text practicalText;
     public AudioSource honk;
-    static public bool canTalk;
+    public static bool canTalk, endOk;
 
-    List<EndFunc> funcs;  
-    int currentSubMission, currentSubText;
+    List<EndFunc> funcs;
+    public static EndFunc okFunc;
+    public static int currentSubMission, currentSubText;
     bool honkScene;
-    List<List<TextPartition>> texts;
+    public static List<List<TextPartition>> texts;
     // Start is called before the first frame update
     void Start()
     {
@@ -47,17 +48,43 @@ public class WhileMissions : MonoBehaviour
         texts.Add(list);
         list = new List<TextPartition>();
         list.Add(new TextPartition("Thank you for helping us!! now we can go back to party.", ""));
-        list.Add(new TextPartition("but before that I want to thank you by teaching you a new programing skil.\n", ""));
-        list.Add(new TextPartition("Let look what we have been in here? we saw somethink like the while command.\n", ""));
-        list.Add(new TextPartition("Lets make a pseudocode for it!! And that's how you write a while statement!!", "public static void main(String[] args) {\n\ttheGateIsDown = true;\n\twhile(theGateIsDown) {\n\t\tSystem.out.println(\"Help!\");\n\t\thonk();//not an official coomand\n\t}\n}"));
-        list.Add(new TextPartition("Lets see what we have in here!! we have a boolean var that caled 'theGateIsDown' and it is set to true at the beggining and the code will run while 'theGateIsDown' is true", "public static void main(String[] args) {\n\tboolean theGateIsDown = true;\n\twhile(theGateIsDown) {\n\t\tSystem.out.println(\"Help!\");\n\t\thonk();//not an official coomand\n\t}\n}"));
-        list.Add(new TextPartition("Let see another example. We see here....", ""));
+        list.Add(new TextPartition("but before that I want to thank you by teaching you a new programing skill.\n", ""));
+        list.Add(new TextPartition("Let look what we have seen in here? we saw somethink like the while command.\n", ""));
+        list.Add(new TextPartition("Lets make a pseudocode for it!! And that's how you write a while statement!!", "public static void main(String[] args) {\n\tboolean theGateIsDown = true;\n\twhile(theGateIsDown) {\n\t\tSystem.out.println(\"Help!\");\n\t\thonk();//not an official coomand\n\t}\n}"));
+        list.Add(new TextPartition("Lets see what we have here!! we have a boolean var that caled 'theGateIsDown' and it is set to true at the beggining and the code will run while 'theGateIsDown' is true", "public static void main(String[] args) {\n\tboolean theGateIsDown = true;\n\twhile(theGateIsDown) {\n\t\tSystem.out.println(\"Help!\");\n\t\thonk();//not an official coomand\n\t}\n}"));
+        list.Add(new TextPartition("let dismantle the while command. body: what is actual do in each itaration.\ncondition: is evaluated after the code block has been executed.", "while (condition) {\n\tbody;\n}"));
+        list.Add(new TextPartition("Let see another example. We see here that the while printing the numbers 1 to 4\n", "public static void main(String[] args) {\n\tint counter = 1;\n\twhile (counter <= 4) {\n\t\tSystem.out.println(counter);\n\t\tcounter++;\n\t}\n}"));
+        list.Add(new TextPartition("the while start from 1 and on each iteration the counter is increasing by one.\nthe while stop when reaching to 4", "public static void main(String[] args) {\n\tint counter = 1;\n\twhile (counter <= 4) {\n\t\tSystem.out.println(counter);\n\t\tcounter++;\n\t}\n}"));
+        list.Add(new TextPartition("for example what the next code do?(dont press 'ok' until you dont sure)", "public static void main(String[] args) {\n\tint number = 1;\n\twhile (number <= 10) {\n\t\tif (number % 2 == 0) {\n\t\t\tSystem.out.println(number);\n\t\t}\n\t\tcounter++;\n\t}\n}"));
+        list.Add(new TextPartition("the code is printing the even numbers from 1 to 10.\nexplanation: the while runnig from 1 to 10 and check if the number is even\n(number % 2 == 0 check if the number is even) and if he is even so print it.", "2\n4\n6\n8\n10"));
+        list.Add(new TextPartition("There is 'do while' also 'do while' is like 'while' but the diffrent between them is that the 'do while' is happend at least 1 time and 'while' its depend on the condition", ""));
+        list.Add(new TextPartition("condition: is evaluated after the code block has been executed.", "public static void main(String[] args) {\n\tdo {\n\t\tbody;\n\t} while (condition);\n}"));
+        list.Add(new TextPartition("body: happened at least once and this is what the 'while' do ", "public static void main(String[] args) {\n\tdo {\n\t\tbody;\n\t} while (condition);\n}"));
+        list.Add(new TextPartition("for example what the next code do?(dont press 'ok' until you dont sure)", "public static void main(String[] args) {\n\tint number = 1;\n\tdo {\n\t\tSystem.out.println(number);\n\t\tnumber++;\n\t} while (number <= 1);\n}"));
+        list.Add(new TextPartition("the code print 1 because the 'do while' enter the loop and print the 1 after that\nthe number raise by one and then the number is greater the 1 and exit the while", "1"));
         list.Add(new TextPartition("Lets start parctice!", ""));
         texts.Add(list);
-        currentSubMission = 0;
+        AdminMission.texts = texts;
+        AdminMission.currentSubMission = 0;
         honkScene = canTalk = true;
         funcs = new List<EndFunc>();
         funcs.Add(introducing);
+        funcs.Add(questions);
+        AdminMission.okFunc = whileOkFunc;
+    }
+
+    private void OnEnable()
+    {
+        AdminMission.endOk = false;
+    }
+
+    void questions()
+    {
+        canvasMission.SetActive(false);
+        talkingPanel.SetActive(false);
+        Cursor.lockState = CursorLockMode.Locked;
+        Cursor.visible = false;
+        player.GetComponent<Movement>().enabled = true;
     }
 
     void introducing()
@@ -65,7 +92,7 @@ public class WhileMissions : MonoBehaviour
         canvasMission.SetActive(false);
         orderCanvas.SetActive(true);
         ticketMachine.GetComponent<GateScript>().enabled = true;
-        currentSubMission++;
+        AdminMission.currentSubMission++;
         player.GetComponent<Movement>().enabled = true;
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
@@ -76,33 +103,30 @@ public class WhileMissions : MonoBehaviour
     {
         if (canTalk && other.tag == "Player")
         {
-            currentSubText = 0;
+            AdminMission.currentSubText = 0;
             Cursor.lockState = CursorLockMode.Confined;
             Cursor.visible = true;
             canvasMission.SetActive(true);
             talkingPanel.SetActive(true);
             player.GetComponent<Movement>().enabled = false;
-            talkingText.text = texts[currentSubMission][currentSubText].talking;
-            practicalText.text = texts[currentSubMission][currentSubText].practical;
+            talkingText.text = texts[AdminMission.currentSubMission][AdminMission.currentSubText].talking;
+            practicalText.text = texts[AdminMission.currentSubMission][AdminMission.currentSubText].practical;
             canTalk = false;
         }
     }
 
-    public void ok()
+    void whileOkFunc()
     {
-        currentSubText++;
-        if (honkScene && currentSubText == texts[currentSubMission].Count - 1)
+        if (honkScene && AdminMission.currentSubText == texts[AdminMission.currentSubMission].Count - 1)
         {
             honk.Play();
             honkScene = false;
         }
-        if (currentSubMission == 0 && texts[currentSubMission].Count == currentSubText)
+        if (texts[AdminMission.currentSubMission].Count == AdminMission.currentSubText)
         {
-            funcs[currentSubMission]();
-            return;
+            funcs[AdminMission.currentSubMission]();
+            AdminMission.endOk = true;
         }
-        talkingText.text = texts[currentSubMission][currentSubText].talking;
-        practicalText.text = texts[currentSubMission][currentSubText].practical;
     }
 
     // Update is called once per frame

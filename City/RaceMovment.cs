@@ -143,7 +143,7 @@ public class RaceMovment : MonoBehaviour
     IEnumerator callGemini()
     {
         string response;
-        string sndJason = "{\"contents\": {\"parts\": {\"text\": \"give me 10 new different easy multiple-choice programing question in java that conneceted to array, loops, if with 4 different answers that exactly 1 answer from the 4 you gave is correct and give me the answer. please write me your response in the next format: **question**:... **answers(dont help here or gave the answer)**: 1).... 2).... 3).... 4).... **the answer is**: **1/2/3/4(dont forget double asterisks and only 1 answer from the 4 is correct)** [explanation:...] please keep your all response in the format i mentioned it is importent. dont add any double or more asterisks except the places i told you it is imporatant. please notice that each answer will be at most 3 lines and the question will be at most 10 lines.\"}}}";
+        string sndJason = "{\"contents\": {\"parts\": {\"text\": \"give me 10 new different easy multiple-choice programing question(max length 200 notes) in java that conneceted to array, loops, if with 4 different answers(max length 70 notes) that exactly 1 answer from the 4 you gave is correct and give me the answer. please write me your response in the next format: **question**:... **answers(dont help here or gave the answer)**: 1).... 2).... 3).... 4).... **the answer is**: **1/2/3/4(dont forget double asterisks and only 1 answer from the 4 is correct)** [explanation:... without asterisks at all] please keep your all response in the format i mentioned it is importent. dont add any double or more asterisks except the places i told you it is imporatant.\"}}}";
         Dictionary<string,string> headers = new Dictionary<string,string>();
         headers.Add("Content-Type", "application/json");
         WWW www = new WWW("https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=" + tokenGemini, System.Text.Encoding.UTF8.GetBytes(sndJason), headers); //pro
@@ -210,29 +210,29 @@ public class RaceMovment : MonoBehaviour
             first = true;
         }
 
-        if (listReady && canPress && questionNumber < 10 && !finish && (Input.GetKey(KeyCode.Keypad1) || Input.GetKey(KeyCode.Keypad2) || Input.GetKey(KeyCode.Keypad3) || Input.GetKey(KeyCode.Keypad4)))
+        if (listReady && canPress && questionNumber < 10 && !finish && (Input.GetKey(KeyCode.Keypad1) || Input.GetKey(KeyCode.Keypad2) || Input.GetKey(KeyCode.Keypad3) || Input.GetKey(KeyCode.Keypad4) || Input.GetKey("1") || Input.GetKey("2") || Input.GetKey("3") || Input.GetKey("4")))
         {
             bool correct = false;
             canPress = false;
-            if (Input.GetKey(KeyCode.Keypad1) && currentCorrectAnswer == 1)
+            if ((Input.GetKey(KeyCode.Keypad1) || Input.GetKey("1")) && currentCorrectAnswer == 1)
             {
                 speed += 10;
                 raceDetails.GetComponentInChildren<TMP_Text>().text = "Speed: " + speed;
                 correct = true;
             }
-            if (Input.GetKey(KeyCode.Keypad2) && currentCorrectAnswer == 2)
+            if ((Input.GetKey(KeyCode.Keypad2) || Input.GetKey("2")) && currentCorrectAnswer == 2)
             {
                 speed += 10;
                 raceDetails.GetComponentInChildren<TMP_Text>().text = "Speed: " + speed;
                 correct = true;
             }
-            if (Input.GetKey(KeyCode.Keypad3) && currentCorrectAnswer == 3)
+            if ((Input.GetKey(KeyCode.Keypad3) || Input.GetKey("3")) && currentCorrectAnswer == 3)
             {
                 speed += 10;
                 raceDetails.GetComponentInChildren<TMP_Text>().text = "Speed: " + speed;
                 correct = true;
             }
-            if (Input.GetKey(KeyCode.Keypad4) && currentCorrectAnswer == 4)
+            if ((Input.GetKey(KeyCode.Keypad4) || Input.GetKey("4")) && currentCorrectAnswer == 4)
             {
                 speed += 10;
                 raceDetails.GetComponentInChildren<TMP_Text>().text = "Speed: " + speed;
