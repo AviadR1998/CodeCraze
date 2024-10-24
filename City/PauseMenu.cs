@@ -4,18 +4,23 @@ using UnityEngine;
 
 public class PauseMenu : MonoBehaviour
 {
-    public GameObject pauseCanvas;
+    public GameObject pausePanel;
     public GameObject surePanel;
+    static public bool isPaused, canPause;
 
     // Start is called before the first frame update
     public void Start()
     {
-        
+        isPaused = false;
+        canPause = true;
     }
 
     public void resume()
     {
-        pauseCanvas.SetActive(false);
+        pausePanel.SetActive(false);
+        Cursor.lockState = CursorLockMode.Locked;
+        isPaused = Cursor.visible = false;
+        Time.timeScale = 1.0f;
     }
 
     public void saveGame()
@@ -46,12 +51,20 @@ public class PauseMenu : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        
-    }
-
-    private void OnEnable()
-    {
-        Cursor.lockState = CursorLockMode.Confined;
-        Cursor.visible = true;
+        if (Input.GetKeyDown(KeyCode.Escape) && canPause)
+        {
+            if (isPaused)
+            {
+                resume();
+                surePanel.SetActive(false);
+            }
+            else
+            {
+                Time.timeScale = 0;
+                Cursor.lockState = CursorLockMode.Confined;
+                isPaused = Cursor.visible = true;
+                pausePanel.SetActive(true);
+            }
+        }
     }
 }

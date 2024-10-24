@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using TMPro;
 using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.UI;
 using UnityEngine.UIElements;
 
 public class BoxGame : MonoBehaviour
@@ -14,21 +15,26 @@ public class BoxGame : MonoBehaviour
     public GameObject camera;
     public GameObject player;
     public GameObject arrow;
+    public GameObject[] lettersObj;
+    public UnityEngine.UI.Button checkboxButton;
     public TMP_Text checkboxText;
     public TMP_Text practicalText;
     public TMP_Text orderText;
     public TMP_Text talkingTextExplanations;
     public TMP_Text practicalTextExplanations;
     static public List<string> boxNumbers;
+    static public char[] boxLetters;
     public delegate void EndFunc();
 
     bool[] checkBoxArr;
     List<List<TextPartition>> texts;
     List<EndFunc> funcs;
     int level;
-    List<GameObject> balls;
+    List<GameObject> balls, LettersList;
+    List<Vector3> originalLetterPlace;
     List<int> ballNumbers;
-    bool canPress, firstTouch;
+    bool canPress, firstTouch, arrayState, levelFirst, level3Start;
+    string resultLevel3;
     // Start is called before the first frame update
     void Start()
     {
@@ -37,28 +43,38 @@ public class BoxGame : MonoBehaviour
         list.Add(new TextPartition("hello darling. how are you today? do you know what is array?\nI guess not, but don't worry now you will know everything you need to know", ""));
         list.Add(new TextPartition("An array is a data structure that stores a collection of elements, typically of the same type. Each element in an array can be accessed directly by its index, which is a numerical position within the array For example:", "public static void main(String[] args) {\n\tint[] numbers = {1, 5, 9, 2};\n}"));
         list.Add(new TextPartition("we define a general array by this example:\ndataType which type of data we use for example - int, String\narrayName means the name we want to caled our array for exapmle - arr", "dataType[] arrayName;"));
-        list.Add(new TextPartition("you can create array in many ways for example:", "public static void main(String[] args) {\n\tint[] numbers = {1, 5, 9, 2};  // Array of integers\n\tString[] names = {\"Alice\", \"Bob\", \"Charlie\"}; // Array of Strings\n\n\tint[] numbers2 = new int[4];\n}"));
+        list.Add(new TextPartition("you can create array in many ways for example:", "public static void main(String[] args) {\n\tint[] numbers = {1, 5, 9, 2};  // Array of integers\n\tString[] names = {\"Alice\", \"Bob\", \"Charlie\"}; // Array of Strings\n\tint[] numbers2 = new int[4];\n}"));
         list.Add(new TextPartition("I have noticed that you don't know what is the key word 'new' means. Let say for now\nthat 'new' keyword is used to create new objects and allocate memory for them", "public static void main(String[] args) {\n\ttint[] numbers = new int[4];\n}"));
         list.Add(new TextPartition("Some facts about arrays:\n1. Once an array is created, its size cannot be changed in Java.\n2. Array elements are accessed using their index, which starts from 0 (the first element) and goes up to the size minus 1 (the last element).\n", ""));
         list.Add(new TextPartition("3. Be cautious of accessing elements outside the array bounds (index less than 0 or greater than or equal to the size) as it can lead to ArrayIndexOutOfBoundsException.\nLets some examples", ""));
+        list.Add(new TextPartition("4. In arrays we can know the numnber of elements in an array by using the method 'Length' for example this code will printing 3 because there are 3 elements in arr", "public static void main(String[] args) {\n\tint[] arr = {1, 2, 3};\n\tSystem.out.println(arr.Length);\n}"));
+        list.Add(new TextPartition("5. When you create an array of int with new all the values will be initialized to 0.", ""));
         list.Add(new TextPartition("Here the code will print the number 9 because we printing the number in the index 2 and this is 9", "public static void main(String[] args) {\n\tint[] numbers = {1, 5, 9, 2};\n\tSystem.out.println(numbers[2]);\n}"));
         list.Add(new TextPartition("Here the code will get a runtime exception because we are wanted to print a value out of the array boundaries ", "public static void main(String[] args) {\n\tint[] numbers = {1, 5, 9, 2};\n\tSystem.out.println(numbers[4]);\n}"));
         list.Add(new TextPartition("for example what the next code do?(dont press 'ok' until you dont sure)", "public static void main(String[] args) {\n\tint[] arr = {3, 4};\n\tint temp = arr[0];\n\tarr[0] = arr[1];\n\tarr[0] = temp;\n\tSystem.out.println(arr[0]);\n\tSystem.out.println(arr[1]);\n}"));
         list.Add(new TextPartition("The code here will print 4 and then 3 becasue we are making a swap between the values of arr[0] and arr[1] ans they switching places.", "public static void main(String[] args) {\n\tint[] arr = {3, 4};\n\tint temp = arr[0];\n\tarr[0] = arr[1];\n\tarr[0] = temp;\n\tSystem.out.println(arr[0]);\n\tSystem.out.println(arr[1]);\n}"));
         list.Add(new TextPartition("We can define also 2d array, 3d array, ... and so on but usually you need up to 2d. Above 2d it is for some uncommon use", ""));
         list.Add(new TextPartition("you can define 2d array for example:\nyou can consider 2d array as a matrix with row and columns and here we have 2 rows and 4 columns", "public static void main(String[] args) {\n\tint[][] arr2d = {{1, 2, 3, 4}, {5, 6, 7, 8}};\n\tint[][] arr2d2 = new int[2][4]\n}"));
-        list.Add(new TextPartition("for example what the next code do?(dont press 'ok' until you dont sure)", "\"public static void main(String[] args) {\n\tint[][] arr2d = {{1, 2},{3, 4}};\n\tint[] arr = new int[2];\n\tSystem.out.println(arr2d[0][0] + arr2d[1][0]);\n\tSystem.out.printlnarr2d[0][1] + arr2d[1][1]);\n}"));
-        list.Add(new TextPartition("the code here will print 4 and then 6 becasue we add the first elemnt in the row number [0] and the first element of row number [1] and print it.\nThen we add the second elemnt in the row number [0] and the second element of row number [1] and print it", "\"public static void main(String[] args) {\n\tint[][] arr2d = {{1, 2},{3, 4}};\n\tSystem.out.println(arr2d[0][0] + arr2d[1][0]);\n\tSystem.out.printlnarr2d[0][1] + arr2d[1][1]);\n}"));
+        list.Add(new TextPartition("for example what the next code do?(dont press 'ok' until you dont sure)", "public static void main(String[] args) {\n\tint[][] arr2d = {{1, 2},{3, 4}};\n\tint[] arr = new int[2];\n\tSystem.out.println(arr2d[0][0] + arr2d[1][0]);\n\tSystem.out.printlnarr2d[0][1] + arr2d[1][1]);\n}"));
+        list.Add(new TextPartition("the code here will print 4 and then 6 becasue we add the first elemnt in the row number [0] and the first element of row number [1] and print it.\nThen we add the second elemnt in the row number [0] and the second element of row number [1] and print it", "public static void main(String[] args) {\n\tint[][] arr2d = {{1, 2},{3, 4}};\n\tSystem.out.println(arr2d[0][0] + arr2d[1][0]);\n\tSystem.out.printlnarr2d[0][1] + arr2d[1][1]);\n}"));
         list.Add(new TextPartition("all the rules you have in 1d array are applied in 2d array too", ""));
+        list.Add(new TextPartition("Now lets make some exercises!", ""));
         texts.Add(list);
+
+        //list = new List<TextPartition>();
+        //list.Add(new TextPartition("in java we have c", ""));
+
         checkBoxArr = new bool[7] {false, false, false, false, false, false, false};
-        firstTouch = canPress = true;
+        boxLetters = new char[7] {'\0', '\0', '\0', '\0', '\0', '\0', '\0' };
+        levelFirst = arrayState = firstTouch = canPress = true;
+        level3Start = false;
         level = 0;
         funcs = new List<EndFunc>();
         funcs.Add(level0);
         funcs.Add(level1);
         funcs.Add(level2);
         funcs.Add(level3);
+        funcs.Add(level4);
         AdminMission.texts = texts;
         AdminMission.currentSubMission = 0;
         AdminMission.okFunc = arrayOkFunc;
@@ -71,11 +87,20 @@ public class BoxGame : MonoBehaviour
         canPress = true;
     }
 
+    private IEnumerator delayPressLevel4()
+    {
+        yield return new WaitForSeconds(1.5f);
+        funcs[level]();
+        canPress = true;
+        checkboxButton.interactable = true;
+    }
+
     private IEnumerator delayMission()
     {
         yield return new WaitForSeconds(2.5f);
         if (++level < funcs.Count)
         {
+            levelFirst = true;
             funcs[level]();
         }
         canPress = true;
@@ -148,10 +173,14 @@ public class BoxGame : MonoBehaviour
 
     void level2()
     {
-        for (int i = 0; i < 7; i++)
+        if (levelFirst)
         {
-            GameObject.Find("boxNumber" + i).SetActive(false);
+            for (int i = 0; i < 7; i++)
+            {
+                GameObject.Find("boxNumber" + i).SetActive(false);
+            }
         }
+        levelFirst = false;
         level1();
     }
 
@@ -162,22 +191,29 @@ public class BoxGame : MonoBehaviour
 
     public void checkButton()
     {
+        checkboxButton.interactable = false;
         int cnt = 0;
         for (int i = 0; i < checkBoxArr.Length; i++)
         {
+            bool wrongCheck = checkBoxArr[i];
             for (int j = 0; j < 3; j++)
             {
                 if (checkBoxArr[i] && i == ballNumbers[j])
                 {
                     cnt++;
+                    wrongCheck = false;
                     continue;
                 }
+            }
+            if (wrongCheck)
+            {
+                cnt = 4;
             }
         }
         if (cnt == 3)
         {
             checkboxText.text = "correct! you finished all the tasks here Good luck!!!";
-            player.transform.position += new Vector3(0, 0, 15);
+            player.transform.position += new Vector3(0, 1, 15);
             arrow.transform.position += new Vector3(0, 0, 15);
             camera.transform.position = new Vector3(0.1645798f, 0.0239689f, 0.01668368f) + player.transform.position;
             player.GetComponent<CharacterController>().enabled = true;
@@ -185,11 +221,12 @@ public class BoxGame : MonoBehaviour
             StartCoroutine(delayEnd());
             UnityEngine.Cursor.lockState = CursorLockMode.Locked;
             UnityEngine.Cursor.visible = false;
+            PauseMenu.canPause = true;
         }
         else
         {
             checkboxText.text = "Wrong! please try again";
-            StartCoroutine(delayPress());
+            StartCoroutine(delayPressLevel4());
             canPress = false;
         }
         for (int i = 0; i < balls.Count; i++)
@@ -198,15 +235,20 @@ public class BoxGame : MonoBehaviour
         }
     }
 
-    void level3()
+    void level4()
     {
         //
         UnityEngine.Cursor.lockState = CursorLockMode.Confined;
         UnityEngine.Cursor.visible = true;
+        PauseMenu.canPause = false;
         player.GetComponent<CharacterController>().enabled = false;
         player.GetComponent<Movement>().enabled = false;
-        player.transform.position += new Vector3(0, 0, -15);
-        arrow.transform.position += new Vector3(0, 0, -15);
+        if (levelFirst)
+        {
+            player.transform.position += new Vector3(0, 0, -15);
+            arrow.transform.position += new Vector3(0, 0, -15);
+            levelFirst = false;
+        }
         camera.transform.position = new Vector3(-1070.866f, 22.4789f, 318.9044f);
         camera.transform.rotation = Quaternion.Euler(17, 0, 0);
         //
@@ -239,10 +281,46 @@ public class BoxGame : MonoBehaviour
         }
     }
 
+    void level3()
+    {
+        level3Start = true;
+        int size = Random.Range(3, 8);
+        int[] capacity = {0, 0, 0, 0};
+        resultLevel3 = "";
+        LettersList = new List<GameObject>();
+        originalLetterPlace = new List<Vector3>();
+        for (int i = 0; i < size; i++)
+        {
+            int rnd = Random.Range(0, capacity.Length);
+            if (capacity[rnd] == 3)
+            {
+                i--;
+                continue;
+            }
+            resultLevel3 += (char)('A' + rnd);
+            capacity[rnd]++;
+        }
+        practicalText.text = "Create the word:\n\"" + resultLevel3 + "\"\nWhen you finish go back to gradma and press on 'F'";
+        for (int i = 0; i < capacity.Length; i++)
+        {
+            for(int j = 0; j < capacity[i]; j++)
+            {
+                LettersList.Add(lettersObj[i * 3 + j]);
+                originalLetterPlace.Add(new Vector3(lettersObj[i * 3 + j].transform.position.x, lettersObj[i * 3 + j].transform.position.y, lettersObj[i * 3 + j].transform.position.z));
+                lettersObj[i * 3 + j].transform.position -= new Vector3(0, 6.35f, 0);
+                for (int k = 0; k < lettersObj[i * 3 + j].transform.childCount; k++)
+                {
+                    lettersObj[i * 3 + j].transform.GetChild(k).GetComponent<MeshRenderer>().enabled = true;
+                }
+            }
+        }
+    }
+
     void intro()
     {
         UnityEngine.Cursor.lockState = CursorLockMode.Confined;
         UnityEngine.Cursor.visible = true;
+        PauseMenu.canPause = false;
         GameObject.Find("Player").GetComponent<Movement>().enabled = false;
         explanationsCanvas.SetActive(true);
         talkingTextExplanations.text = texts[0][0].talking;
@@ -258,11 +336,57 @@ public class BoxGame : MonoBehaviour
         }
     }
 
+    void checkLevel3()
+    {
+        bool findMistake = false;
+        for (int i = 0; i < LettersList.Count; i++)
+        {
+            LettersList[i].transform.position = originalLetterPlace[i];
+            for (int k = 0; k < LettersList[i].transform.childCount; k++)
+            {
+                LettersList[i].transform.GetChild(k).GetComponent<MeshRenderer>().enabled = false;
+            }
+        }
+        for (int i = 0; i < resultLevel3.Length; i++ )
+        {
+            if (resultLevel3[i] != boxLetters[i])
+            {
+                findMistake = true;
+            }
+        }
+        for (int i = resultLevel3.Length; i < 7; i++)
+        {
+            if (boxLetters[i] != 0)
+            {
+                findMistake = true;
+            }
+        }
+        if (findMistake)
+        {
+            for (int i = 0; i < 7; i++)
+            {
+                boxLetters[i] = '\0';
+            }
+            practicalText.text = "Worong placment!";
+            StartCoroutine(delayPress());
+        }
+        else
+        {
+            practicalText.text = "Correct!!!!";
+            StartCoroutine(delayMission());
+        }
+    }
+
     private void OnTriggerStay(Collider other)
     {
-        if (Input.GetKeyDown("f") && !Movement.hoverBall && canPress) 
+        if (arrayState && Input.GetKeyDown("f") && (!Movement.hoverBall && !Movement.hoverLetter) && canPress) 
         {
             canPress = false;
+            if (level3Start)
+            {
+                checkLevel3();
+                return;
+            }
             for (int i = 0; i < balls.Count; i++)
             {
                 Destroy(balls[i]);
@@ -284,6 +408,13 @@ public class BoxGame : MonoBehaviour
             }
             practicalText.text = "Correct!!!!";
             StartCoroutine(delayMission());
+        } 
+        else
+        {
+            if (Input.GetKeyDown("f") && canPress && (!Movement.hoverBall && !Movement.hoverLetter))
+            {
+                canPress = false;
+            }
         }
     }
 

@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.ComponentModel;
 using TMPro;
 using Unity.VisualScripting;
 using UnityEngine;
@@ -12,6 +13,12 @@ public class RoomsListJSON
     public List<string> host;
 }
 
+[Serializable]
+public class obstJSON
+{
+    public string obs;
+}
+
 public class RoomsMenu : MonoBehaviour
 {
     public GameObject roomsMenu;
@@ -19,25 +26,60 @@ public class RoomsMenu : MonoBehaviour
     public GameObject waitingRoom;
     public GameObject raceField;
     public GameObject player;
+    public GameObject raceCar;
     public GameObject arrow;
     public GameObject questionsAndAnswersPanel;
+    public TMP_Text errorText;
     public TMP_Text player1;
     public TMP_Text player2;
+    public static bool multiplayerStart;
+    public static string obsList, opponent = "RedCar";
+    public static SocketIOUnity socket;
 
     private int page;
     private string response;
     private List<string> rooms;
+    private string serverIp = "10.0.0.9", p2Name = "";
+    private bool meHost, obsBool = false, joinBool = false, disJoinBool = false, removeRoomBool = false;
 
     // Start is called before the first frame update
     void Start()
     {
+        socket = new SocketIOUnity("http://" + serverIp + ":3000");
+        socket.Connect();
+        socket.On("obs", data =>
+        {
+            obsList = data.GetValue<string>();
+            multiplayerStart = obsBool = true;
+        });
+        socket.On("join", data =>
+        {
+            p2Name = data.GetValue<string>();
+            joinBool = true;
+        });
+        socket.On("disjoin", data =>
+        {
+            disJoinBool = true;
+        });
+        socket.On("removeRoom", data =>
+        {
+            removeRoomBool = true;
+        });
+        multiplayerStart = false;
         rooms = new List<string>();
-        refresh();
+        obsList = "";
     }
 
     void OnEnable()
     {
-        
+        /*socket.OnConnected += (sender, e) =>
+        {
+            print("connect");
+        };*/
+        meHost = joinBool = disJoinBool = removeRoomBool = obsBool = false;
+        errorText.text = "";
+        opponent = "RedCar";
+        refresh();
     }
 
     public void close()
@@ -47,25 +89,40 @@ public class RoomsMenu : MonoBehaviour
         roomsMenu.SetActive(false);
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
+        PauseMenu.canPause = true;
         Movement.raceOn = false;
+        meHost = false;
+        errorText.text = "";
         //remove room if exsist
     }
 
-    public void playSolo()
+    void play(float x, float y, float z)
     {
+        if (AdminMission.questions.Count < 20)
+        {
+            errorText.text = "Please wait a few seconds for loading the questions.";
+            return;
+        }
+        errorText.text = "";
         arrow.SetActive(false);
         raceField.SetActive(true);
         player.GetComponent<CharacterController>().enabled = false;
         player.GetComponent<Movement>().enabled = false;
         player.GetComponent<RaceMovment>().enabled = true;
-        player.transform.position = new Vector3(-675, 11f, 368.5f);
+        player.transform.position = new Vector3(x, y, z);
         player.transform.LookAt(GameObject.Find("EndRace(unseen)").transform);
         close();
     }
 
+    public void playSolo()
+    {
+        raceCar.GetComponent<RaceCar>().enabled = true;
+        play(-675, 11f, 368.5f);
+    }
+
     IEnumerator getAllRooms()
     {
-        string uri = "http://localhost:5000/api/Rooms/";
+        string uri = "http://" + serverIp + ":5000/api/Rooms/";
         using (UnityWebRequest request = UnityWebRequest.Get(uri))
         {
             yield return request.SendWebRequest();
@@ -81,7 +138,7 @@ public class RoomsMenu : MonoBehaviour
 
     IEnumerator createRoomPost()
     {
-        string uri = "http://localhost:5000/api/Rooms/Create/" + "nir";
+        string uri = "http://" + serverIp + ":5000/api/Rooms/Create/" + "nir";
         WWWForm form = new WWWForm();
         //form.AddField("username", "nir");
         using (UnityWebRequest request = UnityWebRequest.Post(uri, form))
@@ -91,7 +148,10 @@ public class RoomsMenu : MonoBehaviour
                 response = request.error;
             else
             {
-
+                socket.Emit("username", "nir");
+                meHost = true;
+                roomsList.SetActive(false);
+                waitingRoom.SetActive(true);
             }
                 
         }
@@ -99,7 +159,7 @@ public class RoomsMenu : MonoBehaviour
 
     IEnumerator DeleteRoom()
     {
-        string uri = "http://localhost:5000/api/Rooms/Delete/" + "nir";
+        string uri = "http://" + serverIp + ":5000/api/Rooms/Delete/" + player1.text;
         WWWForm form = new WWWForm();
         using (UnityWebRequest request = UnityWebRequest.Delete(uri))
         {
@@ -116,9 +176,34 @@ public class RoomsMenu : MonoBehaviour
 
     IEnumerator joinRoomPost(string roomName)
     {
-        string uri = "http://localhost:5000/api/Rooms/Join/" + roomName;
+        string uri = "http://" + serverIp + ":5000/api/Rooms/Join/" + roomName;
         WWWForm form = new WWWForm();
         form.AddField("player", "nir2");
+        using (UnityWebRequest request = UnityWebRequest.Post(uri, form))
+        {
+            yield return request.SendWebRequest();
+            if (request.isNetworkError || request.isHttpError)
+            {
+                response = request.error;
+                errorText.text = "The room is full.\nPlease try another room.";
+            }
+            else
+            {
+                opponent = roomName;
+                socket.Emit("username", "nir2");
+                roomsList.SetActive(false);
+                waitingRoom.SetActive(true);
+                raceCar.GetComponent<RaceCar>().enabled = false;
+                player1.text = roomName;
+                player2.text = "nir2";
+            }
+        }
+    }
+
+    IEnumerator startMulti(string roomName)
+    {
+        string uri = "http://" + serverIp + ":5000/api/Rooms/Start/" + roomName;
+        WWWForm form = new WWWForm();
         using (UnityWebRequest request = UnityWebRequest.Post(uri, form))
         {
             yield return request.SendWebRequest();
@@ -126,17 +211,21 @@ public class RoomsMenu : MonoBehaviour
                 response = request.error;
             else
             {
-                roomsList.SetActive(false);
-                waitingRoom.SetActive(true);
-                player1.text = roomName;
-                player2.text = "nir2";
+                
             }
+
         }
     }
 
     public void createRoom()
     {
+        if (AdminMission.questions.Count < 20)
+        {
+            errorText.text = "Please wait a few seconds for loading the questions.";
+            return;
+        }
         StartCoroutine(createRoomPost());
+        errorText.text = "";
         player1.text = "nir";
         player2.text = "--";
     }
@@ -186,14 +275,24 @@ public class RoomsMenu : MonoBehaviour
     public void backWaitingRoom()
     {
         waitingRoom.SetActive(false);
-        //remove room
+        errorText.text = "";
+        if (meHost)
+        {
+            StartCoroutine(DeleteRoom());
+        }
+        else
+        {
+            socket.Emit("disjoin", player1.text);
+        }
         roomsList.SetActive(true);
+        meHost = false;
     }
 
     public void endRace()
     {
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
+        PauseMenu.canPause = true;
         questionsAndAnswersPanel.SetActive(true);
         GameObject.Find("EndRaceMenu").SetActive(false);
         GameObject.Find("RaceDetails").SetActive(false);
@@ -209,15 +308,77 @@ public class RoomsMenu : MonoBehaviour
 
     public void enterRoom(TMP_Text button)
     {
+        if (AdminMission.questions.Count < 20)
+        {
+            errorText.text = "Please wait a few seconds for loading the questions.";
+            return;
+        }
+        errorText.text = "";
         if (button.text != "--")
         {
             StartCoroutine(joinRoomPost(button.text));
         }
     }
 
+    public void playMulti()
+    {
+        if (!meHost)
+        {
+            errorText.text = "Only the host can start the game.";
+            return;
+        }
+        if (player2.text == "--")
+        {
+            errorText.text = "Not enough players for starting the game.";
+            return;
+        }
+        raceCar.GetComponent<RaceCar>().enabled = false;
+        StartCoroutine(startMulti("nir"));
+        multiplayerStart = true;
+        if (meHost)
+        {
+            play(-675, 11f, 368.5f);
+            raceCar.transform.position = new Vector3(-675, 11.2f, 362f);
+        }
+        else
+        {
+            play(-675, 11.2f, 362f);
+            raceCar.transform.position = new Vector3(-675, 11f, 368.5f);
+        }
+        meHost = false;
+    }
+
     // Update is called once per frame
     void Update()
     {
-        
+        if (obsBool)
+        {
+            obsBool = false;
+            if (!meHost)
+            {
+                play(-675, 11.2f, 362f);
+                raceCar.transform.position = new Vector3(-675, 11f, 368.5f);
+            }
+        }
+        if (joinBool)
+        {
+            joinBool = false;
+            opponent = player2.text = p2Name;
+        }
+        if (disJoinBool)
+        {
+            disJoinBool = false;
+            player2.text = "--";
+            opponent = "RedCar";
+        }
+        if (removeRoomBool)
+        {
+            removeRoomBool = false;
+            player2.text = "--";
+            player1.text = "--";
+            opponent = "RedCar";
+            waitingRoom.SetActive(false);
+            roomsList.SetActive(true);
+        }
     }
 }

@@ -59,7 +59,7 @@ public class WhileMissions : MonoBehaviour
         list.Add(new TextPartition("the code is printing the even numbers from 1 to 10.\nexplanation: the while runnig from 1 to 10 and check if the number is even\n(number % 2 == 0 check if the number is even) and if he is even so print it.", "2\n4\n6\n8\n10"));
         list.Add(new TextPartition("There is 'do while' also 'do while' is like 'while' but the diffrent between them is that the 'do while' is happend at least 1 time and 'while' its depend on the condition", ""));
         list.Add(new TextPartition("condition: is evaluated after the code block has been executed.", "public static void main(String[] args) {\n\tdo {\n\t\tbody;\n\t} while (condition);\n}"));
-        list.Add(new TextPartition("body: happened at least once and this is what the 'while' do ", "public static void main(String[] args) {\n\tdo {\n\t\tbody;\n\t} while (condition);\n}"));
+        list.Add(new TextPartition("body: happened at least once and keeping activate if the condition is true.", "public static void main(String[] args) {\n\tdo {\n\t\tbody;\n\t} while (condition);\n}"));
         list.Add(new TextPartition("for example what the next code do?(dont press 'ok' until you dont sure)", "public static void main(String[] args) {\n\tint number = 1;\n\tdo {\n\t\tSystem.out.println(number);\n\t\tnumber++;\n\t} while (number <= 1);\n}"));
         list.Add(new TextPartition("the code print 1 because the 'do while' enter the loop and print the 1 after that\nthe number raise by one and then the number is greater the 1 and exit the while", "1"));
         list.Add(new TextPartition("Lets start parctice!", ""));
@@ -84,6 +84,7 @@ public class WhileMissions : MonoBehaviour
         talkingPanel.SetActive(false);
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
+        PauseMenu.canPause = true;
         player.GetComponent<Movement>().enabled = true;
     }
 
@@ -96,6 +97,7 @@ public class WhileMissions : MonoBehaviour
         player.GetComponent<Movement>().enabled = true;
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
+        PauseMenu.canPause = true;
         Movement.mission = ticketMachine;
     }
 
@@ -106,6 +108,7 @@ public class WhileMissions : MonoBehaviour
             AdminMission.currentSubText = 0;
             Cursor.lockState = CursorLockMode.Confined;
             Cursor.visible = true;
+            PauseMenu.canPause = false;
             canvasMission.SetActive(true);
             talkingPanel.SetActive(true);
             player.GetComponent<Movement>().enabled = false;

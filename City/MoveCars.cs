@@ -40,9 +40,10 @@ public class MoveCars : MonoBehaviour
         }
         if (collidePlayer && !collideLine)
         {
-            Movement.canMove = false;
+            /*Movement.canMove = false;
             GameObject.Find("ArrowAll").transform.position = GameObject.Find("Player").transform.position = new Vector3(-866.33f, 13.015f, 94.84f);
-            Movement.canMove = true;
+            Movement.canMove = true;*/
+            Movement.home = true;
             canDrive = !collideCar;
         }
     }
@@ -115,7 +116,7 @@ public class MoveCars : MonoBehaviour
     {
         if (canDrive)
         {
-            for (int i = 0; i < wheels.Length; i++)
+            for (int i = 0; i < wheels.Length && !PauseMenu.isPaused; i++)
             {
                 wheels[i].transform.Rotate(10, 0, 0);
             }

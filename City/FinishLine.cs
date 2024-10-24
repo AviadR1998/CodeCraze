@@ -14,12 +14,31 @@ public class FinishLine : MonoBehaviour
         isWin = false;
     }
 
+    private IEnumerator delayPress()
+    {
+        yield return new WaitForSeconds(0.5f);
+        CancelInvoke("sndLocation");
+        RaceMovment.cancelFinish = true;
+    }
+
     private void OnTriggerEnter(Collider other)
     {
         if (!isWin)
         {
-            endRaceMenu.GetComponentInChildren<TMP_Text>().text = other.tag.ToString() + " Win!!!";
+            StartCoroutine(delayPress());
+            RoomsMenu.socket.Emit("finish", "nir");
+            string winner = "Player";
+            if (other.tag.ToString() == "Player")
+            {
+                winner = "nir";
+            }
+            else
+            {
+                winner = RoomsMenu.opponent;
+            }
+            endRaceMenu.GetComponentInChildren<TMP_Text>().text = winner + " Win!!!";
             isWin = true;
+            RoomsMenu.multiplayerStart = false;
         }
     }
 
