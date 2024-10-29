@@ -11,6 +11,7 @@ public class BoxGame : MonoBehaviour
     public GameObject orderCanvas;
     public GameObject explanationsCanvas;
     public GameObject orderPanel;
+    public GameObject practicalPanel;
     public GameObject cheboxCanvas;
     public GameObject camera;
     public GameObject player;
@@ -275,6 +276,7 @@ public class BoxGame : MonoBehaviour
             explanationsCanvas.SetActive(false);
             GameObject.Find("Player").GetComponent<Movement>().enabled = true;
             orderCanvas.SetActive(true);
+            practicalPanel.SetActive(true);
             orderPanel.SetActive(false);
             firstTouch = false;
             level0();
@@ -399,7 +401,7 @@ public class BoxGame : MonoBehaviour
             }
             for (int i = 0; i < boxNumbers.Count; i++)
             {
-                if (!ballNumbers.Contains(boxNumbers[i][6] - '0'))
+                if (!boxNumbers.Contains("BoxArr" + ballNumbers[i]))
                 {
                     practicalText.text = "Worong placment!";
                     StartCoroutine(delayPress());

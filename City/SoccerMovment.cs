@@ -19,6 +19,7 @@ public class SoccerMovment : MonoBehaviour
     public GameObject[] ballPos;
     public GameObject canvasSoccer;
     public GameObject questionSoccerCanvas;
+    public GameObject nextMission;
     public TMP_Text scoreText;
     public TMP_Text turnText;
     public TMP_Text timeText;
@@ -32,7 +33,7 @@ public class SoccerMovment : MonoBehaviour
 
     string explanation;
     Vector3 enemyKeeperPos;
-    int score, rnd;
+    int score, rnd, correctAnswer;
     float rndf;
     bool kick, endGame;
     // Start is called before the first frame update
@@ -108,6 +109,7 @@ public class SoccerMovment : MonoBehaviour
         {
             sum += i;
         }
+        correctAnswer = sum;
         List<int> answers = createAnswers(sum);
         string questionText = "What is the output?";
         explanation = "The answer is " + sum + " because if you add all the numbers from 1 to " + range + " you will get " + sum + ".";
@@ -123,6 +125,7 @@ public class SoccerMovment : MonoBehaviour
         {
             sum *= i;
         }
+        correctAnswer = sum;
         List<int> answers = createAnswers(sum);
         string questionText = "What is the output?";
         explanation = "The answer is " + sum + " because if you multiply all the numbers from 1 to " + range + " you will get " + sum + ".";
@@ -138,6 +141,7 @@ public class SoccerMovment : MonoBehaviour
         string questionText = "complete the for so that it runs " + range + " times.";
         explanation = "The answer is " + (range - option) + " because the operator was " + opr + " and the for need to run " + range + " times.";
         List<int> answers = createAnswers(range - option);
+        correctAnswer = range - option;
         questionSoccerCanvas.SetActive(true);
         SoccerQuestion.initiateQuestion(questionCode, questionText, explanation, answers, (range - option) + "");
     }
@@ -150,6 +154,7 @@ public class SoccerMovment : MonoBehaviour
         string questionText = "how many times the for will run?";
         explanation = "the for will run " + brFor + " times because when the for reach to that number the for will break.";
         List<int> answers = createAnswers(brFor);
+        correctAnswer = brFor;
         questionSoccerCanvas.SetActive(true);
         SoccerQuestion.initiateQuestion(questionCode, questionText, explanation, answers, brFor + "");
     }
@@ -162,6 +167,7 @@ public class SoccerMovment : MonoBehaviour
         string questionText = "which number will not be printed?";
         explanation = "the for will not print the number " + conFor + " because when the for reach to that number the for will skip to next number.";
         List<int> answers = createAnswers(conFor);
+        correctAnswer = conFor;
         questionSoccerCanvas.SetActive(true);
         SoccerQuestion.initiateQuestion(questionCode, questionText, explanation, answers, conFor + "");
     }
@@ -176,8 +182,9 @@ public class SoccerMovment : MonoBehaviour
         }
         string questionText = "What is the output?";
         string questionCode = "int sum = 0;\nfor (int i = 0; i < " + range + "; i += " + incF + ") {\n\tsum += " + addF + ";\n\tsum *= 2;\n}\nSystem.out.println(sum);";
-        explanation = "The for runs " + ((range / incF) + (range % incF)) + " times and in each iteration the sum increase by " + incF + " and multiply by 2.";
+        explanation = "The for runs " + ((range / incF) + (range % incF)) + " times and in each iteration the sum increase by " + addF + " and multiply by 2.";
         List<int> answers = createAnswers(sum);
+        correctAnswer = sum;
         questionSoccerCanvas.SetActive(true);
         SoccerQuestion.initiateQuestion(questionCode, questionText, explanation, answers, sum + "");
     }
@@ -189,6 +196,7 @@ public class SoccerMovment : MonoBehaviour
         string questionCode = "for (int i = 0; i < " + range + "; i++) {\n\tSystem.out.println(i);\n}";
         explanation = "The for run " + range + " times because when the \'i\' equal to that number the for is finished.";
         List<int> answers = createAnswers(range);
+        correctAnswer = range;
         questionSoccerCanvas.SetActive(true);
         SoccerQuestion.initiateQuestion(questionCode, questionText, explanation, answers, range + "");
     }
@@ -205,7 +213,7 @@ public class SoccerMovment : MonoBehaviour
             timeText.color = Color.red;
             SoccerQuestion.ifSelectedOpion = SoccerQuestion.questionAnswered = true;
             turn = false;
-            explanationText.text = explanation;
+            explanationText.text = "Time passed! the correct answer is " + correctAnswer + "\nExplanation: " + explanation;
         }
         if (haveAnswer)
         {
@@ -326,7 +334,8 @@ public class SoccerMovment : MonoBehaviour
         GameObject.Find("Player").GetComponent<Movement>().enabled = true;
         Destroy(originalBoy);
         Destroy(ball);
-        Movement.mission = player;
+        nextMission.SetActive(true);
+        Movement.mission = nextMission;
     }
 
     void loseOK()
@@ -380,7 +389,6 @@ public class SoccerMovment : MonoBehaviour
                 scoreText.text = "0 - 0";
                 practicalText.text = "";
                 AdminMission.okFunc = loseOK;
-                //update the ok and do things
             }
         }
         else
