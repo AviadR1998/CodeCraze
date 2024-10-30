@@ -2,6 +2,7 @@ import express from 'express'
 import { returnQuestionsByLevel, returnQuestionsByTag } from '../controllers/questions.js'
 var questionsRouter = express.Router();
 
+//questionsRouter.post('/', addQuestion);
 questionsRouter.get('/Level/:level', returnQuestionsByLevel);
 questionsRouter.get('/Tag/:tag', returnQuestionsByTag);
 

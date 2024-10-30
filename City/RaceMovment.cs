@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Net.Sockets;
 using TMPro;
 using Unity.VisualScripting;
 using UnityEditor.PackageManager.Requests;
@@ -52,21 +53,29 @@ public class RaceMovment : MonoBehaviour
     public GameObject player;
     public GameObject raceField;
     public GameObject raceDetails;
+    public GameObject raceCar;
     public GameObject endRaceMenu;
     public GameObject questionAnswersPanel;
     public TMP_Text questionsText;
     public TMP_Text answersText;
     public AudioSource startSound;
     public AudioSource backgroundSound;
+    public GameObject[] colorsLight;
+    public static List<GameObject> obstaclesR;
+    public static List<GameObject> obstaclesL;
+    public static List<GameObject> allObstacles;
+    public static bool cancelFinish;
 
     List<string> questionList;
     List<string> answersList;
     List<string> rightAnswerList;
     int currentCorrectAnswer;
     string tokenGemini;
-    private bool canDrive, finish, first, canPress, listReady;
+    private bool canDrive, finish, first, canPress, cordBool = false, listReady;
+    SocketIOClient.SocketIOResponse recv;
     float driveAxisZ;
     int questionNumber;
+    private Material normalRed, normalGreen, glowingRed, glowingGreen, normalYellow, glowingYellow;
 
     private IEnumerator delayPress()
     {
@@ -78,107 +87,162 @@ public class RaceMovment : MonoBehaviour
     {
         questionsText.text = questionList[questionNumber];
         answersText.text = answersList[questionNumber];
-        for (int i = 0; i < rightAnswerList[questionNumber].Length; i++)
-        {
-            if (rightAnswerList[questionNumber][i] >= '1' && rightAnswerList[questionNumber][i] <= '4')
-            {
-                currentCorrectAnswer = rightAnswerList[questionNumber][i] - '0';
-            }
-        }
+        currentCorrectAnswer = rightAnswerList[questionNumber][0] - '0';
         questionNumber++;
-    }
-
-
-    List<int> splitByStr(string response, string str)
-    {
-        List<int> list = new List<int>();
-        for (int i = 0; ; i += str.Length)
-        {
-            i = response.IndexOf(str, i);
-            if (i == -1)
-            {
-                return list;
-            }
-            list.Add(i);
-        }
-    }
-
-    void splitResponse(string response)
-    {
-        List<int> indexesStars = splitByStr(response, "**");
-        questionList = new List<string>();
-        answersList = new List<string>();
-        rightAnswerList = new List<string>();
-        for (int i = 1; i < indexesStars.Count - 1; i += 3)
-        {
-            /*if (indexesStars[i + 1] - indexesStars[i] - 3 > 300)
-            {
-                i += 5;
-                continue;
-            }
-            if(indexesStars[i + 1] - indexesStars[i] - 3 < 5)
-            {
-                i += 2;
-            }
-            print("passif");*/
-            questionList.Add(response.Substring(indexesStars[i] + 3, indexesStars[i + 1] - indexesStars[i] - 3));
-            //print("passadd1");
-            i += 2;
-            answersList.Add(response.Substring(indexesStars[i] + 3, indexesStars[i + 1] - indexesStars[i] - 3));
-            /*print("passadd2");
-            if (indexesStars[i + 1] - indexesStars[i] - 2 > 150)
-            {
-                questionList.RemoveAt(questionList.Count - 1);
-                answersList.RemoveAt(answersList.Count - 1);
-                rightAnswerList.RemoveAt(rightAnswerList.Count - 1);
-            }*/
-            i += 3;
-            rightAnswerList.Add(response.Substring(indexesStars[i] + 2, indexesStars[i + 1] - indexesStars[i] - 2));
-            //print("passadd3");
-        }
-        listReady = true;
-        answerQuestion();
-    }
-
-    IEnumerator callGemini()
-    {
-        string response;
-        string sndJason = "{\"contents\": {\"parts\": {\"text\": \"give me 10 new different easy multiple-choice programing question(max length 200 notes) in java that conneceted to array, loops, if with 4 different answers(max length 70 notes) that exactly 1 answer from the 4 you gave is correct and give me the answer. please write me your response in the next format: **question**:... **answers(dont help here or gave the answer)**: 1).... 2).... 3).... 4).... **the answer is**: **1/2/3/4(dont forget double asterisks and only 1 answer from the 4 is correct)** [explanation:... without asterisks at all] please keep your all response in the format i mentioned it is importent. dont add any double or more asterisks except the places i told you it is imporatant.\"}}}";
-        Dictionary<string,string> headers = new Dictionary<string,string>();
-        headers.Add("Content-Type", "application/json");
-        WWW www = new WWW("https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=" + tokenGemini, System.Text.Encoding.UTF8.GetBytes(sndJason), headers); //pro
-        yield return www;
-        print(JsonUtility.FromJson<GiminiJSON>(www.text).candidates[0].content.parts[0].text);
-        splitResponse(JsonUtility.FromJson<GiminiJSON>(www.text).candidates[0].content.parts[0].text);
     }
 
     private IEnumerator delayDrive()
     {
-        yield return new WaitForSeconds(4f);
+
+        yield return new WaitForSeconds(2f);
+        colorsLight[2].GetComponent<Renderer>().material = glowingYellow;
+        colorsLight[3].GetComponent<Renderer>().material = glowingYellow;
+        yield return new WaitForSeconds(2f);
+        colorsLight[0].GetComponent<Renderer>().material = normalRed;
+        colorsLight[1].GetComponent<Renderer>().material = normalRed;
+        colorsLight[2].GetComponent<Renderer>().material = normalYellow;
+        colorsLight[3].GetComponent<Renderer>().material = normalYellow;
+        colorsLight[4].GetComponent<Renderer>().material = glowingGreen;
+        colorsLight[5].GetComponent<Renderer>().material = glowingGreen;
+
         canDrive = true;
         backgroundSound.Play();
+        answerQuestion();
     }
 
     // Start is called before the first frame update
     void Start()
     {
         tokenGemini = "AIzaSyBPTHuQh9sVyLphL92oIHsF3Aognp0MHn0";
+        RoomsMenu.socket.On("cord", data =>
+        {
+            recv = data;
+            cordBool = true;
+        });
+    }
+
+    void iniColors()
+    {
+        normalRed = Resources.Load("Red", typeof(Material)) as Material;
+        normalGreen = Resources.Load("Green", typeof(Material)) as Material;
+        glowingRed = Resources.Load("GlowingRed", typeof(Material)) as Material;
+        glowingGreen = Resources.Load("GlowingGreen", typeof(Material)) as Material;
+        glowingYellow = Resources.Load("GlowingYellow", typeof(Material)) as Material;
+        normalYellow = Resources.Load("Yellow", typeof(Material)) as Material;
+        colorsLight[0].GetComponent<Renderer>().material = glowingRed;
+        colorsLight[1].GetComponent<Renderer>().material = glowingRed;
+        colorsLight[2].GetComponent<Renderer>().material = normalYellow;
+        colorsLight[3].GetComponent<Renderer>().material = normalYellow;
+        colorsLight[4].GetComponent<Renderer>().material = normalGreen;
+        colorsLight[5].GetComponent<Renderer>().material = normalGreen;
+    }
+
+    void createObs()
+    {
+        float distanceX = 0, startX = -606, startY = 10.1f, rightZ = 368.5f, leftZ = 362f;
+        int rndNum, lastRnd = -1, cntSameSide = 0;
+        string obsList = "";
+        if (RoomsMenu.multiplayerStart)
+        {
+            //while (RoomsMenu.obsList == "") { } // could fix some bugs and could crash the unity
+            obsList = RoomsMenu.obsList;
+        }
+        for (int i = 0; i < 45; i++)
+        {
+            GameObject newObj = GameObject.CreatePrimitive(PrimitiveType.Cube);
+            newObj.name = "Obs-" + i;
+            newObj.AddComponent<Rigidbody>();
+            newObj.GetComponent<Rigidbody>().useGravity = false;
+            newObj.GetComponent<Rigidbody>().isKinematic = true;
+            newObj.GetComponent<BoxCollider>().isTrigger = true;
+            newObj.tag = "Obstacle";
+            newObj.transform.localScale = new Vector3(2.5f, 3.5f, 5f);
+            if (RoomsMenu.multiplayerStart)
+            {
+                rndNum = obsList[i] - '0';
+            }
+            else
+            {
+                rndNum = UnityEngine.Random.Range(0, 2);
+            }
+            if (cntSameSide != 3)
+            {
+                cntSameSide = rndNum == lastRnd ? cntSameSide + 1 : 1;
+            }
+            else
+            {
+                rndNum = 1 - lastRnd;
+                cntSameSide = 1;
+            }
+            lastRnd = rndNum;
+            if (rndNum == 0)
+            {
+                newObj.transform.position = new Vector3(startX + distanceX, startY, rightZ);
+                obstaclesR.Add(newObj);
+                allObstacles.Add(newObj);
+            }
+            else
+            {
+                newObj.transform.position = new Vector3(startX + distanceX, startY, leftZ);
+                obstaclesL.Add(newObj);
+                allObstacles.Add(newObj);
+            }
+            distanceX += 35;
+        }
+        RoomsMenu.obsList = "";
+    }
+
+    void sndLocation()
+    {
+        //RoomsMenu.socket.Emit("cord", RoomsMenu.opponent, this.transform.position.x, this.transform.position.y, this.transform.position.z);
+        RoomsMenu.socket.Emit("cord", RoomsMenu.opponent, this.transform.position.x, this.transform.position.y, this.transform.position.z, speed);
     }
 
     void OnEnable()
     {
-        questionsText.text = "loading questions...";
-        answersText.text = "loading answers...";
+        //questionsText.text = "loading questions...";
+        //answersText.text = "loading answers...";
+        //questionsText.text = "Rules:\n1. move with the arrows keys or with W, A, D keys\n2. avoid from the obstacles. (each colide will reduce your speed by 5)\n3. answer the question by pressing the answer's number. (correct answer will increase your speed by 10 and wrong answer will reduce by 5)\n4. finish first and have fun!!!!";
+        questionsText.text = "Rules:\n1. move with the arrows keys or with A, D keys\n2. avoid from the obstacles.\n3. answer the question by pressing the answer's number.\n4. finish first and have fun!!!!";
+        answersText.text = "loading questions and answers...";
+        iniColors();
+        allObstacles = new List<GameObject>();
+        obstaclesL = new List<GameObject>();
+        obstaclesR = new List<GameObject>();
+        /*RoomsMenu.socket.On("finish", data =>
+        {
+            if (data.GetValue<string>() == RoomsMenu.opponent)
+            {
+                CancelInvoke("sndLocation");
+            }
+        });*/
+        if (RoomsMenu.multiplayerStart)
+        {
+            InvokeRepeating("sndLocation", 4f, 0.2f);
+        }
+        createObs();
         canPress = true;
         currentCorrectAnswer = -1;
         questionNumber = 0;
         startSound.Play();
         backgroundSound.Stop();
         speed = 10f;
-        listReady = first = finish = canDrive = false;
+        cancelFinish = listReady = first = finish = canDrive = cordBool = false;
         driveAxisZ = 0f;
         raceDetails.SetActive(true);
         raceDetails.GetComponentInChildren<TMP_Text>().text = "Speed: 10";
+        questionList = new List<string>();
+        answersList = new List<string>();
+        rightAnswerList = new List<string>();
+        AdminMission.readQuestion = true;
+        while (AdminMission.geminiActivate) { }
+        for (int i = 0; i < 10; i++)
+        {
+            questionList.Add(AdminMission.questions.Pop());
+            answersList.Add(AdminMission.answers.Pop());
+            rightAnswerList.Add(AdminMission.rightAnswers.Pop());
+        }
+        AdminMission.readQuestion = false;
         StartCoroutine(delayDrive());
     }
 
@@ -202,15 +266,30 @@ public class RaceMovment : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        if (cancelFinish)
+        {
+            CancelInvoke("sndLocation");
+            cancelFinish = false;
+        }
+        if (cordBool)
+        {
+            float newX = Mathf.MoveTowards(raceCar.transform.position.x, recv.GetValue<float>(0), recv.GetValue<int>(3) * Time.deltaTime);
+            float newY = Mathf.MoveTowards(raceCar.transform.position.y, recv.GetValue<float>(1), 0);
+            float newZ = Mathf.MoveTowards(raceCar.transform.position.z, recv.GetValue<float>(2), 6 * Time.deltaTime);
+            raceCar.transform.position = new Vector3(newX, newY, newZ);
+            //raceCar.transform.position = Vector3.MoveTowards(raceCar.transform.position, new Vector3(recv.GetValue<float>(0), recv.GetValue<float>(1), recv.GetValue<float>(2)), Time.deltaTime * recv.GetValue<int>(3));
+            //raceCar.transform.position = new Vector3(recv.GetValue<float>(0), recv.GetValue<float>(1), recv.GetValue<float>(2));
+        }
         if (!first)
         {
-            StartCoroutine(callGemini());
+            PauseMenu.canPause = false;
+            //StartCoroutine(callGemini());
             GameObject.Find("Main Camera").transform.position += new Vector3(0, 2f, 0);
             GameObject.Find("Main Camera").transform.LookAt(GameObject.Find("EndRace(unseen)").transform);
             first = true;
         }
 
-        if (listReady && canPress && questionNumber < 10 && !finish && (Input.GetKey(KeyCode.Keypad1) || Input.GetKey(KeyCode.Keypad2) || Input.GetKey(KeyCode.Keypad3) || Input.GetKey(KeyCode.Keypad4) || Input.GetKey("1") || Input.GetKey("2") || Input.GetKey("3") || Input.GetKey("4")))
+        if (canDrive && canPress && questionNumber < questionList.Count + 1 && !finish && (Input.GetKey(KeyCode.Keypad1) || Input.GetKey(KeyCode.Keypad2) || Input.GetKey(KeyCode.Keypad3) || Input.GetKey(KeyCode.Keypad4) || Input.GetKey("1") || Input.GetKey("2") || Input.GetKey("3") || Input.GetKey("4")))
         {
             bool correct = false;
             canPress = false;
@@ -246,7 +325,16 @@ public class RaceMovment : MonoBehaviour
                     raceDetails.GetComponentInChildren<TMP_Text>().text = "Speed: " + speed;
                 }
             }
-            answerQuestion();
+            if (questionNumber < questionList.Count)
+            {
+                answerQuestion();
+            }
+            else
+            {
+                questionNumber++;
+                questionsText.text = "you have only 10 question to answer";
+                answersText.text = "you have only 10 question to answer";
+            }
             StartCoroutine(delayPress());
 
         }
@@ -278,5 +366,14 @@ public class RaceMovment : MonoBehaviour
         {
             player.transform.position += new Vector3(speed * Time.deltaTime, 0, driveAxisZ * Time.deltaTime);
         }
+    }
+
+    void OnDisable()
+    {
+        for (int i = 0; i < allObstacles.Count; i++)
+        {
+            Destroy(allObstacles[i]);
+        }
+        CancelInvoke("sndLocation");
     }
 }

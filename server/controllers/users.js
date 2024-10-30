@@ -15,7 +15,7 @@ const returnUser = async (req, res) => {
     if (myRes === 401) {
         res.status(401);
     } else {
-        res.status(200).json({ username: myRes.username, mail: myRes.mail, age: myRes.age });
+        res.status(200).json({ username: myRes.username, mail: myRes.mail, date: myRes.date });
     }
     res.end();
 }

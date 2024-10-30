@@ -39,7 +39,7 @@ public class ForMission : MonoBehaviour
         list.Add(new TextPartition("the code is printing from 1 to 5", "1\n2\n3\n4\n5"));
         list.Add(new TextPartition("In for and in general in loops we can use the keywords break,continue.", ""));
         list.Add(new TextPartition("continue: If you want to skip certain iterations based on a condition.\nfor example here we skip on the forth itaration", "public static void main(String[] args) {\n\tfor (int i = 1; i <= 5; i++) {\n\t\tif (i == 3) {\n\t\t\tcontinue;\n\t\t}\n\t\tSystem.out.println(i);\n\t}\n}"));
-        list.Add(new TextPartition("If you want to stop the loop before it completes all its iterations based on some condition.\nfor example here we stop the loop on the forth itaration", "public static void main(String[] args) {\n\tfor (int i = 1; i <= 5; i++) {\n\t\tif (i == 3) {\n\t\t\tbreak;\n\t\t}\n\t\tSystem.out.println(i);\n\t}\n}"));
+        list.Add(new TextPartition("break: If you want to stop the loop before it completes all its iterations based on some condition.\nfor example here we stop the loop on the forth itaration", "public static void main(String[] args) {\n\tfor (int i = 1; i <= 5; i++) {\n\t\tif (i == 3) {\n\t\t\tbreak;\n\t\t}\n\t\tSystem.out.println(i);\n\t}\n}"));
         list.Add(new TextPartition("in java we hava also for each. for each let you to itarate over the elements\nand not over the indexes of array", ""));
         list.Add(new TextPartition("let dismantle the for each command. elementType: is the type of the elements\nin the collection (e.g., int, String, or a user-defined type).", "for (elementType element : collection) {\n\tbody;\n}"));
         list.Add(new TextPartition("element: is a variable that represents the current element in the iteration.\ncollection: is the array or collection being iterated over.", "for (elementType element : collection) {\n\tbody;\n}"));
@@ -58,7 +58,7 @@ public class ForMission : MonoBehaviour
         AdminMission.currentSubMission = 0;
         AdminMission.canTalk = true;
         funcs = new List<EndFunc>();
-        funcs.Add(soccerGame);
+        //funcs.Add(soccerGame);
         funcs.Add(part1);
         funcs.Add(part1);
         funcs.Add(soccerGame);
@@ -73,6 +73,7 @@ public class ForMission : MonoBehaviour
             AdminMission.canTalk = false;
             Cursor.lockState = CursorLockMode.Locked;
             Cursor.visible = false;
+            PauseMenu.canPause = true;
             canvasMission.SetActive(false);
             GameObject.Find("Player").GetComponent<Movement>().enabled = true;
             AdminMission.endOk = true;
@@ -100,6 +101,7 @@ public class ForMission : MonoBehaviour
         AdminMission.currentSubText = 0;
         Cursor.lockState = CursorLockMode.Confined;
         Cursor.visible = true;
+        PauseMenu.canPause = false;
         canvasMission.SetActive(true);
         GameObject.Find("Player").GetComponent<Movement>().enabled = false;
         talkingText.text = texts[AdminMission.currentSubMission][AdminMission.currentSubText].talking;
@@ -109,8 +111,10 @@ public class ForMission : MonoBehaviour
     void soccerGame()
     {
         canvasMission.SetActive(false);
+        
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
+        PauseMenu.canPause = true;
         GameObject.Find("Ball").GetComponent<SoccerMovment>().enabled = true;
         GameObject.Find("Player").GetComponent<Movement>().enabled = false;
     }

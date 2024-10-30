@@ -3,6 +3,24 @@ import functions from "./tokens.js"
 
 const key = "my secret key";
 
+async function postQuestion(details) {
+    const client = new MongoClient("mongodb://127.0.0.1:27017");
+    try {
+        client.connect();
+        const db = client.db('CodeCraze');
+        const users = db.collection('Questions');
+        const ret = { question: details.question, options: details.options, answer: details.answer, tag: details.tag, level: details.level};
+        await users.insertOne(ret);
+        return ret;
+    } catch{
+        let res;
+        res.status = 401;
+        return res;
+    } finally {
+        client.close();
+    }
+}
+
 async function getQuestionsByLevel(level, bearer, token) {
     try {
         const data = functions.validateToken(bearer, token);
@@ -14,7 +32,7 @@ async function getQuestionsByLevel(level, bearer, token) {
         const db = client.db('CodeCraze');
         const questions = db.collection('Questions');
         let res = await questions.find({ level: level }).toArray();
-        return res[0];
+        return res;
     } catch (err) {
         return 401;
         //return res.status(401).send("Invalid Token");
@@ -34,7 +52,7 @@ async function getQuestionsByTag(tag, bearer, token) {
         const db = client.db('CodeCraze');
         const questions = db.collection('Questions');
         let res = await questions.find({ tag: tag }).toArray();
-        return res[0];
+        return res;
     } catch (err) {
         return 401;
         //return res.status(401).send("Invalid Token");
@@ -43,4 +61,4 @@ async function getQuestionsByTag(tag, bearer, token) {
     }
 }
 
-export default { getQuestionsByLevel, getQuestionsByTag }
+export default { getQuestionsByLevel, getQuestionsByTag, postQuestion }
