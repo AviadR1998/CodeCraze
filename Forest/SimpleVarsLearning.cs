@@ -9,8 +9,8 @@ public class SimpleVarsLearning : MonoBehaviour
 {
     public GameObject canvas;
     public GameObject canvaGameExplain;
-    public TMP_Text expressionText; public string[] expressions = { "4", "Hello", "'A'", "3.14", "'c'", "5", "Apple", "3.1" }; // ביטויים לדוגמה 
-    public string[] correctBoxes = { "Int", "String", "Char", "Float", "Char", "Int", "String", "Float" }; // תגי הקופסאות הנכונות לכל ביטוי
+    public TMP_Text expressionText; public string[] expressions = { "4", "Hello", "'A'", "3.14", "'c'", "5", "Apple", "3.1", "True", "False" };
+    public string[] correctBoxes = { "Int", "String", "Char", "Float", "Char", "Int", "String", "Float", "Bool", "Bool" };
 
     private int currentExpressionIndex = 0;
     public GameObject player; //player data
@@ -19,7 +19,7 @@ public class SimpleVarsLearning : MonoBehaviour
     public GameObject backgroundMusicObject; // כאן תגרור את ה-Empty Object של המוזיקה
     private AudioSource audioSource;
 
-
+    public AudioSource FinishSound;
 
 
     // Start is called before the first frame update
@@ -29,16 +29,16 @@ public class SimpleVarsLearning : MonoBehaviour
 
     }
 
-    private void OnTriggerEnter(Collider other)
+   private void OnCollisionEnter(Collision other)
+{
+    if (other.gameObject.tag == "Player")
     {
-        if (other.tag == "Player")
-        {
-            audioSource.Stop();
-            canvas.SetActive(true);
-            Cursor.lockState = CursorLockMode.Confined;
-            Cursor.visible = true;
-        }
+        audioSource.Stop();
+        canvas.SetActive(true);
+        Cursor.lockState = CursorLockMode.Confined;
+        Cursor.visible = true;
     }
+}
 
     public void ButtonInfoClick()
     {
@@ -93,6 +93,11 @@ public class SimpleVarsLearning : MonoBehaviour
                                 }
                                 else
                                 {
+                                    if (FinishSound != null && audioSource != null) // בדיקה אם יש אודיו קליפ ו-AudioSource
+                                    {
+                                        FinishSound.Play();
+
+                                    }
                                     expressionText.text = "";
                                     yield break;
                                 }

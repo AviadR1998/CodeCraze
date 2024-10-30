@@ -25,7 +25,7 @@ public class fishCount : MonoBehaviour
     public TMP_Text explainCode;
 
     public TMP_Text animationCode;
-       
+
 
     bool flag = false;
 
@@ -33,10 +33,19 @@ public class fishCount : MonoBehaviour
 
     int i = 0;
 
+    public AudioClip collapseSound;
+
+    public AudioClip BloopSound;
+
+    private AudioSource audioSource;
+
     void Start()
     {
-
+        // אתחול ה-AudioSource
+        audioSource = GetComponent<AudioSource>();
     }
+
+
 
     private void OnTriggerEnter(Collider other)
     {
@@ -49,6 +58,12 @@ public class fishCount : MonoBehaviour
             "This means Count is holding the number 0 right now.\n Every time we write count++, Count gets one more.\n It's like giving Count an extra toy to hold! ";
 
             explainCode.text = "int main() {\n \tint fish = 1;  // Starting with 1 fish in the lake.\n \tfish++;  // Now fish is 2 so we have two fish in the lake..\n \tfish++; // Now fish is 3 so we have three fish in the lake..\n \treturn 0;.\n";
+
+            i = 0;
+            foreach (GameObject f in fish)
+            {
+                f.SetActive(false); // הסתרת כל הדגים
+            }
         }
 
     }
@@ -76,14 +91,18 @@ public class fishCount : MonoBehaviour
 
         if (flag == true)
         {
-                if (Input.GetKeyDown(KeyCode.A))
+            if (Input.GetKeyDown(KeyCode.A))
+            {
+                if (i <= 3)
                 {
-                    if (i <= 3)
+                    if (BloopSound != null && audioSource != null)
                     {
-                        fish[i].SetActive(true);
-                        i++;
+                        audioSource.PlayOneShot(BloopSound);
                     }
+                    fish[i].SetActive(true);
+                    i++;
                 }
+            }
         }
         if (i == 4)
         {
@@ -93,6 +112,10 @@ public class fishCount : MonoBehaviour
             {
                 endcanvas.SetActive(false);
                 i++;
+                if (collapseSound != null && audioSource != null)
+                {
+                    audioSource.PlayOneShot(collapseSound);
+                }
             }
         }
 
