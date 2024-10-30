@@ -155,7 +155,7 @@ public class FirstPersonController : MonoBehaviour
 
     private void OnCollisionEnter(Collision collision)
     {
-        if (collision.gameObject.CompareTag("Int") || collision.gameObject.CompareTag("String") || collision.gameObject.CompareTag("Char") || collision.gameObject.CompareTag("Float"))
+        if (collision.gameObject.CompareTag("Int") || collision.gameObject.CompareTag("String") || collision.gameObject.CompareTag("Char") || collision.gameObject.CompareTag("Float") || collision.gameObject.CompareTag("Bool"))
         {
             isTouchingBox = true;
             touchedBox = collision.gameObject; // שומר את הקובייה שנגענו בה באופן דינמי
