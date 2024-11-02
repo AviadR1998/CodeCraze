@@ -10,6 +10,8 @@ public class SwingMovement : MonoBehaviour
 
     public AudioClip rotationSound;
     private AudioSource audioSource;
+    public bool isCarouselRunning = false;
+
 
     void Start()
     {
@@ -34,6 +36,7 @@ public class SwingMovement : MonoBehaviour
 
     public IEnumerator StartCarouselWithPauses(int numberOfRotations)
     {
+          isCarouselRunning = true;
         for (int i = 0; i < numberOfRotations; i++)
         {
             targetRotations = 1;
@@ -55,6 +58,7 @@ public class SwingMovement : MonoBehaviour
 
             yield return new WaitForSeconds(1f);
         }
+          isCarouselRunning = false;
     }
 
 

@@ -39,6 +39,15 @@ public class fishCount : MonoBehaviour
 
     private AudioSource audioSource;
 
+    public Transform cameraTargetPosition;
+    private Vector3 originalCameraPosition;
+    private Quaternion originalCameraRotation;
+
+    private bool isTaskActive = false;
+    public GameObject arrow2;
+
+
+
     void Start()
     {
         // אתחול ה-AudioSource
@@ -51,9 +60,13 @@ public class fishCount : MonoBehaviour
     {
         if (other.tag == "Player")
         {
+            arrow2.SetActive(false);
             canvas.SetActive(true);
-            Cursor.lockState = CursorLockMode.Confined;
+            isTaskActive = true;
+            Cursor.lockState = CursorLockMode.None;
             Cursor.visible = true;
+            originalCameraPosition = Camera.main.transform.position;
+            originalCameraRotation = Camera.main.transform.rotation;
             explainWorlds.text = "Meet Count! Count is a special number that loves to keep track of things.\n Imagine Count starts at 0. So, we say: count = 0;\n " +
             "This means Count is holding the number 0 right now.\n Every time we write count++, Count gets one more.\n It's like giving Count an extra toy to hold! ";
 
@@ -71,7 +84,7 @@ public class fishCount : MonoBehaviour
     {
         canvas.SetActive(false);
         flag = true;
-        animationCode.text = "Press A and look at the fish in the lake.";
+        animationCode.text = "Press + and look at the fish in the lake.\nEvery time you hear the sound of water, you'll see a new fish in the river😊";
         animationCanvas.SetActive(true);
 
     }
@@ -79,6 +92,12 @@ public class fishCount : MonoBehaviour
 
     void Update()
     {
+        if (isTaskActive)
+        {
+            Camera.main.transform.position = cameraTargetPosition.position;
+            Camera.main.transform.rotation = cameraTargetPosition.rotation;
+
+        }
         if (arrow.active)
         {
             arrow.transform.position = Vector3.MoveTowards(arrow.transform.position,
@@ -91,7 +110,8 @@ public class fishCount : MonoBehaviour
 
         if (flag == true)
         {
-            if (Input.GetKeyDown(KeyCode.A))
+            if (Input.GetKeyDown(KeyCode.Equals))
+
             {
                 if (i <= 3)
                 {
@@ -101,6 +121,7 @@ public class fishCount : MonoBehaviour
                     }
                     fish[i].SetActive(true);
                     i++;
+                    //HERE!
                 }
             }
         }
@@ -111,11 +132,16 @@ public class fishCount : MonoBehaviour
             if (Input.GetKeyDown(KeyCode.C))
             {
                 endcanvas.SetActive(false);
+                Camera.main.transform.position = originalCameraPosition;
+                Camera.main.transform.rotation = originalCameraRotation;
+                isTaskActive = false;
                 i++;
                 if (collapseSound != null && audioSource != null)
                 {
                     audioSource.PlayOneShot(collapseSound);
+                    arrow2.SetActive(true);
                 }
+
             }
         }
 
