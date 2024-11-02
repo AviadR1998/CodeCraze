@@ -22,6 +22,13 @@ public class learnIntCoffee : MonoBehaviour
     public AudioClip ErrSound;
 
     private AudioSource audioSource;
+    public Transform cameraTargetPosition;
+    private Vector3 originalCameraPosition;
+    private Quaternion originalCameraRotation;
+
+    private bool isTaskActive = false;
+
+     public GameObject arrow;
 
     // Start is called before the first frame update
     void Start()
@@ -34,10 +41,14 @@ public class learnIntCoffee : MonoBehaviour
     {
         if (other.tag == "Player")
         {
+            arrow.SetActive(false);
             canvas.SetActive(true);
-            Cursor.lockState = CursorLockMode.Confined;
+            Cursor.lockState = CursorLockMode.None;
             Cursor.visible = true;
-            explainWorlds.text = "Let's Make Coffee Cups with int!\n" + "Hey there, young programmer! Today, we're going to learn how to use something called an integer or int in our game to make coffee cups appear at the café.\n\n" + "What is an int?\n" + "An int is a special type of number in programming that doesn't have any decimal points. It means whole numbers like 1, 2, 3, and so on.\n\n" +
+            isTaskActive = true;
+            originalCameraPosition = Camera.main.transform.position;
+            originalCameraRotation = Camera.main.transform.rotation;
+            explainWorlds.text = "Let's Make Coffee Cups with int!\n" + "Hey there, young programmer! Today, we're going to learn how to use something called an integer or int in our game to make coffee cups appear at the café.\n\n" + "What is an int?\n" + "An int is a special type of number in programming that doesn't have any decimal points. It means whole numbers like 1, 2, 3, -4 (also negative numbers as u can see) and so on.\n\n" +
             "And in a programming way, we would write it as: int coffeeCups = 3; which means i have 3 coffee cups " +
             "Why Use an int?\n" + "In our game, we want to decide how many coffee cups to show at the café. Since we can only have whole coffee cups (not half a cup!), an int is perfect for this job.\n";
         }
@@ -60,10 +71,14 @@ public class learnIntCoffee : MonoBehaviour
         {
             audioSource.PlayOneShot(SuccSound);
         }
+        Camera.main.transform.position = originalCameraPosition;
+        Camera.main.transform.rotation = originalCameraRotation;
+        isTaskActive = false;
         inputUser.text = "";
         canvasCoffee.SetActive(false);
         Cursor.lockState = CursorLockMode.Confined;
         Cursor.visible = true;
+        arrow.SetActive(true);
     }
 
 
@@ -113,7 +128,12 @@ public class learnIntCoffee : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        if (isTaskActive)
+        {
+            Camera.main.transform.position = cameraTargetPosition.position;
+            Camera.main.transform.rotation = cameraTargetPosition.rotation;
 
+        }
     }
 
     private IEnumerator HideCanvasAfterTime(float delay)

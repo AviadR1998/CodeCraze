@@ -25,6 +25,15 @@ public class BikeMission : MonoBehaviour
     public AudioClip WrongSound;
     public AudioClip SuccSound;
 
+    public Transform cameraTargetPosition;
+    private Vector3 originalCameraPosition;
+    private Quaternion originalCameraRotation;
+
+    private bool isTaskActive = false;
+
+    public GameObject arrow;
+
+
 
     private AudioSource audioSource;
     void Start()
@@ -37,9 +46,13 @@ public class BikeMission : MonoBehaviour
     {
         if (other.tag == "Player")
         {
+            arrow.SetActive(false);
             Firstcanvas.SetActive(true);
-            Cursor.lockState = CursorLockMode.Confined;
+            Cursor.lockState = CursorLockMode.None;
             Cursor.visible = true;
+            isTaskActive = true;
+            originalCameraPosition = Camera.main.transform.position;
+            originalCameraRotation = Camera.main.transform.rotation;
         }
     }
 
@@ -52,6 +65,11 @@ public class BikeMission : MonoBehaviour
         canvas.SetActive(true);
         Cursor.lockState = CursorLockMode.Confined;
         Cursor.visible = true;
+
+        Camera.main.transform.position = originalCameraPosition;
+        Camera.main.transform.rotation = originalCameraRotation;
+        isTaskActive = false;
+
         GameStarted();
         if (StartSound != null && audioSource != null)
         {
@@ -108,9 +126,8 @@ public class BikeMission : MonoBehaviour
                 if (WrongSound != null && audioSource != null)
                 {
 
-                    audioSource.clip = WrongSound;
-                    audioSource.time = 1.0f;
-                    audioSource.Play();
+                    audioSource.PlayOneShot(WrongSound);
+
                 }
 
             }
@@ -182,9 +199,12 @@ public class BikeMission : MonoBehaviour
                     {
 
                         audioSource.PlayOneShot(WinSound);
+
                     }
                     canvas.SetActive(false);
+                    arrow.SetActive(true);
                     isMoving = false;
+                    ResetBikePosition();
                     return;
                 }
 
@@ -215,6 +235,20 @@ public class BikeMission : MonoBehaviour
 
     void Update()
     {
+        if (isTaskActive)
+        {
+            Camera.main.transform.position = cameraTargetPosition.position;
+            Camera.main.transform.rotation = cameraTargetPosition.rotation;
+
+        }
         MoveTowardsNextPoint();
     }
+    void ResetBikePosition()
+    {
+        transform.position = new Vector3(37.59f, 4.62f, 46.37f);
+        transform.rotation = Quaternion.Euler(0, 35.581f, 0);
+
+    }
+
+
 }

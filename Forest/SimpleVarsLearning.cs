@@ -21,6 +21,13 @@ public class SimpleVarsLearning : MonoBehaviour
 
     public AudioSource FinishSound;
 
+    public Transform cameraTargetPosition;
+    private Vector3 originalCameraPosition;
+    private Quaternion originalCameraRotation;
+
+    private bool isTaskActive = false;
+    public GameObject arrow;
+
 
     // Start is called before the first frame update
     void Start()
@@ -29,16 +36,20 @@ public class SimpleVarsLearning : MonoBehaviour
 
     }
 
-   private void OnCollisionEnter(Collision other)
-{
-    if (other.gameObject.tag == "Player")
+    private void OnCollisionEnter(Collision other)
     {
-        audioSource.Stop();
-        canvas.SetActive(true);
-        Cursor.lockState = CursorLockMode.Confined;
-        Cursor.visible = true;
+        if (other.gameObject.tag == "Player")
+        {
+            arrow.SetActive(false);
+            audioSource.Stop();
+            canvas.SetActive(true);
+            Cursor.lockState = CursorLockMode.None;
+            Cursor.visible = true;
+            isTaskActive = true;
+            originalCameraPosition = Camera.main.transform.position;
+            originalCameraRotation = Camera.main.transform.rotation;
+        }
     }
-}
 
     public void ButtonInfoClick()
     {
@@ -56,6 +67,9 @@ public class SimpleVarsLearning : MonoBehaviour
         canvaGameExplain.SetActive(false);
         Cursor.lockState = CursorLockMode.Confined;
         Cursor.visible = true;
+        Camera.main.transform.position = originalCameraPosition;
+        Camera.main.transform.rotation = originalCameraRotation;
+        isTaskActive = false;
         ShowNextExpression();
         //game loop
         StartCoroutine(GameLoop());
@@ -96,6 +110,7 @@ public class SimpleVarsLearning : MonoBehaviour
                                     if (FinishSound != null && audioSource != null) // בדיקה אם יש אודיו קליפ ו-AudioSource
                                     {
                                         FinishSound.Play();
+                                        arrow.SetActive(true);
 
                                     }
                                     expressionText.text = "";
@@ -109,6 +124,7 @@ public class SimpleVarsLearning : MonoBehaviour
                 yield return null; // ממתין לפריים הבא
             }
         }
+
     }
 
 
@@ -128,7 +144,12 @@ public class SimpleVarsLearning : MonoBehaviour
     void Update()
     {
 
+        if (isTaskActive)
+        {
+            Camera.main.transform.position = cameraTargetPosition.position;
+            Camera.main.transform.rotation = cameraTargetPosition.rotation;
 
+        }
 
     }
 }
