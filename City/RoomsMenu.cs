@@ -39,7 +39,7 @@ public class RoomsMenu : MonoBehaviour
     private int page;
     private string response;
     private List<string> rooms;
-    private string serverIp = "10.0.0.9", p2Name = "";
+    private string serverIp = "192.168.125.100", p2Name = "";
     private bool meHost, obsBool = false, joinBool = false, disJoinBool = false, removeRoomBool = false;
 
     // Start is called before the first frame update
