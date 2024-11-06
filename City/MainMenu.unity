@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 261.80057, g: 324.3278, b: 429.24698, a: 1}
+  m_IndirectSpecularColor: {r: 261.80283, g: 324.33078, b: 429.25055, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -3091,6 +3091,7 @@ MonoBehaviour:
   register: {fileID: 552076824}
   canvas: {fileID: 1414212045}
   mainMenu: {fileID: 1761352712}
+  login: {fileID: 180972230}
 --- !u!1 &600935275
 GameObject:
   m_ObjectHideFlags: 0

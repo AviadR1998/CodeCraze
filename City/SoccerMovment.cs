@@ -29,9 +29,6 @@ public class SoccerMovment : MonoBehaviour
     public TMP_Text practicalText;
     public GameObject mainCamera;
     public delegate void questionFunc();
-    public AudioSource failSound;
-    public AudioSource cheerSound;
-    public AudioSource booingSound;
     List<questionFunc> funcs;
 
     string explanation;
@@ -213,7 +210,6 @@ public class SoccerMovment : MonoBehaviour
         }
         if (SoccerQuestion.timeStatic == 0 && !SoccerQuestion.questionAnswered)
         {
-            failSound.Play();
             timeText.color = Color.red;
             SoccerQuestion.ifSelectedOpion = SoccerQuestion.questionAnswered = true;
             turn = false;
@@ -221,7 +217,6 @@ public class SoccerMovment : MonoBehaviour
         }
         if (haveAnswer)
         {
-            CancelInvoke("reduceSecond");
             if (turn)
             {
                 if (ifInitiateTurn)
@@ -369,14 +364,6 @@ public class SoccerMovment : MonoBehaviour
         }
         if (other.tag == "StopLine")
         {
-            if (addScore == 1)
-            {
-                cheerSound.Play();
-            }
-            else
-            {
-                booingSound.Play();
-            }
             score += addScore;
             scoreText.text = score / 10 + " - " + score % 10;
             kick = false;

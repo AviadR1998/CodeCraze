@@ -4,6 +4,8 @@ using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
+using UnityEngine.Networking;
+
 
 public class MainMenu : MonoBehaviour
 {
@@ -17,6 +19,9 @@ public class MainMenu : MonoBehaviour
     public GameObject loginPage;
     public GameObject registerPage;
 
+    private string serverIp = "127.0.0.1";
+
+
     // Start is called before the first frame update
     void Start()
     {
@@ -28,8 +33,9 @@ public class MainMenu : MonoBehaviour
 
     }
 
-    public void register() {
-    canvas.transform.GetComponent<Image>().sprite = Resources.Load("Register", typeof(Sprite)) as Sprite;
+    public void register()
+    {
+        canvas.transform.GetComponent<Image>().sprite = Resources.Load("Register", typeof(Sprite)) as Sprite;
         firstMenu.SetActive(false);
         registerPage.SetActive(true);
     }
@@ -40,7 +46,7 @@ public class MainMenu : MonoBehaviour
         firstMenu.SetActive(false);
         loginPage.SetActive(true);
     }
-    public void logOut() 
+    public void logOut()
     {
         canvas.transform.GetComponent<Image>().sprite = Resources.Load("FirstMenu", typeof(Sprite)) as Sprite;
         firstMenu.SetActive(true);
@@ -60,7 +66,7 @@ public class MainMenu : MonoBehaviour
 
     public void restart()
     {
-        
+
     }
 
     public void backToMainMenu()
@@ -72,13 +78,36 @@ public class MainMenu : MonoBehaviour
     public void Quit()
     {
         Application.Quit();
+        //StartCoroutine(SendDeleteRequest());
+    }
+
+
+    private IEnumerator SendDeleteRequest()
+    {
+        // יצירת בקשת מחיקה
+        UnityWebRequest request = UnityWebRequest.Delete("http://" + serverIp + ":5000/api/Users/delete");
+
+        // הוספת ה-Header עם ה-TOKEN
+        request.SetRequestHeader("Authorization", "Bearer " + Login.token);
+
+        // שליחת הבקשה
+        yield return request.SendWebRequest();
+
+        // בדיקת התגובה מהשרת
+        if (request.result == UnityWebRequest.Result.Success)
+        {
+            Debug.Log("User deleted successfully!");
+        }
+        else
+        {
+            Debug.LogError($"Error deleting user: {request.error}");
+        }
     }
 
     private IEnumerator delayLogo()
     {
-        yield return new WaitForSeconds(3f); 
+        yield return new WaitForSeconds(3f);
         canvas.transform.GetComponent<Image>().sprite = Resources.Load("FirstMenu", typeof(Sprite)) as Sprite;
         firstMenu.SetActive(true);
     }
 }
-    

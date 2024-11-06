@@ -293,31 +293,26 @@ public class RaceMovment : MonoBehaviour
         {
             bool correct = false;
             canPress = false;
-            print("\'" + currentCorrectAnswer + "\'");
             if ((Input.GetKey(KeyCode.Keypad1) || Input.GetKey("1")) && currentCorrectAnswer == 1)
             {
-                print("-1-");
                 speed += 10;
                 raceDetails.GetComponentInChildren<TMP_Text>().text = "Speed: " + speed;
                 correct = true;
             }
             if ((Input.GetKey(KeyCode.Keypad2) || Input.GetKey("2")) && currentCorrectAnswer == 2)
             {
-                print("-2-");
                 speed += 10;
                 raceDetails.GetComponentInChildren<TMP_Text>().text = "Speed: " + speed;
                 correct = true;
             }
             if ((Input.GetKey(KeyCode.Keypad3) || Input.GetKey("3")) && currentCorrectAnswer == 3)
             {
-                print("-3-");
                 speed += 10;
                 raceDetails.GetComponentInChildren<TMP_Text>().text = "Speed: " + speed;
                 correct = true;
             }
             if ((Input.GetKey(KeyCode.Keypad4) || Input.GetKey("4")) && currentCorrectAnswer == 4)
             {
-                print("-4-");
                 speed += 10;
                 raceDetails.GetComponentInChildren<TMP_Text>().text = "Speed: " + speed;
                 correct = true;
