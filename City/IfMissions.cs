@@ -20,7 +20,6 @@ public class IfMissions : MonoBehaviour
     public GameObject canvasMission;
     public GameObject talkingPanel;
     public GameObject okButton;
-    public GameObject arrow;
     public TMP_Text talkingText;
     public TMP_Text practicalText;
     public GameObject[] findObjU;
@@ -46,11 +45,11 @@ public class IfMissions : MonoBehaviour
         findObj = findObjU;
         texts = new List<List<TextPartition>>();
         List<TextPartition> list = new List<TextPartition>();
-        list.Add(new TextPartition("Hi, do you like the city? I hope you were treated well here. Now we are going to learn a new command: 'if'.", ""));
+        list.Add(new TextPartition("hii, do you like the city i hope that you treated here nicely. Now we are going to learn a new command and this is 'if'", ""));
         list.Add(new TextPartition("The if statement allows you to control the flow of your program based on whether a certain condition is true or false.", "public static void main(String[] args) {\n\tif (condition) {\n\t\tbody1\n\t} else {\n\t\tbody2\n\t}\n}"));
         list.Add(new TextPartition("Let disnamtle it - condition: This is a Boolean expression that evaluates to either true or false.\nbody1: code to be executed if the condition is true.\nbody2: code to be executed if the condition is false (optional)", "public static void main(String[] args) {\n\tif (condition) {\n\t\tbody1\n\t} else {\n\t\tbody2\n\t}\n}"));
-        list.Add(new TextPartition("Note that you don't have to use the else statement; the if statement will then look like this:", "public static void main(String[] args) {\n\tif (condition) {\n\t\tbody1\n\t}\n}"));
-        list.Add(new TextPartition("Let's look at an example from our world.", ""));
+        list.Add(new TextPartition("note that you don't have to used the else statement and then the if statement will look like this:", "public static void main(String[] args) {\n\tif (condition) {\n\t\tbody1\n\t}\n}"));
+        list.Add(new TextPartition("lets see an example in our world", ""));
         texts.Add(list);
 
         /*list = new List<TextPartition>();
@@ -58,17 +57,17 @@ public class IfMissions : MonoBehaviour
         texts.Add(list);*/
 
         list = new List<TextPartition>();
-        list.Add(new TextPartition("We see here that the orange car needs to stop if the traffic light is red; otherwise, the car can pass. If I were to write pseudocode for this, it would look something like this (note that some commands here are not official commands).", "public static void main(String[] args) {\n\tif (light == \"red\") {\n\t\tstopcar();\n\t} else {\n\t\tpass();\n\t}\n}"));
-        list.Add(new TextPartition("Let's look at an example now. In this example, the program will print 'You are a big boy.' However, if you change the age to a number below 10, it will print 'You are not a big boy.'", "public static void main(String[] args) {\n\tint age = 11;\n\tif (age >= 10) {\n\t\tSystem.out.println(\"you are a big boy\");\n\t} else {\n\t\tSystem.out.println(\"you are not a big boy\");\n\t}\n}"));
-        list.Add(new TextPartition("Another example: What does the following code do? (Don't press 'OK' until you're sure.)", "public static void main(String[] args) {\n\tboolean isWeekend = true;\n\tboolean isRaining = false;\n\tif (isWeekend && !isRaining) {\n\t\tSystem.out.println(\"perfect weather to play outside!\");\n\t} else {\n\t\tSystem.out.println(\"perfect weather to play at home!\");\n\t}\n}"));
-        list.Add(new TextPartition("In this example, our program will print 'Perfect weather to play outside!' because, first, we declare two boolean variables: isWeekend = true and isRaining = false. We learned in the previous level that (true & !false) = (true & true) = true, so the condition is true, and we enter body1, where we print 'Perfect weather to play outside!'.", "public static void main(String[] args) {\n\tboolean isWeekend = true;\n\tboolean isRaining = false;\n\tif (isWeekend && !isRaining) {\n\t\tSystem.out.println(\"perfect weather to play outside!\");\n\t} else {\n\t\tSystem.out.println(\"perfect weather to play at home!\");\n\t}\n}"));
-        list.Add(new TextPartition("I hope you're taking this lesson seriously because if statements are really important. Once you understand this lesson, many things will become clearer to you.", ""));
-        list.Add(new TextPartition("Good luck with the rest of this lesson!", ""));
+        list.Add(new TextPartition("We see here that the orange car need to stop if the light trafiic is red else the car can pass so if i need to write a pseudocode here it will be something like that(some command here are not an official command)", "public static void main(String[] args) {\n\tif (light == \"red\") {\n\t\tstopcar();\n\t} else {\n\t\tpass();\n\t}\n}"));
+        list.Add(new TextPartition("let see now some example in this example the program will print 'you are a big boy' but if you change the age to a number under 10 it will print 'you are not a big boy'.", "public static void main(String[] args) {\n\tint age = 11;\n\tif (age >= 10) {\n\t\tSystem.out.println(\"you are a big boy\");\n\t} else {\n\t\tSystem.out.println(\"you are not a big boy\");\n\t}\n}"));
+        list.Add(new TextPartition("another example: what the next code do?(dont press 'ok' until you dont sure)", "public static void main(String[] args) {\n\tboolean isWeekend = true;\n\tboolean isRaining = false;\n\tif (isWeekend && !isRaining) {\n\t\tSystem.out.println(\"perfect weather to play outside!\");\n\t} else {\n\t\tSystem.out.println(\"perfect weather to play at home!\");\n\t}\n}"));
+        list.Add(new TextPartition("here our program will print 'perfect weather to play outside!' becase first we declare on two bool var isWeekend = true, isRaining = false we learn in the previous level that\n(true & !false) = (true & true) = (true) so the condition is true and we enter to body1 so we printing 'perfect weather to play outside!'", "public static void main(String[] args) {\n\tboolean isWeekend = true;\n\tboolean isRaining = false;\n\tif (isWeekend && !isRaining) {\n\t\tSystem.out.println(\"perfect weather to play outside!\");\n\t} else {\n\t\tSystem.out.println(\"perfect weather to play at home!\");\n\t}\n}"));
+        list.Add(new TextPartition("i hope that you take this leasson seriously because 'if' statement are really important and if you understand this leasson many things will be clear to you.", ""));
+        list.Add(new TextPartition("good luck in the rest of this leasson!!!", ""));
         texts.Add(list);
 
         list = new List<TextPartition>();
-        list.Add(new TextPartition("I need your help! I have three objects that have gone missing in the city: a rubber duck, a burger, and a toy car. Can you help me find them?", ""));
-        list.Add(new TextPartition("I know where they are! If you get close to them, I'll show a hot emoji, and if you move further away from the objects, the emoji will change to a frozen one.", ""));
+        list.Add(new TextPartition("I need your help! I have 3 objects that gone in the city and i need your help to find them. I lost a Rubber duck a burger and a toy car.", ""));
+        list.Add(new TextPartition("I know where are them and if you get close to him i will show the hot emoji, and if you get far from the object the emoji will became freeze.", ""));
         list.Add(new TextPartition("Good luck!!!", ""));
         //texts.Add(list);
 
@@ -137,7 +136,6 @@ public class IfMissions : MonoBehaviour
         player.GetComponent<CharacterController>().enabled = true;
         player.GetComponent<Movement>().enabled = true;
         //
-        arrow.SetActive(false);
         findObj[0].SetActive(true);
         findObj[0].transform.position -= new Vector3(0, 12, 0);
         hotColdCanvas.SetActive(true);
@@ -182,9 +180,6 @@ public class IfMissions : MonoBehaviour
                     findAll = true;
                     AdminMission.currentSubMission++;
                     AdminMission.currentSubText = 0;
-                    arrow.SetActive(true);
-                    arrow.transform.position = player.transform.position;
-                    Movement.mission = npc;
                 }
                 return;
             }

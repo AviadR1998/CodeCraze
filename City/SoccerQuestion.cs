@@ -19,9 +19,6 @@ public class SoccerQuestion : MonoBehaviour
     public TMP_Text explanationText;
     public TMP_Text[] optionsText;
     public TMP_Text timeText;
-    public AudioSource soccesSound;
-    public AudioSource failSound;
-
     string currentRightAnswer, currentAnswerPressed;
     
 
@@ -56,7 +53,7 @@ public class SoccerQuestion : MonoBehaviour
             optionsStatic[i] = options[i] + "";
         }
         curentRightAnswerStatic = correctAnswer;
-        timeStatic = 15;
+        timeStatic = 10;
     }
 
     public void optionPressed(TMP_Text option)
@@ -92,7 +89,7 @@ public class SoccerQuestion : MonoBehaviour
             }
             timeText.color = Color.white;
             explanationText.text = "";
-            timeStatic = 15;
+            timeStatic = 10;
             soccerQuestionCanvas.SetActive(false);
         }
         else
@@ -110,14 +107,6 @@ public class SoccerQuestion : MonoBehaviour
                 }
             }
             SoccerMovment.turn = currentAnswerPressed == currentRightAnswer;
-            if (currentAnswerPressed == currentRightAnswer)
-            {
-                soccesSound.Play();
-            }
-            else
-            {
-                failSound.Play();
-            }
         }
         questionAnswered = !questionAnswered;
     }

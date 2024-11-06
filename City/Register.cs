@@ -28,6 +28,8 @@ public class Register : MonoBehaviour
     
     public GameObject mainMenu;
 
+     public GameObject login;
+
 
 
 
@@ -183,8 +185,8 @@ public class Register : MonoBehaviour
             }
             else
             {
-             canvas.transform.GetComponent<Image>().sprite = Resources.Load("MainMenu", typeof(Sprite)) as Sprite;
-             mainMenu.SetActive(true); 
+             canvas.transform.GetComponent<Image>().sprite = Resources.Load("Login", typeof(Sprite)) as Sprite;
+             login.SetActive(true); 
              register.SetActive(false);
             }
         }

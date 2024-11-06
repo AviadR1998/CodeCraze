@@ -21,14 +21,11 @@ public class Movement : MonoBehaviour
     float rotationX = 0;
     public static bool canMove = true, soccer = false, home = false;
     CharacterController characterController;
-    public AudioSource soccesSound;
-    public AudioSource backgrounMusic;
 
     public static bool raceOn;
     public GameObject player;
     public GameObject roomsMenu;
     public GameObject arrow;
-    public GameObject findPanel;
     public static GameObject mission;
     public GameObject orderPanel;
     public TMP_Text objFoundHotCold;
@@ -49,19 +46,11 @@ public class Movement : MonoBehaviour
         hoverLetter = hoverBall = Cursor.visible = false;
         PauseMenu.canPause = true;
         canPress = true;
-        backgrounMusic.Play();
     }
 
     private void OnEnable()
     {
-        backgrounMusic.Play();
         raceOn = false;
-    }
-
-    private IEnumerator closeFindPanel()
-    {
-        yield return new WaitForSeconds(2);
-        findPanel.SetActive(false);
     }
 
     private void OnTriggerEnter(Collider other)
@@ -76,9 +65,6 @@ public class Movement : MonoBehaviour
                 IfMissions.findObj[IfMissions.currentFindObj].transform.position -= new Vector3(0, 12, 0);
             }
             objFoundHotCold.text = IfMissions.currentFindObj + "/3";
-            findPanel.SetActive(true);
-            soccesSound.Play();
-            StartCoroutine(closeFindPanel());
         }
         if (other.tag == "RaceNPC")
         {
@@ -149,16 +135,7 @@ public class Movement : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (raceOn)
-        {
-            backgrounMusic.Pause();
-            return;
-        }
-        if (!backgrounMusic.isPlaying)
-        {
-            backgrounMusic.Play();
-        }
-        if (soccer || PauseMenu.isPaused)
+        if (raceOn || soccer || PauseMenu.isPaused)
         {
             return;
         }

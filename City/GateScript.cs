@@ -12,7 +12,6 @@ public class GateScript : MonoBehaviour
     public GameObject gate;
     public TMP_Text helpMessage;
     public AudioSource honk;
-    public AudioSource soccesSound;
 
     void angryDriver()
     {
@@ -50,7 +49,6 @@ public class GateScript : MonoBehaviour
                 WhileMissions.canTalk = true;
                 orderCanvas.SetActive(false);
                 ticketMachine.GetComponent<GateScript>().enabled = false;
-                soccesSound.Play();
             }
         }
     }
