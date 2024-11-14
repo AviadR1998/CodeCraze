@@ -19,7 +19,7 @@ public class MainMenu : MonoBehaviour
     public GameObject loginPage;
     public GameObject registerPage;
 
-    private string serverIp = "127.0.0.1";
+    public static string serverIp = "127.0.0.1";
 
 
     // Start is called before the first frame update

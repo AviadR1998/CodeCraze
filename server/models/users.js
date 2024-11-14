@@ -14,7 +14,7 @@ async function insrtUser(details) {
         if (res.length > 0) {
             return 409;
         } else {
-            const ret = { username: details.username, password: details.password, mail: details.mail, age: details.age };
+            const ret = { username: details.username, password: details.password, mail: details.mail, age: details.age, world: details.world, task: details.task, state: details.state };
             await users.insertOne(ret);
             return ret;
         }

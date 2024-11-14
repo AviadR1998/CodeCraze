@@ -26,5 +26,4 @@ const deleteUser = async (req, res) => {
     res.end();
 }
 
-
 export { addUser, returnUser, deleteUser };

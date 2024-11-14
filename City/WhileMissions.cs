@@ -29,6 +29,8 @@ public class WhileMissions : MonoBehaviour
     public TMP_Text practicalText;
     public AudioSource honk;
     public static bool canTalk, endOk;
+    public GameObject practiceNPC;
+    public GameObject forNPC;
 
     List<EndFunc> funcs;
     public static EndFunc okFunc;
@@ -40,29 +42,29 @@ public class WhileMissions : MonoBehaviour
     {
         texts = new List<List<TextPartition>>();
         List<TextPartition> list = new List<TextPartition>();
-        list.Add(new TextPartition("Hii my friend. I need your help! please help me!", ""));
-        list.Add(new TextPartition("We have a party here but the dirver is honk to us and shouting\nfor help please help him that we could continue with our party!", ""));
-        list.Add(new TextPartition("go to the ticket machine, raise the bar and come back.",""));
-        list.Add(new TextPartition("note that the driver will ask for help and honk for every 2 seconds\nuntil you will release him. Good Luck!!!", ""));
+        list.Add(new TextPartition("Hi, my friend! I need your help—please help me!", ""));
+        list.Add(new TextPartition("We're having a party here, but the driver is honking at us and shouting for help. Please help him so we can continue with our party!", ""));
+        list.Add(new TextPartition("Go to the ticket machine, raise the bar, and come back.", ""));
+        list.Add(new TextPartition("Note that the driver will ask for help and honk every 2 seconds until you release him. Good luck!", ""));
         list.Add(new TextPartition("", "The driver: Help!"));
         texts.Add(list);
         list = new List<TextPartition>();
-        list.Add(new TextPartition("Thank you for helping us!! now we can go back to party.", ""));
-        list.Add(new TextPartition("but before that I want to thank you by teaching you a new programing skill.\n", ""));
-        list.Add(new TextPartition("Let look what we have seen in here? we saw somethink like the while command.\n", ""));
-        list.Add(new TextPartition("Lets make a pseudocode for it!! And that's how you write a while statement!!", "public static void main(String[] args) {\n\tboolean theGateIsDown = true;\n\twhile(theGateIsDown) {\n\t\tSystem.out.println(\"Help!\");\n\t\thonk();//not an official coomand\n\t}\n}"));
-        list.Add(new TextPartition("Lets see what we have here!! we have a boolean var that caled 'theGateIsDown' and it is set to true at the beggining and the code will run while 'theGateIsDown' is true", "public static void main(String[] args) {\n\tboolean theGateIsDown = true;\n\twhile(theGateIsDown) {\n\t\tSystem.out.println(\"Help!\");\n\t\thonk();//not an official coomand\n\t}\n}"));
-        list.Add(new TextPartition("let dismantle the while command. body: what is actual do in each itaration.\ncondition: is evaluated after the code block has been executed.", "while (condition) {\n\tbody;\n}"));
-        list.Add(new TextPartition("Let see another example. We see here that the while printing the numbers 1 to 4\n", "public static void main(String[] args) {\n\tint counter = 1;\n\twhile (counter <= 4) {\n\t\tSystem.out.println(counter);\n\t\tcounter++;\n\t}\n}"));
-        list.Add(new TextPartition("the while start from 1 and on each iteration the counter is increasing by one.\nthe while stop when reaching to 4", "public static void main(String[] args) {\n\tint counter = 1;\n\twhile (counter <= 4) {\n\t\tSystem.out.println(counter);\n\t\tcounter++;\n\t}\n}"));
-        list.Add(new TextPartition("for example what the next code do?(dont press 'ok' until you dont sure)", "public static void main(String[] args) {\n\tint number = 1;\n\twhile (number <= 10) {\n\t\tif (number % 2 == 0) {\n\t\t\tSystem.out.println(number);\n\t\t}\n\t\tcounter++;\n\t}\n}"));
-        list.Add(new TextPartition("the code is printing the even numbers from 1 to 10.\nexplanation: the while runnig from 1 to 10 and check if the number is even\n(number % 2 == 0 check if the number is even) and if he is even so print it.", "2\n4\n6\n8\n10"));
-        list.Add(new TextPartition("There is 'do while' also 'do while' is like 'while' but the diffrent between them is that the 'do while' is happend at least 1 time and 'while' its depend on the condition", ""));
-        list.Add(new TextPartition("condition: is evaluated after the code block has been executed.", "public static void main(String[] args) {\n\tdo {\n\t\tbody;\n\t} while (condition);\n}"));
-        list.Add(new TextPartition("body: happened at least once and keeping activate if the condition is true.", "public static void main(String[] args) {\n\tdo {\n\t\tbody;\n\t} while (condition);\n}"));
-        list.Add(new TextPartition("for example what the next code do?(dont press 'ok' until you dont sure)", "public static void main(String[] args) {\n\tint number = 1;\n\tdo {\n\t\tSystem.out.println(number);\n\t\tnumber++;\n\t} while (number <= 1);\n}"));
-        list.Add(new TextPartition("the code print 1 because the 'do while' enter the loop and print the 1 after that\nthe number raise by one and then the number is greater the 1 and exit the while", "1"));
-        list.Add(new TextPartition("Lets start parctice!", ""));
+        list.Add(new TextPartition("Thank you for helping us! Now we can go back to the party.", ""));
+        list.Add(new TextPartition("But before that, I want to thank you by teaching you a new programming skill.", ""));
+        list.Add(new TextPartition("Let's look at what we've seen here. We saw something like the while command.", ""));
+        list.Add(new TextPartition("Let's write pseudocode for it! This is how you write a while statement!", "public static void main(String[] args) {\n\tboolean theGateIsDown = true;\n\twhile(theGateIsDown) {\n\t\tSystem.out.println(\"Help!\");\n\t\thonk();//not an official coomand\n\t}\n}"));
+        list.Add(new TextPartition("Let's see what we have here! We have a boolean variable called theGateIsDown, which is set to true at the beginning. The code will run as long as theGateIsDown is true.", "public static void main(String[] args) {\n\tboolean theGateIsDown = true;\n\twhile(theGateIsDown) {\n\t\tSystem.out.println(\"Help!\");\n\t\thonk();//not an official coomand\n\t}\n}"));
+        list.Add(new TextPartition("Let's break down the while command:\nBody: What is actually done in each iteration.\nCondition: This is evaluated after the code block has been executed.", "while (condition) {\n\tbody;\n}"));
+        list.Add(new TextPartition("Let's look at another example. Here, we see that the while loop is printing the numbers 1 to 4.", "public static void main(String[] args) {\n\tint counter = 1;\n\twhile (counter <= 4) {\n\t\tSystem.out.println(counter);\n\t\tcounter++;\n\t}\n}"));
+        list.Add(new TextPartition("The while loop starts at 1, and in each iteration, the counter increases by one. The loop stops when it reaches 4.", "public static void main(String[] args) {\n\tint counter = 1;\n\twhile (counter <= 4) {\n\t\tSystem.out.println(counter);\n\t\tcounter++;\n\t}\n}"));
+        list.Add(new TextPartition("For example, what does the following code do? (Don't press 'OK' until you're sure.)", "public static void main(String[] args) {\n\tint number = 1;\n\twhile (number <= 10) {\n\t\tif (number % 2 == 0) {\n\t\t\tSystem.out.println(number);\n\t\t}\n\t\tcounter++;\n\t}\n}"));
+        list.Add(new TextPartition("The code prints the even numbers from 1 to 10.\nExplanation: The while loop runs from 1 to 10 and checks if each number is even. The condition (number % 2 == 0) checks if the number is even, and if it is, the code prints it.", "2\n4\n6\n8\n10"));
+        list.Add(new TextPartition("There is also the do while loop. The do while loop is similar to the while loop, but the difference is that the do while loop executes at least once, whereas the while loop depends on the condition.", ""));
+        list.Add(new TextPartition("Condition: This is evaluated after the code block has been executed.", "public static void main(String[] args) {\n\tdo {\n\t\tbody;\n\t} while (condition);\n}"));
+        list.Add(new TextPartition("Body: This executes at least once and continues to run as long as the condition is true.", "public static void main(String[] args) {\n\tdo {\n\t\tbody;\n\t} while (condition);\n}"));
+        list.Add(new TextPartition("For example, what does the following code do? (Don't press 'OK' until you're sure.)", "public static void main(String[] args) {\n\tint number = 1;\n\tdo {\n\t\tSystem.out.println(number);\n\t\tnumber++;\n\t} while (number <= 1);\n}"));
+        list.Add(new TextPartition("The code prints 1 because the do while loop enters and prints 1. After that, the number is incremented by one, and since the number is now greater than 1, it exits the loop.", "1"));
+        list.Add(new TextPartition("Let's start practicing!", ""));
         texts.Add(list);
         AdminMission.texts = texts;
         AdminMission.currentSubMission = 0;
@@ -84,8 +86,11 @@ public class WhileMissions : MonoBehaviour
         talkingPanel.SetActive(false);
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
-        PauseMenu.canPause = true;
+        Practice.canAsk = PauseMenu.canPause = true;
         player.GetComponent<Movement>().enabled = true;
+        Practice.nextMission.Add(forNPC);
+        Practice.nextMission.Add(forNPC);
+        Movement.mission = practiceNPC;
     }
 
     void introducing()

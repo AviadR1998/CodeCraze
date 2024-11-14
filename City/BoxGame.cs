@@ -17,6 +17,7 @@ public class BoxGame : MonoBehaviour
     public GameObject player;
     public GameObject arrow;
     public GameObject[] lettersObj;
+    public GameObject practiceNPC;
     public UnityEngine.UI.Button checkboxButton;
     public TMP_Text checkboxText;
     public TMP_Text practicalText;
@@ -26,6 +27,8 @@ public class BoxGame : MonoBehaviour
     static public List<string> boxNumbers;
     static public char[] boxLetters;
     public delegate void EndFunc();
+    public AudioSource soccesSound;
+    public AudioSource failSound;
 
     bool[] checkBoxArr;
     List<List<TextPartition>> texts;
@@ -41,25 +44,25 @@ public class BoxGame : MonoBehaviour
     {
         texts = new List<List<TextPartition>>();
         List<TextPartition> list = new List<TextPartition>();
-        list.Add(new TextPartition("hello darling. how are you today? do you know what is array?\nI guess not, but don't worry now you will know everything you need to know", ""));
-        list.Add(new TextPartition("An array is a data structure that stores a collection of elements, typically of the same type. Each element in an array can be accessed directly by its index, which is a numerical position within the array For example:", "public static void main(String[] args) {\n\tint[] numbers = {1, 5, 9, 2};\n}"));
-        list.Add(new TextPartition("we define a general array by this example:\ndataType which type of data we use for example - int, String\narrayName means the name we want to caled our array for exapmle - arr", "dataType[] arrayName;"));
-        list.Add(new TextPartition("you can create array in many ways for example:", "public static void main(String[] args) {\n\tint[] numbers = {1, 5, 9, 2};  // Array of integers\n\tString[] names = {\"Alice\", \"Bob\", \"Charlie\"}; // Array of Strings\n\tint[] numbers2 = new int[4];\n}"));
-        list.Add(new TextPartition("I have noticed that you don't know what is the key word 'new' means. Let say for now\nthat 'new' keyword is used to create new objects and allocate memory for them", "public static void main(String[] args) {\n\ttint[] numbers = new int[4];\n}"));
-        list.Add(new TextPartition("Some facts about arrays:\n1. Once an array is created, its size cannot be changed in Java.\n2. Array elements are accessed using their index, which starts from 0 (the first element) and goes up to the size minus 1 (the last element).\n", ""));
-        list.Add(new TextPartition("3. Be cautious of accessing elements outside the array bounds (index less than 0 or greater than or equal to the size) as it can lead to ArrayIndexOutOfBoundsException.\nLets some examples", ""));
-        list.Add(new TextPartition("4. In arrays we can know the numnber of elements in an array by using the method 'Length' for example this code will printing 3 because there are 3 elements in arr", "public static void main(String[] args) {\n\tint[] arr = {1, 2, 3};\n\tSystem.out.println(arr.Length);\n}"));
-        list.Add(new TextPartition("5. When you create an array of int with new all the values will be initialized to 0.", ""));
-        list.Add(new TextPartition("Here the code will print the number 9 because we printing the number in the index 2 and this is 9", "public static void main(String[] args) {\n\tint[] numbers = {1, 5, 9, 2};\n\tSystem.out.println(numbers[2]);\n}"));
-        list.Add(new TextPartition("Here the code will get a runtime exception because we are wanted to print a value out of the array boundaries ", "public static void main(String[] args) {\n\tint[] numbers = {1, 5, 9, 2};\n\tSystem.out.println(numbers[4]);\n}"));
-        list.Add(new TextPartition("for example what the next code do?(dont press 'ok' until you dont sure)", "public static void main(String[] args) {\n\tint[] arr = {3, 4};\n\tint temp = arr[0];\n\tarr[0] = arr[1];\n\tarr[0] = temp;\n\tSystem.out.println(arr[0]);\n\tSystem.out.println(arr[1]);\n}"));
-        list.Add(new TextPartition("The code here will print 4 and then 3 becasue we are making a swap between the values of arr[0] and arr[1] ans they switching places.", "public static void main(String[] args) {\n\tint[] arr = {3, 4};\n\tint temp = arr[0];\n\tarr[0] = arr[1];\n\tarr[0] = temp;\n\tSystem.out.println(arr[0]);\n\tSystem.out.println(arr[1]);\n}"));
-        list.Add(new TextPartition("We can define also 2d array, 3d array, ... and so on but usually you need up to 2d. Above 2d it is for some uncommon use", ""));
-        list.Add(new TextPartition("you can define 2d array for example:\nyou can consider 2d array as a matrix with row and columns and here we have 2 rows and 4 columns", "public static void main(String[] args) {\n\tint[][] arr2d = {{1, 2, 3, 4}, {5, 6, 7, 8}};\n\tint[][] arr2d2 = new int[2][4]\n}"));
-        list.Add(new TextPartition("for example what the next code do?(dont press 'ok' until you dont sure)", "public static void main(String[] args) {\n\tint[][] arr2d = {{1, 2},{3, 4}};\n\tint[] arr = new int[2];\n\tSystem.out.println(arr2d[0][0] + arr2d[1][0]);\n\tSystem.out.printlnarr2d[0][1] + arr2d[1][1]);\n}"));
-        list.Add(new TextPartition("the code here will print 4 and then 6 becasue we add the first elemnt in the row number [0] and the first element of row number [1] and print it.\nThen we add the second elemnt in the row number [0] and the second element of row number [1] and print it", "public static void main(String[] args) {\n\tint[][] arr2d = {{1, 2},{3, 4}};\n\tSystem.out.println(arr2d[0][0] + arr2d[1][0]);\n\tSystem.out.printlnarr2d[0][1] + arr2d[1][1]);\n}"));
-        list.Add(new TextPartition("all the rules you have in 1d array are applied in 2d array too", ""));
-        list.Add(new TextPartition("Now lets make some exercises!", ""));
+        list.Add(new TextPartition("Hello, darling! How are you today? Do you know what an array is? I guess you don’t, but don’t worry; now you will learn everything you need to know!", ""));
+        list.Add(new TextPartition("An array is a data structure that stores a collection of elements, typically of the same type. Each element in an array can be accessed directly by its index, which is its numerical position within the array. For example:", "public static void main(String[] args) {\n\tint[] numbers = {1, 5, 9, 2};\n}"));
+        list.Add(new TextPartition("We define a general array using the following example:\ndataType indicates the type of data we will use, such as int or String.\narrayName refers to the name we want to give our array, for example, arr.", "dataType[] arrayName;"));
+        list.Add(new TextPartition("You can create an array in many ways. For example:", "public static void main(String[] args) {\n\tint[] numbers = {1, 5, 9, 2};  // Array of integers\n\tString[] names = {\"Alice\", \"Bob\", \"Charlie\"}; // Array of Strings\n\tint[] numbers2 = new int[4];\n}"));
+        list.Add(new TextPartition("I've noticed that you might not know what the keyword 'new' means. For now, let's say that the 'new' keyword is used to create new objects and allocate memory for them.", "public static void main(String[] args) {\n\ttint[] numbers = new int[4];\n}"));
+        list.Add(new TextPartition("Here are some facts about arrays:\nOnce an array is created, its size cannot be changed in Java.\nArray elements are accessed using their index, which starts from 0 (the first element) and goes up to the size minus 1 (the last element).", ""));
+        list.Add(new TextPartition("3. Be cautious when accessing elements outside the array bounds (an index less than 0 or greater than or equal to the size), as this can lead to an ArrayIndexOutOfBoundsException.\nLet's look at some examples", ""));
+        list.Add(new TextPartition("4. In arrays, we can find the number of elements using the length property. For example, this code will print 3 because there are three elements in arr.", "public static void main(String[] args) {\n\tint[] arr = {1, 2, 3};\n\tSystem.out.println(arr.Length);\n}"));
+        list.Add(new TextPartition("5. When you create an array of int using new, all the values will be initialized to 0.", ""));
+        list.Add(new TextPartition("In this code, it will print the number 9 because we are accessing the value at index 2, which is 9.", "public static void main(String[] args) {\n\tint[] numbers = {1, 5, 9, 2};\n\tSystem.out.println(numbers[2]);\n}"));
+        list.Add(new TextPartition("This code will result in a runtime exception because we are trying to print a value outside the array boundaries. ", "public static void main(String[] args) {\n\tint[] numbers = {1, 5, 9, 2};\n\tSystem.out.println(numbers[4]);\n}"));
+        list.Add(new TextPartition("For example, what does the following code do? (Don't press 'OK' until you're sure.)", "public static void main(String[] args) {\n\tint[] arr = {3, 4};\n\tint temp = arr[0];\n\tarr[0] = arr[1];\n\tarr[0] = temp;\n\tSystem.out.println(arr[0]);\n\tSystem.out.println(arr[1]);\n}"));
+        list.Add(new TextPartition("The code will print 4 and then 3 because we are swapping the values of arr[0] and arr[1], and they are switching places.", "public static void main(String[] args) {\n\tint[] arr = {3, 4};\n\tint temp = arr[0];\n\tarr[0] = arr[1];\n\tarr[0] = temp;\n\tSystem.out.println(arr[0]);\n\tSystem.out.println(arr[1]);\n}"));
+        list.Add(new TextPartition("We can also define 2D arrays, 3D arrays, and so on, but usually, you only need up to 2D arrays. Arrays with more than two dimensions are typically used for uncommon purposes.", ""));
+        list.Add(new TextPartition("You can define a 2D array, for example:\nYou can think of a 2D array as a matrix with rows and columns. In this case, we have 2 rows and 4 columns.", "public static void main(String[] args) {\n\tint[][] arr2d = {{1, 2, 3, 4}, {5, 6, 7, 8}};\n\tint[][] arr2d2 = new int[2][4]\n}"));
+        list.Add(new TextPartition("For example, what does the following code do? (Don't press 'OK' until you're sure.)", "public static void main(String[] args) {\n\tint[][] arr2d = {{1, 2},{3, 4}};\n\tint[] arr = new int[2];\n\tSystem.out.println(arr2d[0][0] + arr2d[1][0]);\n\tSystem.out.printlnarr2d[0][1] + arr2d[1][1]);\n}"));
+        list.Add(new TextPartition("The code will print 4 and then 6 because we add the first element in row [0] to the first element in row [1] and print the result. Then, we add the second element in row [0] to the second element in row [1] and print that result.", "public static void main(String[] args) {\n\tint[][] arr2d = {{1, 2},{3, 4}};\n\tSystem.out.println(arr2d[0][0] + arr2d[1][0]);\n\tSystem.out.printlnarr2d[0][1] + arr2d[1][1]);\n}"));
+        list.Add(new TextPartition("All the rules that apply to 1D arrays also apply to 2D arrays.", ""));
+        list.Add(new TextPartition("Now, let's do some exercises!", ""));
         texts.Add(list);
 
         //list = new List<TextPartition>();
@@ -120,7 +123,7 @@ public class BoxGame : MonoBehaviour
         ball.GetComponent<SphereCollider>().isTrigger = true;
         ball.tag = "BallBox";
         ball.transform.position = new Vector3(x, y, z);
-        ball.transform.localScale = new Vector3(0.7f, 0.7f, 0.7f); ;
+        ball.transform.localScale = new Vector3(0.5f, 0.5f, 0.5f); ;
         return ball;
     }
 
@@ -213,19 +216,25 @@ public class BoxGame : MonoBehaviour
         }
         if (cnt == 3)
         {
+            soccesSound.Play();
             checkboxText.text = "correct! you finished all the tasks here Good luck!!!";
-            player.transform.position += new Vector3(0, 1, 15);
-            arrow.transform.position += new Vector3(0, 0, 15);
+            player.transform.position += new Vector3(0, 1, 17);
+            arrow.SetActive(true);
+            arrow.transform.position = player.transform.position;
+            //arrow.transform.position += new Vector3(0, 0, 15);
             camera.transform.position = new Vector3(0.1645798f, 0.0239689f, 0.01668368f) + player.transform.position;
             player.GetComponent<CharacterController>().enabled = true;
             player.GetComponent<Movement>().enabled = true;
             StartCoroutine(delayEnd());
             UnityEngine.Cursor.lockState = CursorLockMode.Locked;
             UnityEngine.Cursor.visible = false;
-            PauseMenu.canPause = true;
+            Practice.canAsk = PauseMenu.canPause = true;
+            Movement.mission = practiceNPC;
+            Practice.nextMission = null;
         }
         else
         {
+            failSound.Play();
             checkboxText.text = "Wrong! please try again";
             StartCoroutine(delayPressLevel4());
             canPress = false;
@@ -246,11 +255,11 @@ public class BoxGame : MonoBehaviour
         player.GetComponent<Movement>().enabled = false;
         if (levelFirst)
         {
-            player.transform.position += new Vector3(0, 0, -15);
-            arrow.transform.position += new Vector3(0, 0, -15);
+            player.transform.position += new Vector3(0, 0, -17);
+            //arrow.transform.position += new Vector3(0, 0, -15);
             levelFirst = false;
         }
-        camera.transform.position = new Vector3(-1070.866f, 22.4789f, 318.9044f);
+        camera.transform.position = new Vector3(-1069.866f, 22.4789f, 312.5044f);
         camera.transform.rotation = Quaternion.Euler(17, 0, 0);
         //
         orderCanvas.SetActive(false);
@@ -334,6 +343,7 @@ public class BoxGame : MonoBehaviour
     {
         if (firstTouch)
         {
+            arrow.SetActive(false);
             intro();
         }
     }
@@ -369,11 +379,13 @@ public class BoxGame : MonoBehaviour
             {
                 boxLetters[i] = '\0';
             }
+            failSound.Play();
             practicalText.text = "Worong placment!";
             StartCoroutine(delayPress());
         }
         else
         {
+            soccesSound.Play();
             practicalText.text = "Correct!!!!";
             StartCoroutine(delayMission());
         }
@@ -395,6 +407,7 @@ public class BoxGame : MonoBehaviour
             }
             if (boxNumbers.Count != ballNumbers.Count)
             {
+                failSound.Play();
                 practicalText.text = "Worong placment!";
                 StartCoroutine(delayPress());
                 return;
@@ -403,11 +416,13 @@ public class BoxGame : MonoBehaviour
             {
                 if (!boxNumbers.Contains("BoxArr" + ballNumbers[i]))
                 {
+                    failSound.Play();
                     practicalText.text = "Worong placment!";
                     StartCoroutine(delayPress());
                     return;
                 }
             }
+            soccesSound.Play();
             practicalText.text = "Correct!!!!";
             StartCoroutine(delayMission());
         } 

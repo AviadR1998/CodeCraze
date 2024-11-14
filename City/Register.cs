@@ -165,15 +165,20 @@ public class Register : MonoBehaviour
         StartCoroutine(dataToServer());
     }
 
+    
+
     IEnumerator dataToServer()
     {
         string response="pass";
-        string uri = "http://localhost:5000/api/Users/";
+        string uri = "http://" + MainMenu.serverIp + ":5000/api/Users/";
         WWWForm form = new WWWForm();
         form.AddField("username", userName.text);
         form.AddField("password", password.text);
         form.AddField("age", age.text);
         form.AddField("mail", email.text);
+        form.AddField("world", "empty");
+        form.AddField("task", "empty");
+        form.AddField("state", -1);
         using (UnityWebRequest request = UnityWebRequest.Post(uri, form))
         {
             yield return request.SendWebRequest();
@@ -185,9 +190,9 @@ public class Register : MonoBehaviour
             }
             else
             {
-             canvas.transform.GetComponent<Image>().sprite = Resources.Load("Login", typeof(Sprite)) as Sprite;
-             login.SetActive(true); 
-             register.SetActive(false);
+                canvas.transform.GetComponent<Image>().sprite = Resources.Load("Login", typeof(Sprite)) as Sprite;
+                login.SetActive(true); 
+                register.SetActive(false);
             }
         }
     }
