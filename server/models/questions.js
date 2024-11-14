@@ -9,15 +9,13 @@ async function postQuestion(details) {
         client.connect();
         const db = client.db('CodeCraze');
         const users = db.collection('Questions');
-        const ret = { question: details.question, options: details.options, answer: details.answer, tag: details.tag, level: details.level};
-        await users.insertOne(ret);
-        return ret;
+        const line = { question: details.question, options: details.options, answer: details.answer, explanation: details.explanation, topic: details.topic};
+        await users.insertOne(line);
+        return 200;
     } catch{
-        let res;
-        res.status = 401;
-        return res;
+        return 401;
     } finally {
-        client.close();
+        //client.close();
     }
 }
 
@@ -41,7 +39,7 @@ async function getQuestionsByLevel(level, bearer, token) {
     }
 }
 
-async function getQuestionsByTag(tag, bearer, token) {
+async function getQuestionsByTopic(topic, bearer, token) {
     try {
         const data = functions.validateToken(bearer, token);
         if (data === null) {
@@ -51,8 +49,8 @@ async function getQuestionsByTag(tag, bearer, token) {
         client.connect();
         const db = client.db('CodeCraze');
         const questions = db.collection('Questions');
-        let res = await questions.find({ tag: tag }).toArray();
-        return res;
+        let res = await questions.find({ topic: topic }).toArray();
+        return {questionList: res};
     } catch (err) {
         return 401;
         //return res.status(401).send("Invalid Token");
@@ -61,4 +59,4 @@ async function getQuestionsByTag(tag, bearer, token) {
     }
 }
 
-export default { getQuestionsByLevel, getQuestionsByTag, postQuestion }
+export default { getQuestionsByLevel, getQuestionsByTopic, postQuestion }

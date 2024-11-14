@@ -1,12 +1,8 @@
 import myModels from '../models/questions.js'
 
 const addQuestion = async (req, res) => {
-    const myRes = await myModels.postQuestion(req.params);
-    if (myRes === 200) {
-        res.status(200).send(myRes);
-    } else {
-        res.status(401);
-    }
+    const myRes = await myModels.postQuestion(req.body);
+    res.status(myRes)
     res.end();
 }
 
@@ -20,9 +16,9 @@ const returnQuestionsByLevel = async (req, res) => {
     res.end();
 }
 
-const returnQuestionsByTag = async (req, res) => {
-    const myRes = await myModels.getQuestionsByTag(req.params.tag, req.headers.authorization.split(" ")[0], req.headers.authorization.split(" ")[1]);
-    if (myRes.status === 401) {
+const returnQuestionsByTopic = async (req, res) => {
+    const myRes = await myModels.getQuestionsByTopic(req.params.topic, req.headers.authorization.split(" ")[0], req.headers.authorization.split(" ")[1]);
+    if (myRes === 401) {
         res.status(401);
     } else {
         res.status(200).send(myRes);
@@ -30,4 +26,4 @@ const returnQuestionsByTag = async (req, res) => {
     res.end();
 }
 
-export { returnQuestionsByLevel, returnQuestionsByTag, addQuestion };
+export { returnQuestionsByLevel, returnQuestionsByTopic, addQuestion };

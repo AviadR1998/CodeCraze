@@ -12,14 +12,16 @@ public class ButtonWheel : MonoBehaviour
     public GameObject practicalPanel;
     public TMP_Text orderText;
     public GameObject child;
+    public AudioSource soccesSound;
 
     int rolling;
     bool canRoll;
+    float currentTime, targetTime;
     // Start is called before the first frame update
     void Start()
     {
         canRoll = true;
-        rolling = 0;
+        currentTime = targetTime = rolling = 0;
     }
 
     private IEnumerator delayPress()
@@ -40,14 +42,9 @@ public class ButtonWheel : MonoBehaviour
             {
                 canRoll = false;
                 StartCoroutine(delayPress());
-                Wheel.transform.rotation = Quaternion.Euler(0, 0, 60 * ++rolling);
-                if (rolling == 8)
-                {
-                    orderCanvas.SetActive(false);
-                    Movement.mission = child;
-                    AdminMission.endOk = redButton.GetComponent<ButtonWheel>().enabled = false;
-                    AdminMission.canTalk = true;
-                }
+                targetTime += 15;
+                ++rolling;
+                //Wheel.transform.rotation = Quaternion.Euler(0, 0, 60 * ++rolling);
             }
         }
     }
@@ -60,6 +57,21 @@ public class ButtonWheel : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        
+        if (currentTime < targetTime)
+        {
+            currentTime++;
+            Wheel.transform.Rotate(0, 0, 4);
+        }
+        else
+        {
+            if (rolling == 8)
+            {
+                soccesSound.Play();
+                orderCanvas.SetActive(false);
+                Movement.mission = child;
+                AdminMission.endOk = redButton.GetComponent<ButtonWheel>().enabled = false;
+                AdminMission.canTalk = true;
+            }
+        }
     }
 }

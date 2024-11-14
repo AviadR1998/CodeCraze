@@ -29,6 +29,9 @@ public class SoccerMovment : MonoBehaviour
     public TMP_Text practicalText;
     public GameObject mainCamera;
     public delegate void questionFunc();
+    public AudioSource failSound;
+    public AudioSource cheerSound;
+    public AudioSource booingSound;
     List<questionFunc> funcs;
 
     string explanation;
@@ -119,7 +122,7 @@ public class SoccerMovment : MonoBehaviour
 
     void factFor()
     {
-        int range = Random.Range(2, 6), sum = 1;
+        int range = Random.Range(2, 5), sum = 1;
         string questionCode = "int sum = 1;\nfor (int i = 1; i <= " + range + "; i++) {\n\tsum *= i;\n}\nSystem.out.println(sum);";
         for (int i = 2; i <= range; i++)
         {
@@ -174,7 +177,7 @@ public class SoccerMovment : MonoBehaviour
 
     void calculateFor()
     {
-        int range = Random.Range(2, 5), addF = Random.Range(2, 4), incF = Random.Range(1, 3), sum = 0;
+        int range = Random.Range(2, 4), addF = Random.Range(2, 4), incF = Random.Range(1, 3), sum = 0;
         for (int i = 0; i < range; i += incF) 
         {
             sum += addF;
@@ -210,6 +213,7 @@ public class SoccerMovment : MonoBehaviour
         }
         if (SoccerQuestion.timeStatic == 0 && !SoccerQuestion.questionAnswered)
         {
+            failSound.Play();
             timeText.color = Color.red;
             SoccerQuestion.ifSelectedOpion = SoccerQuestion.questionAnswered = true;
             turn = false;
@@ -217,6 +221,7 @@ public class SoccerMovment : MonoBehaviour
         }
         if (haveAnswer)
         {
+            CancelInvoke("reduceSecond");
             if (turn)
             {
                 if (ifInitiateTurn)
@@ -364,6 +369,14 @@ public class SoccerMovment : MonoBehaviour
         }
         if (other.tag == "StopLine")
         {
+            if (addScore == 1)
+            {
+                cheerSound.Play();
+            }
+            else
+            {
+                booingSound.Play();
+            }
             score += addScore;
             scoreText.text = score / 10 + " - " + score % 10;
             kick = false;
@@ -379,6 +392,7 @@ public class SoccerMovment : MonoBehaviour
             if (turn)
             {
                 talkingText.text = "Conrgulations!! you Win!!! you can pass now to the next lesson.";
+                Movement.npcMissionCounter++;
                 practicalText.text = "";
                 AdminMission.okFunc = winOk;
             }

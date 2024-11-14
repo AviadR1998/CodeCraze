@@ -19,13 +19,18 @@ public class Movement : MonoBehaviour
     public float lookXLimit = 45f;
     Vector3 moveDirection = Vector3.zero;
     float rotationX = 0;
+    public static int npcMissionCounter = 0;
     public static bool canMove = true, soccer = false, home = false;
     CharacterController characterController;
+    public AudioSource soccesSound;
+    public AudioSource backgrounMusic;
 
     public static bool raceOn;
     public GameObject player;
     public GameObject roomsMenu;
     public GameObject arrow;
+    public GameObject findPanel;
+    public GameObject[] npcs;
     public static GameObject mission;
     public GameObject orderPanel;
     public TMP_Text objFoundHotCold;
@@ -40,17 +45,25 @@ public class Movement : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        mission = GameObject.Find("RaceNPC");
+        mission = GameObject.Find("IfNPC");//"RaceNPC"
         characterController = GetComponent<CharacterController>();
         Cursor.lockState = CursorLockMode.Locked;
         hoverLetter = hoverBall = Cursor.visible = false;
         PauseMenu.canPause = true;
         canPress = true;
+        backgrounMusic.Play();
     }
 
     private void OnEnable()
     {
+        backgrounMusic.Play();
         raceOn = false;
+    }
+
+    private IEnumerator closeFindPanel()
+    {
+        yield return new WaitForSeconds(2);
+        findPanel.SetActive(false);
     }
 
     private void OnTriggerEnter(Collider other)
@@ -65,6 +78,9 @@ public class Movement : MonoBehaviour
                 IfMissions.findObj[IfMissions.currentFindObj].transform.position -= new Vector3(0, 12, 0);
             }
             objFoundHotCold.text = IfMissions.currentFindObj + "/3";
+            findPanel.SetActive(true);
+            soccesSound.Play();
+            StartCoroutine(closeFindPanel());
         }
         if (other.tag == "RaceNPC")
         {
@@ -135,9 +151,25 @@ public class Movement : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (raceOn || soccer || PauseMenu.isPaused)
+        if (raceOn)
+        {
+            backgrounMusic.Pause();
+            return;
+        }
+        if (!backgrounMusic.isPlaying)
+        {
+            backgrounMusic.Play();
+        }
+        if (soccer || PauseMenu.isPaused)
         {
             return;
+        }
+        if (Input.GetKeyDown(KeyCode.Tab) && npcMissionCounter < 3)
+        {
+            Practice.canAsk = false;
+            npcs[npcMissionCounter++].SetActive(false);
+            mission = npcs[npcMissionCounter];
+            npcs[npcMissionCounter].SetActive(true);
         }
         if (home)
         {
