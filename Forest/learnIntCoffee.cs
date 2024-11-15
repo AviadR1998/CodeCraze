@@ -18,37 +18,47 @@ public class learnIntCoffee : MonoBehaviour
     public GameObject canvasError;
     public AudioClip AddCoffeeSound;
     public AudioClip SuccSound;
-
     public AudioClip ErrSound;
-
     private AudioSource audioSource;
-    public Transform cameraTargetPosition;
+    public Transform destination;
+    private Vector3 originalPlayerPosition;
+    private Quaternion originalPlayerRotation;
     private Vector3 originalCameraPosition;
     private Quaternion originalCameraRotation;
-
     private bool isTaskActive = false;
+    public GameObject arrow;
+    public TaskManager taskManager;
+    private bool isTaskCompletedOnce = false;
 
-     public GameObject arrow;
 
-    // Start is called before the first frame update
     void Start()
     {
         audioSource = GetComponent<AudioSource>();
-
     }
 
-    private void OnTriggerEnter(Collider other)
+    private void OnCollisionEnter(Collision other)
     {
-        if (other.tag == "Player")
+        if (other.gameObject.tag == "Player" && !isTaskActive)
         {
+            isTaskActive = true;
+            //Save Player data
+            originalPlayerPosition = FindObjectOfType<FirstPersonController>().transform.position;
+            originalPlayerRotation = FindObjectOfType<FirstPersonController>().transform.rotation;
+            //Save Camera data
+            originalCameraPosition = FindObjectOfType<FirstPersonController>().playerCamera.transform.position;
+            originalCameraRotation = FindObjectOfType<FirstPersonController>().playerCamera.transform.rotation;
+            //change rotation + position
+            FindObjectOfType<FirstPersonController>().playerCamera.transform.position = destination.position;
+            FindObjectOfType<FirstPersonController>().playerCamera.transform.rotation = destination.rotation;
+            FindObjectOfType<FirstPersonController>().cameraCanMove = false;
+            FindObjectOfType<FirstPersonController>().playerCanMove = false;
+            FindObjectOfType<FirstPersonController>().enableHeadBob = false;
             arrow.SetActive(false);
             canvas.SetActive(true);
             Cursor.lockState = CursorLockMode.None;
             Cursor.visible = true;
-            isTaskActive = true;
-            originalCameraPosition = Camera.main.transform.position;
-            originalCameraRotation = Camera.main.transform.rotation;
-            explainWorlds.text = "Let's Make Coffee Cups with int!\n" + "Hey there, young programmer! Today, we're going to learn how to use something called an integer or int in our game to make coffee cups appear at the café.\n\n" + "What is an int?\n" + "An int is a special type of number in programming that doesn't have any decimal points. It means whole numbers like 1, 2, 3, -4 (also negative numbers as u can see) and so on.\n\n" +
+
+            explainWorlds.text = "Let's Make Coffee Cups with int!😊\n" + "Hey there, young programmer! Today, we're going to learn how to use something called an integer or int in our game to make coffee cups appear at the café.\n\n" + "What is an int?\n" + "An int is a special type of number in programming that doesn't have any decimal points. It means whole numbers like 1, 2, 3, -4 (also negative numbers as u can see) and so on.\n\n" +
             "And in a programming way, we would write it as: int coffeeCups = 3; which means i have 3 coffee cups " +
             "Why Use an int?\n" + "In our game, we want to decide how many coffee cups to show at the café. Since we can only have whole coffee cups (not half a cup!), an int is perfect for this job.\n";
         }
@@ -59,7 +69,6 @@ public class learnIntCoffee : MonoBehaviour
     {
         canvas.SetActive(false);
         canvasCoffee.SetActive(true);
-        //canvasGotIt.SetActive(true);
         Cursor.lockState = CursorLockMode.Confined;
         Cursor.visible = true;
         inputConsist.text = "int CupOfCoffee = 0;";
@@ -71,24 +80,29 @@ public class learnIntCoffee : MonoBehaviour
         {
             audioSource.PlayOneShot(SuccSound);
         }
-        Camera.main.transform.position = originalCameraPosition;
-        Camera.main.transform.rotation = originalCameraRotation;
-        isTaskActive = false;
+        FindObjectOfType<FirstPersonController>().transform.position = originalPlayerPosition;
+        FindObjectOfType<FirstPersonController>().transform.rotation = originalPlayerRotation;
+        FindObjectOfType<FirstPersonController>().playerCamera.transform.position = originalCameraPosition;
+        FindObjectOfType<FirstPersonController>().playerCamera.transform.rotation = originalCameraRotation;
+        FindObjectOfType<FirstPersonController>().cameraCanMove = true;
+        FindObjectOfType<FirstPersonController>().playerCanMove = true;
+        FindObjectOfType<FirstPersonController>().enableHeadBob = true;
+        StartCoroutine(WaitBeforeDeactivatingTask());
         inputUser.text = "";
         canvasCoffee.SetActive(false);
         Cursor.lockState = CursorLockMode.Confined;
         Cursor.visible = true;
         arrow.SetActive(true);
+        CompleteTask();
+
     }
 
 
     public void RunButtonClick()
     {
-        //need to check is between 0 to 4.
-
+        //need to check if input is between 0 to 4.
         string userInput = inputUser.text;
-
-        //nothing and click run is 0.
+        //empty
         if (string.IsNullOrEmpty(userInput))
         {
             userInput = 0.ToString(); ;
@@ -102,11 +116,8 @@ public class learnIntCoffee : MonoBehaviour
                 audioSource.PlayOneShot(ErrSound);
             }
             canvasError.SetActive(true);
-
-            // Start coroutine to clear the error message after 3 seconds
             StartCoroutine(HideCanvasAfterTime(3f));
-
-            return; // Exit the function early
+            return;
         }
 
         if (AddCoffeeSound != null && audioSource != null)
@@ -125,24 +136,39 @@ public class learnIntCoffee : MonoBehaviour
 
     }
 
-    // Update is called once per frame
     void Update()
     {
-        if (isTaskActive)
-        {
-            Camera.main.transform.position = cameraTargetPosition.position;
-            Camera.main.transform.rotation = cameraTargetPosition.rotation;
 
-        }
     }
 
     private IEnumerator HideCanvasAfterTime(float delay)
     {
         yield return new WaitForSeconds(delay);
-
-        // Hide the canvas after the delay
         canvasError.SetActive(false);
     }
 
+
+    private IEnumerator WaitBeforeDeactivatingTask()
+    {
+        yield return new WaitForSeconds(4);
+        isTaskActive = false;
+    }
+
+    public void CompleteTask()
+    {
+        if (!isTaskCompletedOnce)
+        {
+            isTaskCompletedOnce = true; // מסמן שהמשימה הושלמה
+
+            if (taskManager != null)
+            {
+                taskManager.ActivateNextTask();
+            }
+            else
+            {
+                Debug.LogError("TaskManager is not assigned in the Inspector!");
+            }
+        }
+    }
 
 }

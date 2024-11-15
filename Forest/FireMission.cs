@@ -3,9 +3,9 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
+
 public class FireMission : MonoBehaviour
 {
-
     public GameObject canvas;
     public GameObject canvasGame;
     public GameObject campfire;
@@ -14,49 +14,51 @@ public class FireMission : MonoBehaviour
     public TMP_InputField inputField3;
     public AudioClip correctClip;
     public AudioClip WrongClip;
-
-    public Transform cameraTargetPosition;
-    private Vector3 originalCameraPosition;
-    private Quaternion originalCameraRotation;
-
-    private bool isTaskActive = false;
     private AudioSource audioSource;
-
     public AudioSource fireAudio;
     public float stopAfterSeconds = 15f;
-
+    public Transform destination;
+    private Vector3 originalPlayerPosition;
+    private Quaternion originalPlayerRotation;
+    private Vector3 originalCameraPosition;
+    private Quaternion originalCameraRotation;
+    private bool isTaskActive = false;
     public GameObject arrow;
+    public TaskManager taskManager;
+    private bool isTaskCompletedOnce = false;
 
 
-
-
-    private void OnTriggerEnter(Collider other)
+    private void OnCollisionEnter(Collision other)
     {
-        if (other.tag == "Player")
+        if (other.gameObject.tag == "Player" && !isTaskActive)
         {
+            isTaskActive = true;
+            //Save Player data
+            originalPlayerPosition = FindObjectOfType<FirstPersonController>().transform.position;
+            originalPlayerRotation = FindObjectOfType<FirstPersonController>().transform.rotation;
+            //Save Camera data
+            originalCameraPosition = FindObjectOfType<FirstPersonController>().playerCamera.transform.position;
+            originalCameraRotation = FindObjectOfType<FirstPersonController>().playerCamera.transform.rotation;
+            //change rotation + position
+            FindObjectOfType<FirstPersonController>().playerCamera.transform.position = destination.position;
+            FindObjectOfType<FirstPersonController>().playerCamera.transform.rotation = destination.rotation;
+            FindObjectOfType<FirstPersonController>().cameraCanMove = false;
+            FindObjectOfType<FirstPersonController>().playerCanMove = false;
+            FindObjectOfType<FirstPersonController>().enableHeadBob = false;
             arrow.SetActive(false);
             campfire.SetActive(false);
             isTaskActive = true;
-            //audioSource.Stop();
             canvas.SetActive(true);
             Cursor.lockState = CursorLockMode.None;
             Cursor.visible = true;
             inputField1.text = "";
             inputField2.text = "";
             inputField3.text = "";
-            originalCameraPosition = Camera.main.transform.position;
-            originalCameraRotation = Camera.main.transform.rotation;
         }
     }
 
     void Update()
     {
-        if (isTaskActive)
-        {
-            Camera.main.transform.position = cameraTargetPosition.position;
-            Camera.main.transform.rotation = cameraTargetPosition.rotation;
-
-        }
 
     }
 
@@ -84,19 +86,24 @@ public class FireMission : MonoBehaviour
 
             audioSource.clip = correctClip;
             audioSource.Play();
-            Camera.main.transform.position = originalCameraPosition;
-            Camera.main.transform.rotation = originalCameraRotation;
-            isTaskActive = false;
+            FindObjectOfType<FirstPersonController>().transform.position = originalPlayerPosition;
+            FindObjectOfType<FirstPersonController>().transform.rotation = originalPlayerRotation;
+            FindObjectOfType<FirstPersonController>().playerCamera.transform.position = originalCameraPosition;
+            FindObjectOfType<FirstPersonController>().playerCamera.transform.rotation = originalCameraRotation;
+            FindObjectOfType<FirstPersonController>().cameraCanMove = true;
+            FindObjectOfType<FirstPersonController>().playerCanMove = true;
+            FindObjectOfType<FirstPersonController>().enableHeadBob = true;
+            StartCoroutine(WaitBeforeDeactivatingTask());
             campfire.SetActive(true);
             canvasGame.SetActive(false);
-            Invoke("StopFireAudio", stopAfterSeconds);  // עצור את האודיו אחרי 10 שניות
+            CompleteTask();
+            Invoke("StopFireAudio", stopAfterSeconds); 
             Cursor.lockState = CursorLockMode.Confined;
             Cursor.visible = true;
             SetInputFieldColor(inputField1, Color.white);
             SetInputFieldColor(inputField2, Color.white);
             SetInputFieldColor(inputField3, Color.white);
             arrow.SetActive(true);
-
         }
         else
         {
@@ -105,7 +112,6 @@ public class FireMission : MonoBehaviour
             SetInputFieldColor(inputField1, isCorrect1 ? Color.white : Color.red);
             SetInputFieldColor(inputField2, isCorrect2 ? Color.white : Color.red);
             SetInputFieldColor(inputField3, isCorrect3 ? Color.white : Color.red);
-
         }
     }
 
@@ -124,7 +130,28 @@ public class FireMission : MonoBehaviour
     {
         inputField.image.color = color;
     }
+    private IEnumerator WaitBeforeDeactivatingTask()
+    {
+        yield return new WaitForSeconds(15);
+        isTaskActive = false;
+    }
 
-    // Update is called once per frame
+    public void CompleteTask()
+    {
+        if (!isTaskCompletedOnce)
+        {
+            isTaskCompletedOnce = true; // מסמן שהמשימה הושלמה
+
+            if (taskManager != null)
+            {
+                taskManager.ActivateNextTask();
+            }
+            else
+            {
+                Debug.LogError("TaskManager is not assigned in the Inspector!");
+            }
+        }
+    }
+
 
 }

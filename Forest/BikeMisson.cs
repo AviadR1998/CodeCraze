@@ -2,6 +2,8 @@ using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 using System.Collections.Generic;
+using System.Collections;
+
 
 public class BikeMission : MonoBehaviour
 {
@@ -24,35 +26,45 @@ public class BikeMission : MonoBehaviour
 
     public AudioClip WrongSound;
     public AudioClip SuccSound;
-
-    public Transform cameraTargetPosition;
+    public Transform destination;
+    private Vector3 originalPlayerPosition;
+    private Quaternion originalPlayerRotation;
     private Vector3 originalCameraPosition;
     private Quaternion originalCameraRotation;
-
     private bool isTaskActive = false;
-
     public GameObject arrow;
+    public TaskManager taskManager;
+    private bool isTaskCompletedOnce = false;
 
 
 
     private AudioSource audioSource;
     void Start()
     {
-        // אתחול ה-AudioSource
         audioSource = GetComponent<AudioSource>();
     }
 
-    private void OnTriggerEnter(Collider other)
+    private void OnCollisionEnter(Collision other)
     {
-        if (other.tag == "Player")
+        if (other.gameObject.tag == "Player" && !isTaskActive)
         {
+            isTaskActive = true;
+            //Save Player data
+            originalPlayerPosition = FindObjectOfType<FirstPersonController>().transform.position;
+            originalPlayerRotation = FindObjectOfType<FirstPersonController>().transform.rotation;
+            //Save Camera data
+            originalCameraPosition = FindObjectOfType<FirstPersonController>().playerCamera.transform.position;
+            originalCameraRotation = FindObjectOfType<FirstPersonController>().playerCamera.transform.rotation;
+            //change rotation + position
+            FindObjectOfType<FirstPersonController>().playerCamera.transform.position = destination.position;
+            FindObjectOfType<FirstPersonController>().playerCamera.transform.rotation = destination.rotation;
+            FindObjectOfType<FirstPersonController>().cameraCanMove = false;
+            FindObjectOfType<FirstPersonController>().playerCanMove = false;
+            FindObjectOfType<FirstPersonController>().enableHeadBob = false;
             arrow.SetActive(false);
             Firstcanvas.SetActive(true);
             Cursor.lockState = CursorLockMode.None;
             Cursor.visible = true;
-            isTaskActive = true;
-            originalCameraPosition = Camera.main.transform.position;
-            originalCameraRotation = Camera.main.transform.rotation;
         }
     }
 
@@ -66,9 +78,18 @@ public class BikeMission : MonoBehaviour
         Cursor.lockState = CursorLockMode.Confined;
         Cursor.visible = true;
 
-        Camera.main.transform.position = originalCameraPosition;
-        Camera.main.transform.rotation = originalCameraRotation;
-        isTaskActive = false;
+        FindObjectOfType<FirstPersonController>().transform.position = originalPlayerPosition;
+        FindObjectOfType<FirstPersonController>().transform.rotation = originalPlayerRotation;
+        FindObjectOfType<FirstPersonController>().playerCamera.transform.position = originalCameraPosition;
+        FindObjectOfType<FirstPersonController>().playerCamera.transform.rotation = originalCameraRotation;
+        FindObjectOfType<FirstPersonController>().cameraCanMove = true;
+        FindObjectOfType<FirstPersonController>().playerCanMove = true;
+        FindObjectOfType<FirstPersonController>().enableHeadBob = true;
+        // Debug.Log("----------------------------------------------------------------");
+        // Debug.Log("Player Position: " + FindObjectOfType<FirstPersonController>().transform.position);
+        // Debug.Log("Player Rotation: " + FindObjectOfType<FirstPersonController>().transform.rotation.eulerAngles);
+        // Debug.Log("Camera Position: " + FindObjectOfType<FirstPersonController>().playerCamera.transform.position);
+        // Debug.Log("Camera Rotation: " + FindObjectOfType<FirstPersonController>().playerCamera.transform.rotation.eulerAngles);
 
         GameStarted();
         if (StartSound != null && audioSource != null)
@@ -116,7 +137,6 @@ public class BikeMission : MonoBehaviour
                 }
                 else
                 {
-
                     canvas.SetActive(false);
                     isMoving = true;
                 }
@@ -130,6 +150,13 @@ public class BikeMission : MonoBehaviour
 
                 }
 
+            }
+        }
+        else
+        {
+            if (WrongSound != null && audioSource != null)
+            {
+                audioSource.PlayOneShot(WrongSound);
             }
         }
     }
@@ -199,6 +226,9 @@ public class BikeMission : MonoBehaviour
                     {
 
                         audioSource.PlayOneShot(WinSound);
+                        CompleteTask();
+                        StartCoroutine(WaitBeforeDeactivatingTask());
+
 
                     }
                     canvas.SetActive(false);
@@ -235,19 +265,35 @@ public class BikeMission : MonoBehaviour
 
     void Update()
     {
-        if (isTaskActive)
-        {
-            Camera.main.transform.position = cameraTargetPosition.position;
-            Camera.main.transform.rotation = cameraTargetPosition.rotation;
-
-        }
         MoveTowardsNextPoint();
     }
     void ResetBikePosition()
     {
         transform.position = new Vector3(37.59f, 4.62f, 46.37f);
         transform.rotation = Quaternion.Euler(0, 35.581f, 0);
+    }
 
+    private IEnumerator WaitBeforeDeactivatingTask()
+    {
+        yield return new WaitForSeconds(5);
+        isTaskActive = false;
+    }
+
+    public void CompleteTask()
+    {
+        if (!isTaskCompletedOnce)
+        {
+            isTaskCompletedOnce = true; // מסמן שהמשימה הושלמה
+
+            if (taskManager != null)
+            {
+                taskManager.ActivateNextTask();
+            }
+            else
+            {
+                Debug.LogError("TaskManager is not assigned in the Inspector!");
+            }
+        }
     }
 
 

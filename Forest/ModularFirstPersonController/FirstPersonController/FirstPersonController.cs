@@ -224,6 +224,10 @@ public class FirstPersonController : MonoBehaviour
 
     private void Update()
     {
+        if (PauseMenu.isPaused || PracticeManage.questionActivated)
+        {
+            return;
+        }
         #region Camera
 
         // Control camera movement
@@ -388,6 +392,10 @@ public class FirstPersonController : MonoBehaviour
 
     void FixedUpdate()
     {
+        if (PauseMenu.isPaused || PracticeManage.questionActivated)
+        {
+            return;
+        }
         #region Movement
 
         if (playerCanMove)
