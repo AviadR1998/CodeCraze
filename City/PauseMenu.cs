@@ -22,7 +22,7 @@ public class PauseMenu : MonoBehaviour
         state = 0;
     }
 
-    public static void updateSAve(string str1, string str2, int num)
+    public static void updateSave(string str1, string str2, int num)
     {
         world = str1;
         task = str2;

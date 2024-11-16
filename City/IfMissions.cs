@@ -83,6 +83,7 @@ public class IfMissions : MonoBehaviour
         currentFindObj = AdminMission.currentSubMission = 0;
         AdminMission.okFunc = ifOkFunc;
         Movement.mission = npc;
+        PauseMenu.updateSave("City", "If", 0);
     }
 
     private void OnEnable()
@@ -155,6 +156,7 @@ public class IfMissions : MonoBehaviour
         Practice.canAsk = player.GetComponent<Movement>().enabled = true;
         Movement.mission = practiceNPC;
         Practice.nextMission.Add(whileNPC);
+        PauseMenu.updateSave("City", "If", 1);
     }
 
     void ifOkFunc()
