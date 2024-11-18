@@ -57,8 +57,8 @@ public class Login : MonoBehaviour
 
     public IEnumerator loginRequest()
     {
-        string jsonUser = "{\"username\": " + usernameField.text + ", \"password\": " + passwordField.text + "}", response;
-        /*using (var webRequest = new UnityWebRequest("http://localhost:5000/api/Tokens/", "POST"))
+        /*string jsonUser = "{\"username\": " + usernameField.text + ", \"password\": " + passwordField.text + "}", response;
+        using (var webRequest = new UnityWebRequest("http://localhost:5000/api/Tokens/", "POST"))
         {
             webRequest.uploadHandler = new UploadHandlerRaw(System.Text.Encoding.UTF8.GetBytes(jsonUser));
             webRequest.downloadHandler = new DownloadHandlerBuffer();

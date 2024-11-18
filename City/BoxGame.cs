@@ -82,6 +82,7 @@ public class BoxGame : MonoBehaviour
         AdminMission.texts = texts;
         AdminMission.currentSubMission = 0;
         AdminMission.okFunc = arrayOkFunc;
+        PauseMenu.updateSave("City", "Array", 0);
     }
 
     private IEnumerator delayPress()
@@ -231,6 +232,7 @@ public class BoxGame : MonoBehaviour
             Practice.canAsk = PauseMenu.canPause = true;
             Movement.mission = practiceNPC;
             Practice.nextMission = null;
+            PauseMenu.updateSave("City", "Array", 1);
         }
         else
         {

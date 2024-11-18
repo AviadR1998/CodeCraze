@@ -46,11 +46,12 @@ public class Practice : MonoBehaviour
                 if (nextMission[0] != null)
                 {
                     AdminMission.currentSubMission++;
+                    PauseMenu.updateSave("City", "For", AdminMission.currentSubMission);
                     Movement.mission = nextMission[0];
                     nextMission[0].SetActive(true);
                     AdminMission.canTalk = true;
-                    if (nextMission[0].name != "ForNPC" || nextMission[0].name != "ForNPC")
-                    {
+                    if (nextMission[0].name != "ForNPC" || nextMission[0].name != "ForNPC")//while
+                    { 
                         Movement.npcMissionCounter++;
                     }
                 }

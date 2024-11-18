@@ -4,6 +4,7 @@ import usersRouter from './routes/users.js';
 import tokensRouter from './routes/tokens.js';
 import questionsRouter from './routes/questions.js';
 import roomsRouter from './routes/rooms.js';
+import explanationsRouter from './routes/explanations.js';
 import { roomsList, getKey } from "./controllers/rooms.js";
 //import { handleClientMsg } from './sockets/socket.js'
 import cors from 'cors';
@@ -72,5 +73,6 @@ app.use('/api/Users', usersRouter);
 app.use('/api/Tokens', tokensRouter);
 app.use('/api/Questions', questionsRouter);
 app.use('/api/Rooms', roomsRouter);
+app.use('/api/Explanations', explanationsRouter);
 
 app.listen(5000);

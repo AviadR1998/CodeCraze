@@ -26,4 +26,20 @@ const deleteUser = async (req, res) => {
     res.end();
 }
 
-export { addUser, returnUser, deleteUser };
+const addScore = async (req, res) => {
+    const myRes = await myModels.updateScore(req.headers.authorization.split(" ")[0], req.headers.authorization.split(" ")[1], req.body.score);
+    res.status(myRes);
+    res.end();
+}
+
+const topScore = async (req, res) => {
+    const myRes = await myModels.getTopScore(req.headers.authorization.split(" ")[0], req.headers.authorization.split(" ")[1]);
+    if (myRes === 401) {
+        res.status(401);
+    } else {
+        res.status(200).json({players: myRes});
+    }
+    res.end();
+}
+
+export { addUser, returnUser, deleteUser, addScore, topScore };

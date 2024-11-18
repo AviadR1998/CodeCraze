@@ -73,6 +73,7 @@ public class WhileMissions : MonoBehaviour
         funcs.Add(introducing);
         funcs.Add(questions);
         AdminMission.okFunc = whileOkFunc;
+        PauseMenu.updateSave("City", "While", 0);
     }
 
     private void OnEnable()
@@ -91,6 +92,7 @@ public class WhileMissions : MonoBehaviour
         Practice.nextMission.Add(forNPC);
         Practice.nextMission.Add(forNPC);
         Movement.mission = practiceNPC;
+        PauseMenu.updateSave("City", "While", 1);
     }
 
     void introducing()
