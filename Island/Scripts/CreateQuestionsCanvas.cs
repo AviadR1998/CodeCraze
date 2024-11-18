@@ -12,7 +12,7 @@ public class CreateQuestionsCanvas : MonoBehaviour
 
     }
 
-    public void CreateQCanvas(string csvPath)
+    public Canvas CreateQCanvas(string csvPath)
     {
         ClonedCanvas = Instantiate(QCanvas);
 
@@ -27,6 +27,7 @@ public class CreateQuestionsCanvas : MonoBehaviour
                 CameraControl.GetComponent<CanvasCameraControl>().AddCanvas(ClonedCanvas);
             }
         }
+        return ClonedCanvas;
     }
 
     // Update is called once per frame
