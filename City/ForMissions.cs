@@ -72,6 +72,7 @@ public class ForMission : MonoBehaviour
         funcs.Add(soccerGame);
         //currentSubMission = 0;
         AdminMission.okFunc = forOkFunc;
+        PauseMenu.updateSave("City", "For", 0);
     }
 
     void forOkFunc()
@@ -118,6 +119,7 @@ public class ForMission : MonoBehaviour
         player.GetComponent<Movement>().enabled = true;
         Movement.mission = practiceNPC;
         Practice.nextMission.Add(forNPC);
+        PauseMenu.updateSave("City", "For", 1);
     }
 
     void part1()

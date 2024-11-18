@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
+using UnityEngine.Networking;
 
 public class FinishLine : MonoBehaviour
 {
@@ -21,6 +22,24 @@ public class FinishLine : MonoBehaviour
         RaceMovment.cancelFinish = true;
     }
 
+    IEnumerator addScore()
+    {
+        WWWForm form = new WWWForm();
+        form.AddField("score", 10);
+        using (UnityWebRequest request = UnityWebRequest.Post("http://" + MainMenu.serverIp + ":5000/api/Users/AddScore", form))
+        {
+            request.SetRequestHeader("Authorization", "Bearer " + Login.token);
+            yield return request.SendWebRequest();
+            if (request.isNetworkError || request.isHttpError)
+            {
+
+            }
+            else
+            {
+            }
+        }
+    }
+
     private void OnTriggerEnter(Collider other)
     {
         if (!isWin)
@@ -31,6 +50,7 @@ public class FinishLine : MonoBehaviour
             if (other.tag.ToString() == "Player")
             {
                 winner = "nir";
+                StartCoroutine(addScore());
             }
             else
             {

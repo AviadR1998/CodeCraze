@@ -1,3 +1,4 @@
+import { Heap } from 'heap-js';
 import { MongoClient } from "mongodb";
 import functions from "./tokens.js"
 
@@ -14,7 +15,7 @@ async function insrtUser(details) {
         if (res.length > 0) {
             return 409;
         } else {
-            const ret = { username: details.username, password: details.password, mail: details.mail, age: details.age, world: details.world, task: details.task, state: details.state };
+            const ret = { username: details.username, password: details.password, mail: details.mail, age: details.age, world: details.world, task: details.task, state: details.state, score: 0 };
             await users.insertOne(ret);
             return ret;
         }
@@ -62,7 +63,72 @@ async function delUser(bearer, token) {
     } finally {
         //client.close();
     }
-
 }
 
-export default { insrtUser, getUserInfo, delUser }
+async function updateScore(bearer, token, score) {
+    try {
+        const data = functions.validateToken(bearer, token);
+        if (data === null) {
+            console.log(bearer  + " " +   token);
+            return 401;
+        }
+        const client = new MongoClient("mongodb://127.0.0.1:27017");
+        client.connect();
+        const db = client.db('CodeCraze');
+        const users = db.collection('Users');
+        await users.updateOne({ username: data.username }, {$inc: {score: score}});
+        return 200;
+    } catch (err) {
+        return 401;
+        //return res.status(401).send("Invalid Token");
+    } finally {
+        //client.close();
+    }
+}
+
+async function getTopScore(bearer, token, score) {
+    try {
+        const data = functions.validateToken(bearer, token);
+        if (data === null) {
+            console.log(bearer  + " " +   token);
+            return 401;
+        }
+        const client = new MongoClient("mongodb://127.0.0.1:27017");
+        client.connect();
+        const db = client.db('CodeCraze');
+        const users = db.collection('Users');
+        let res = (await users.find({username: 1, password: 0, mail: 0, age: 0, world: 0, task: 0, state: 0, score: 1 }).toArray()).sort((user1, user2) => {
+            if (user2.score === user1.score) {
+                return user1.username.localeCompare(user2.username);
+            }
+            return user2.score - user1.score;
+        });
+
+        /*const myHeap = new Heap((user1, user2) => {
+            if (user2.score === user1.score) {
+                return user1.username.localeCompare(user2.username);
+            }
+            return user1.score - user2.score;
+        });
+        for (let user in res) {
+            myHeap.push(user);
+            if (myHeap.size() > 5) {
+                myHeap.pop();   
+            }
+        }
+        return myHeap.toArray().sort((user1, user2) => {
+            if (user2.score === user1.score) {
+                return user1.username.localeCompare(user2.username);
+            }
+            return user2.score - user1.score;
+        });*/
+        return res.slice(0, 5);
+    } catch (err) {
+        return 401;
+        //return res.status(401).send("Invalid Token");
+    } finally {
+        //client.close();
+    }
+}
+
+export default { insrtUser, getUserInfo, delUser, updateScore, getTopScore }
