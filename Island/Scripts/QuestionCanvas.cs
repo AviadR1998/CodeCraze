@@ -11,18 +11,18 @@ public class QuestionCanvas : MonoBehaviour
     public Button[] buttons;
     public Button question, saveBtn;
     public TextMeshProUGUI responsePanel;
-    public string csvPath;
     private int choosenOption, correctAns, numOfClicksOnSave = 0, currentQuestion = -1, numOfQ = 0;
     private string currentExplain;
     private List<Question> questions;
     private ColorBlock resetColor;
 
 
-    // Start is called before the first frame update
-    void Start()
+    public void StartAsking(string csvPath)
     {
         makeQuestions(csvPath);
         resetColor = buttons[0].colors;
+        Cursor.visible = true;
+        Cursor.lockState = CursorLockMode.None;
     }
 
     public class Question
@@ -51,11 +51,13 @@ public class QuestionCanvas : MonoBehaviour
         Color falseColor;
         UnityEngine.ColorUtility.TryParseHtmlString("#F23A3A", out falseColor);
         cb1.normalColor = falseColor;
+        cb1.disabledColor = falseColor;
 
         ColorBlock cb2 = buttons[0].colors;
         Color correctColor;
         UnityEngine.ColorUtility.TryParseHtmlString("#44C662", out correctColor);
         cb2.normalColor = correctColor;
+        cb2.disabledColor = correctColor;
 
         buttons[choosenOption - 1].colors = cb1;
         buttons[correctAns - 1].colors = cb2;
@@ -73,6 +75,10 @@ public class QuestionCanvas : MonoBehaviour
         {
             saveBtn.GetComponentInChildren<TextMeshProUGUI>().text = "Next";
             explainBtn.SetActive(true);
+            foreach (Button btn in buttons)
+            {
+                btn.interactable = false;
+            }
         }
         else
         {
@@ -89,6 +95,8 @@ public class QuestionCanvas : MonoBehaviour
     public void turnOffQuestion()
     {
         qCanvas.SetActive(false);
+        Cursor.visible = false;
+        Cursor.lockState = CursorLockMode.Locked;
     }
 
 
@@ -202,6 +210,10 @@ public class QuestionCanvas : MonoBehaviour
             explainBtn.SetActive(false);
             responsePanel.text = "";
             saveBtn.GetComponentInChildren<TextMeshProUGUI>().text = "Save";
+            foreach (Button btn in buttons)
+            {
+                btn.interactable = true;
+            }
         }
 
         createQuestion();
@@ -223,4 +235,5 @@ public class QuestionCanvas : MonoBehaviour
     {
         question.GetComponentInChildren<TextMeshProUGUI>().text = currentExplain;
     }
+
 }

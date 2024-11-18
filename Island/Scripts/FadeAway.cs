@@ -5,7 +5,7 @@ using UnityEngine;
 
 public class FadeAway : MonoBehaviour
 {
-    [SerializeField] CanvasGroup Fade;
+    [SerializeField] public CanvasGroup Fade;
     private bool stillFade = true;
 
     void Update()
