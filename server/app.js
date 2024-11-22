@@ -31,11 +31,11 @@ io.on('connection', (socket) => {
     socket.on('disconnect', () => {
         if (roomsList.has(socketArr.get(socket))) {
             if (roomsList.get(socketArr.get(socket)) != "--") {
-                io.to(socket).emit('host',null);
+                io.to(socket).emit('host', null);
             }
         }
         socketArr.delete(socket);
-        
+
     });
 
     socket.on('cord', (username, x, y, z, speed) => {
@@ -66,13 +66,23 @@ io.on('connection', (socket) => {
 
 });
 
+
+
 app.use(cors());
 app.use(bodyParser());
-app.use(express.static('public'));
 app.use('/api/Users', usersRouter);
 app.use('/api/Tokens', tokensRouter);
 app.use('/api/Questions', questionsRouter);
 app.use('/api/Rooms', roomsRouter);
 app.use('/api/Explanations', explanationsRouter);
+
+// Catch-all middleware for undefined API routes
+app.use((req, res, next) => {
+    console.log(`Unhandled route: ${req.method} ${req.originalUrl}`);
+    res.status(404).json({ error: "Not Found" });
+});
+
+// Serve static files (should come last)
+app.use(express.static('public'));
 
 app.listen(5000);

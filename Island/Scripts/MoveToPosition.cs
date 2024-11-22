@@ -1,30 +1,47 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class MoveToPosiotion : MonoBehaviour
 {
-    private bool isPlayerInTrigger = false;
+    public bool moveToStatue = false, moveToIsland = false, comingBack = false;
+    public GameObject boat;
+    public Transform newBoatPosition;
+    public GameObject followBoatCamera;
 
     private void OnTriggerEnter(Collider other)
     {
-        if (other.CompareTag("Player"))
-        { // Ensure only the player triggers this
-            isPlayerInTrigger = true;
-            print("Passed Me!");
-        }
-    }
-
-    private void OnTriggerExit(Collider other)
-    {
-        if (other.CompareTag("Player"))
+        print("Collide");
+        if (moveToStatue)
         {
-            isPlayerInTrigger = false;
+            boat.transform.SetPositionAndRotation(newBoatPosition.position, newBoatPosition.rotation);
+            followBoatCamera.GetComponent<BoatCameraFollow>().lookOtherDirectionZ();
+            boat.GetComponent<RotateBoat>().xyzRotation = 'z';
         }
-    }
+        else if (moveToIsland)
+        {
+            boat.transform.SetPositionAndRotation(newBoatPosition.position, newBoatPosition.rotation);
+            followBoatCamera.GetComponent<BoatCameraFollow>().lookOtherDirectionX();
+            RotateBoat rotateBoat = boat.GetComponent<RotateBoat>();
+            if (rotateBoat)
+            {
 
-    private void Update()
-    {
+                if (comingBack)
+                {
+                    rotateBoat.xyzRotation = 'x';
+                    rotateBoat.goingBack = false;
+                }
+                else
+                {
+                    rotateBoat.xyzRotation = 'z';
+                    rotateBoat.goingBack = true;
+                }
 
+            }
+
+            comingBack = !comingBack;
+            if (ChangeCameraFocus.goingBack == false)
+            {
+                ChangeCameraFocus.goingBack = true;
+            }
+        }
     }
 }

@@ -10,8 +10,6 @@ public class FunctionMissionCoin : MonoBehaviour
     private int functionCalls;
     public Button startBtn;
     public GameObject startCanvas, missionCanvas1, endOfMissionCanvas;
-    public Button saveTorchBtn; // Reference to the "yes" button
-    public Button saveMatchBtn; // Reference to the "yes" button
     public Button startTheMissionBtn;
     public TextMeshProUGUI textTorch;
     public TextMeshProUGUI textMatch;
@@ -21,13 +19,11 @@ public class FunctionMissionCoin : MonoBehaviour
     public Button playBtn;
 
     private int numOfTorches, numOfMatches;
-    private bool isStart = false, endMission = false;
+    private bool isStart = false, finishInstruction = false, endMission = false;
     // Start is called before the first frame update
     void Start()
     {
         startBtn.onClick.AddListener(StartCanvases);
-        saveTorchBtn.onClick.AddListener(AddTorch);
-        saveMatchBtn.onClick.AddListener(AddMatch);
         startTheMissionBtn.onClick.AddListener(StartMission);
         playBtn.onClick.AddListener(CreateLitTorches);
         numOfTorches = 0;
@@ -50,23 +46,25 @@ public class FunctionMissionCoin : MonoBehaviour
         {
             //Start mission Canvas
             startCanvas.SetActive(true);
+            isStart = true;
         }
         else if (endMission)
         {
-            textNumOfFunCalls.text = functionCalls.ToString();
-            endOfMissionCanvas.SetActive(true);
+            if (!endOfMissionCanvas.activeInHierarchy)
+            {
+                textNumOfFunCalls.text = functionCalls.ToString();
+                endOfMissionCanvas.SetActive(true);
+            }
+
         }
-        else
+        else if (finishInstruction)
         {
-            youCollectedCanvas.SetActive(true);
+            if (!youCollectedCanvas.activeInHierarchy)
+            {
+                youCollectedCanvas.SetActive(true);
+            }
         }
 
-    }
-
-    private void OnTriggerExit(Collider other)
-    {
-        //Not sure if needed
-        //startCanvas.SetActive(false);
     }
 
     private void StartCanvases()
@@ -78,20 +76,19 @@ public class FunctionMissionCoin : MonoBehaviour
     private void StartMission()
     {
         isStart = true;
+        finishInstruction = true;
         return;
     }
 
 
-    private void AddTorch()
+    public void AddTorch()
     {
         numOfTorches++;
-        print("num of torches: " + numOfTorches);
     }
 
-    private void AddMatch()
+    public void AddMatch()
     {
         numOfMatches++;
-        print("num of matches: " + numOfMatches);
     }
 
     private void CreateLitTorches()

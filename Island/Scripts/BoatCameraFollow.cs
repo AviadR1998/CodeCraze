@@ -57,6 +57,16 @@ public class BoatCameraFollow : MonoBehaviour
         transform.position = Vector3.Lerp(transform.position, targetPosition, followSpeed * Time.deltaTime);
         //transform.LookAt(lookAtObj);  // Make the camera look at the boat
     }
+
+    public void lookOtherDirectionX()
+    {
+        offset.x *= -1;
+    }
+
+    public void lookOtherDirectionZ()
+    {
+        offset.z *= -1;
+    }
 }
 
 

@@ -15,7 +15,7 @@ async function insrtUser(details) {
         if (res.length > 0) {
             return 409;
         } else {
-            const ret = { username: details.username, password: details.password, mail: details.mail, age: details.age, world: details.world, task: details.task, state: details.state, score: 0 };
+            const ret = { username: details.username, password: details.password, mail: details.mail, age: details.age, world: details.world, task: details.task, state: -1, score: 0 };
             await users.insertOne(ret);
             return ret;
         }
@@ -48,7 +48,7 @@ async function delUser(bearer, token) {
     try {
         const data = functions.validateToken(bearer, token);
         if (data === null) {
-            console.log(bearer  + " " +   token);
+            console.log(bearer + " " + token);
             return 401;
         }
         const client = new MongoClient("mongodb://127.0.0.1:27017");
@@ -69,14 +69,14 @@ async function updateScore(bearer, token, score) {
     try {
         const data = functions.validateToken(bearer, token);
         if (data === null) {
-            console.log(bearer  + " " +   token);
+            console.log(bearer + " " + token);
             return 401;
         }
         const client = new MongoClient("mongodb://127.0.0.1:27017");
         client.connect();
         const db = client.db('CodeCraze');
         const users = db.collection('Users');
-        await users.updateOne({ username: data.username }, {$inc: {score: score}});
+        await users.updateOne({ username: data.username }, { $inc: { score: score } });
         return 200;
     } catch (err) {
         return 401;
@@ -90,14 +90,14 @@ async function getTopScore(bearer, token, score) {
     try {
         const data = functions.validateToken(bearer, token);
         if (data === null) {
-            console.log(bearer  + " " +   token);
+            console.log(bearer + " " + token);
             return 401;
         }
         const client = new MongoClient("mongodb://127.0.0.1:27017");
         client.connect();
         const db = client.db('CodeCraze');
         const users = db.collection('Users');
-        let res = (await users.find({username: 1, password: 0, mail: 0, age: 0, world: 0, task: 0, state: 0, score: 1 }).toArray()).sort((user1, user2) => {
+        let res = (await users.find({ username: 1, password: 0, mail: 0, age: 0, world: 0, task: 0, state: 0, score: 1 }).toArray()).sort((user1, user2) => {
             if (user2.score === user1.score) {
                 return user1.username.localeCompare(user2.username);
             }
@@ -131,4 +131,55 @@ async function getTopScore(bearer, token, score) {
     }
 }
 
-export default { insrtUser, getUserInfo, delUser, updateScore, getTopScore }
+async function saveState(bearer, token, details) {
+    console.log("in models");
+    try {
+        const data = functions.validateToken(bearer, token);
+        if (data === null) {
+            console.log(bearer + " " + token);
+            return 401;
+        }
+        const client = new MongoClient("mongodb://127.0.0.1:27017");
+        client.connect();
+        const db = client.db('CodeCraze');
+        const users = db.collection('Users');
+        //await users.updateOne({ world: details.world }, { task: details.task }, { state: parseInt(details.state) });
+        console.log(details);
+        console.log(data.username);
+        await users.updateOne({ username: data.username },
+            { $set: { world: details.world, task: details.task, state: parseInt(details.state) } });
+        return 200;
+    } catch (err) {
+        return 401;
+        //return res.status(401).send("Invalid Token");
+    } finally {
+        //client.close();
+    }
+}
+
+async function getState(bearer, token) {
+    try {
+        const data = functions.validateToken(bearer, token);
+        if (data === null) {
+            console.log(bearer + " " + token);
+            return 401;
+        }
+        const client = new MongoClient("mongodb://127.0.0.1:27017");
+        client.connect();
+        const db = client.db('CodeCraze');
+        const users = db.collection('Users');
+        let res = await users.find({ username: data.username }).toArray();
+        if (res.length == 0) {
+            return 400;
+        }
+        return { world: res[0].world, task: res[0].task, state: res[0].state };
+
+    } catch (err) {
+        return 401;
+        //return res.status(401).send("Invalid Token");
+    } finally {
+        //client.close();
+    }
+}
+
+export default { insrtUser, getUserInfo, delUser, updateScore, getTopScore, saveState, getState }

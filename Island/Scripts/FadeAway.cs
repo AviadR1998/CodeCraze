@@ -6,30 +6,28 @@ using UnityEngine;
 public class FadeAway : MonoBehaviour
 {
     [SerializeField] public CanvasGroup Fade;
-    private bool stillFade = true;
+    public float startFadeAwayAfter = 5f;
+    //private bool shouldPlaySound = true;
 
     void Update()
     {
-        Invoke("FadeOut", 5f);
+        Invoke("FadeOut", startFadeAwayAfter);
     }
 
     void FadeOut()
     {
-        if (stillFade)
+        if (gameObject.activeInHierarchy)
         {
             Fade.alpha -= Time.deltaTime;
+
+            if (Fade.alpha == 0)
+            {
+                Fade.gameObject.SetActive(false);
+                Fade.alpha = 1;
+            }
         }
-        if (Fade.alpha == 0)
-        {
-            Fade.gameObject.SetActive(false);
-            Fade.alpha = 1;
-            stillFade = false;
-        }
+
     }
 
-    public void setStillFade()
-    {
-        stillFade = true;
-    }
 
 }

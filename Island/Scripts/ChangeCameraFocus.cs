@@ -1,45 +1,3 @@
-// using UnityEngine;
-
-// public class MissionTeleportAndLook : MonoBehaviour
-// {
-//     //public Camera mainCamera;          // Reference to the main camera
-//     public Transform targetLocation;    // Location to teleport the player
-//     public Transform focusTarget;       // Object for the camera to look at
-//     public GameObject player;           // Player GameObject
-
-//     private bool missionActivated = false; // Ensures mission triggers only once
-
-//     void OnTriggerEnter(Collider other)
-//     {
-//         if (other.gameObject == player && !missionActivated)
-//         {
-//             missionActivated = true;
-//             StartMission();
-//         }
-
-//         // missionActivated = true;
-//         // StartMission();
-//     }
-
-//     private void StartMission()
-//     {
-//         // Move the player to the target location
-//         //player.transform.position = targetLocation.position;
-
-//         // Ensure the camera's position is aligned with the player's position
-//         //mainCamera.transform.position = player.transform.position + new Vector3(0, 2, -5); // Adjust as needed for distance/angle
-
-//         // Make the camera look directly at the focus target
-
-//         Camera mainCamera = Camera.main;
-//         // Vector3 targetPosition = mainCamera.transform.position + mainCamera.transform.forward * 30;
-//         // mainCamera.transform.LookAt(targetPosition);
-//         mainCamera.transform.LookAt(focusTarget.position);
-//         print("InStartMission");
-//     }
-// }
-
-
 using UnityEngine;
 
 public class ChangeCameraFocus : MonoBehaviour
@@ -47,9 +5,13 @@ public class ChangeCameraFocus : MonoBehaviour
     public Transform player;        // The player object
     public Transform focusTarget;   // The target object the player should face
     public Transform targetLocation;
-    public GameObject[] objectsToDeactivate = null;
+    public GameObject[] objectsToDeactivate = null, objectsToActivate = null;
+    public Canvas dangerArea;
+    public static bool isSailing = false, goingBack = false;
+    public bool workOnSail = false, moveToStatue = false, justWhenBack = false;
     private float rotationSpeed = 5f;  // Rotation speed for smooth rotation
     private bool shouldLookAtTarget = false;  // Flag to control if the player should look at the target
+
 
     void Start()
     {
@@ -63,44 +25,78 @@ public class ChangeCameraFocus : MonoBehaviour
     {
         if (shouldLookAtTarget)
         {
-            // Rotate player towards target
+            // Ensure player looks at target
             RotatePlayerTowardsTarget();
         }
-        else
-        {
-            // Allow the player to move freely (no rotation lock)
-            // You can add logic here for free camera movement or player rotation if needed
-        }
-    }
-
-    void OnTriggerEnter(Collider other)
-    {
-        shouldLookAtTarget = true;
-        foreach (GameObject gameObject in objectsToDeactivate)
-        {
-            gameObject.SetActive(false);
-        }
-        player.transform.position = targetLocation.position;
     }
 
     private void RotatePlayerTowardsTarget()
     {
-        // Find the direction from the player to the target
-        Vector3 directionToTarget = focusTarget.position - player.position;
-        directionToTarget.y = 0;  // Keep the rotation on the y-axis only (no vertical rotation)
+        if (focusTarget == null || player == null)
+        {
+            Debug.LogError("FocusTarget or Player is not assigned.");
+            return;
+        }
 
-        // Calculate the target rotation based on the direction
+        // Find direction to the target
+        Vector3 directionToTarget = focusTarget.position - player.position;
+        directionToTarget.y = 0; // Keep rotation on the y-axis
+
+        if (directionToTarget.magnitude < 0.1f)
+        {
+            Debug.LogWarning("Target and player are too close; skipping rotation.");
+            return;
+        }
+
+        // Calculate the target rotation
         Quaternion targetRotation = Quaternion.LookRotation(directionToTarget);
 
-        // Smoothly rotate the player towards the target
+        // Smoothly rotate the player
         player.rotation = Quaternion.Slerp(player.rotation, targetRotation, rotationSpeed * Time.deltaTime);
 
-        // If the player is close to the target rotation, release the lock
+        // Check if rotation is close enough to target
         if (Quaternion.Angle(player.rotation, targetRotation) < 1f)
         {
-            shouldLookAtTarget = false;  // Player can now look around freely
+            shouldLookAtTarget = false; // Unlock rotation
         }
     }
+
+
+    void OnTriggerEnter(Collider other)
+    {
+        if ((!isSailing || (workOnSail && (!justWhenBack || goingBack))) && !StatueLimitation.shouldLimit)
+        {
+            if (workOnSail)
+            {
+                isSailing = false;
+            }
+            if (goingBack)
+            {
+                goingBack = false;
+            }
+            shouldLookAtTarget = true;
+            foreach (GameObject gameObject in objectsToDeactivate)
+            {
+                gameObject.SetActive(false);
+            }
+            foreach (GameObject gameObject in objectsToActivate)
+            {
+                gameObject.SetActive(true);
+            }
+            player.transform.position = targetLocation.position;
+            if (dangerArea != null)
+            {
+                dangerArea.gameObject.SetActive(true);
+            }
+            if (moveToStatue)
+            {
+                StatueLimitation.shouldLimit = true;
+            }
+        }
+
+    }
+
+
 
     // Optionally, call this method to allow the player to look at the target again
     public void LockLookAtTarget(bool lockTarget)
