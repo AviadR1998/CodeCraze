@@ -37,9 +37,36 @@ const topScore = async (req, res) => {
     if (myRes === 401) {
         res.status(401);
     } else {
-        res.status(200).json({players: myRes});
+        res.status(200).json({ players: myRes });
     }
     res.end();
 }
 
-export { addUser, returnUser, deleteUser, addScore, topScore };
+const saveState = async (req, res) => {
+    const myRes = await myModels.saveState(req.headers.authorization.split(" ")[0], req.headers.authorization.split(" ")[1], req.body);
+    res.status(myRes);
+    res.end();
+
+}
+
+
+const getState = async (req, res) => {
+    try {
+        const authHeader = req.headers.authorization || "";
+        const [bearer, token] = authHeader.split(" ");
+
+        const myRes = await myModels.getState(bearer, token);
+
+        if (myRes === 401) {
+            console.log("Unauthorized access");
+            res.status(401).json({ error: "Unauthorized" });
+        } else {
+            res.status(200).json(myRes);
+        }
+    } catch (err) {
+        console.error("Error in getState:", err);
+        res.status(500).json({ error: "Server error" });
+    }
+};
+
+export { addUser, returnUser, deleteUser, addScore, topScore, saveState, getState };

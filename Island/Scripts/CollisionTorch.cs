@@ -1,24 +1,30 @@
 using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class InteractOnCollision : MonoBehaviour
 {
     private bool isColliding = false;
     private bool ePressed = false;
+
+    private int stam = 1;
+
+    public Button Choice1, Choice2;
+    public int ChoiceMade;
+    // public GameObject objectToActive;
+    private string ObjectToDeactivate;
     // public GameObject playerCamera;
 
     public GameObject canvas;
     GameObject torch;
 
-    private void OnEnable()
-    {
-        print("This is me");
-    }
-
-    private void OnTriggerEnter(Collider other)
+    public void OnTriggerEnter(Collider other)
     {
         torch = other.GameObject();
         print("collide");
+        print("Triggered: " + gameObject.name);
+        stam++;
+        ObjectToDeactivate = gameObject.name;
         // Check if the object we collided with has a specific tag (e.g., "Interactable")
         if (other.CompareTag("Interactable"))
         {
@@ -26,21 +32,22 @@ public class InteractOnCollision : MonoBehaviour
         }
     }
 
-    private void OnTriggerStay(Collider other)
-    {
-        if (!ePressed)
-        {
-            canvas.SetActive(true);
-        }
-        if (Input.GetKeyDown(KeyCode.E))
-        {
-            print("ZZZZZZ");
-            // Do something, e.g., print a message or call a method
-            Debug.Log("E key pressed while colliding with the object!");
-            // PerformAction();
-            ePressed = true;
-        }
-    }
+    // public void OnTriggerStay(Collider other)
+    // {
+    //     if (!ePressed)
+    //     {
+    //         canvas.SetActive(true);
+    //         print("Triggered: " + gameObject.name);
+    //     }
+    //     if (Input.GetKeyDown(KeyCode.E))
+    //     {
+    //         print("ZZZZZZ");
+    //         // Do something, e.g., print a message or call a method
+    //         Debug.Log("E key pressed while colliding with the object!");
+    //         // PerformAction();
+    //         ePressed = true;
+    //     }
+    // }
 
     private void OnTriggerExit(Collider other)
     {
@@ -51,27 +58,35 @@ public class InteractOnCollision : MonoBehaviour
         }
     }
 
-    private void Update()
+
+    public void ChoiceOption1()
     {
-        // Check if we are colliding with the object and the "E" key is pressed
-        // if (ePressed)
-        // {
-        //     // Implement the action to be performed
-        //     Debug.Log("Action performed!");
-        //     torch.transform.position = GameObject.Find("FirstPersonController").transform.position + new Vector3(
-        //     playerCamera.transform.forward.x,
-        //     playerCamera.transform.forward.y,
-        //     playerCamera.transform.forward.z);
-        // }
+        ChoiceMade = 1;
     }
 
-    // private void PerformAction()
-    // {
-    //     // Implement the action to be performed
-    //     Debug.Log("Action performed!");
-    //     torch.transform.position = GameObject.Find("FirstPersonController").transform.position + new Vector3(
-    //     playerCamera.transform.forward.x,
-    //     playerCamera.transform.forward.y,
-    //     playerCamera.transform.forward.z);
-    // }
+    public void ChoiceOption2()
+    {
+        ChoiceMade = 2;
+    }
+
+
+    public void OnClickSaveBtn()
+    {
+        if (ChoiceMade == 1)
+        {
+            // objectToActive.SetActive(true);
+            // ObjectToDeactivate.SetActive(false);
+            // objectToActive.SetActive(true);
+            print("1");
+            print(stam);
+            print(ObjectToDeactivate);
+            GameObject.Find(ObjectToDeactivate).SetActive(false);
+            canvas.SetActive(false);
+        }
+        else if (ChoiceMade == 2)
+        {
+            print("2");
+            canvas.SetActive(false);
+        }
+    }
 }

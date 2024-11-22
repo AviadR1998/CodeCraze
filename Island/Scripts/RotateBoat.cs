@@ -64,11 +64,22 @@ public class RotateBoat : MonoBehaviour
 {
     public float acceleration = 0.1f;
     public float deceleration = 0.05f;
-    public float maxSpeed = 5f, maxYRotation = 80f, originYRotation = 0;
+    public float maxSpeed = 5f, maxYRotation = 80f, originYRotation = 0, maxHeight = 1f, minHeight = -0.2f;
     public float rotationSpeed = 45f;
-    public bool workingWithXRotation = false;
+    public Transform downBarrier, upBarrier;
+    public bool limitXPosition = false, limitZPosition = false, goingBack = false;
+    public char xyzRotation = 'y';
     private float forwardSpeed = 0f;
     private float rotationInput = 0f;
+    private float originZPosition, originXPosition;
+
+    public float barrierLimit = 60f; // Maximum absolute Z position allowed
+
+    private void Start()
+    {
+        originZPosition = transform.position.z;
+        originXPosition = transform.position.x;
+    }
 
 
     void Update()
@@ -109,21 +120,47 @@ public class RotateBoat : MonoBehaviour
             rotationInput = -1f;
         }
 
-        float boatYRotation = transform.eulerAngles.y;
-        float boatXRotation = transform.rotation.x;
-        if (boatYRotation > 180)
+
+
+        if (xyzRotation == 'y')
         {
-            boatYRotation -= 360;
+            float boatYRotation = transform.eulerAngles.y;
+            if (boatYRotation > 180)
+            {
+                boatYRotation -= 360;
+            }
+            if ((boatYRotation >= maxYRotation && rotationInput == -1f) || (boatYRotation <= -maxYRotation && rotationInput == 1f))
+            {
+                rotationInput = 0;
+            }
+        }
+        else if (xyzRotation == 'x')
+        {
+            float boatXRotation = transform.rotation.x;
+            if ((boatXRotation <= 0.33f && rotationInput == 1f) || (boatXRotation >= 0.63f && rotationInput == -1f))
+            {
+                rotationInput = 0;
+            }
+        }
+        else
+        {
+
+            float boatZRotation = transform.rotation.z;
+            float rightLimit = -0.2f, leftLimit = 0.2f;
+            if (goingBack)
+            {
+                rightLimit = 0.35f;
+                leftLimit = 0.65f;
+            }
+            if ((boatZRotation <= rightLimit && rotationInput == 1f) || (boatZRotation >= leftLimit && rotationInput == -1f))
+            {
+                rotationInput = 0;
+            }
+
         }
 
-        if (!workingWithXRotation && ((boatYRotation >= maxYRotation && rotationInput == -1f) || (boatYRotation <= -maxYRotation && rotationInput == 1f)))
-        {
-            rotationInput = 0;
-        }
-        else if (workingWithXRotation && ((boatXRotation <= 0.33f && rotationInput == 1f) || (boatXRotation >= 0.63f && rotationInput == -1f)))
-        {
-            rotationInput = 0;
-        }
+
+
 
 
         float angle = rotationInput * rotationSpeed * Time.deltaTime;
@@ -131,18 +168,64 @@ public class RotateBoat : MonoBehaviour
         transform.Rotate(Vector3.up, angle);
 
         // Moves the boat based on its own forward direction
-        if (!workingWithXRotation)
+        if (xyzRotation == 'y')
         {
             transform.Translate(transform.forward * forwardSpeed * Time.deltaTime);
         }
-        else
+        else if (xyzRotation == 'x')
         {
             transform.Translate(new Vector3(transform.forward.x, transform.forward.y, -transform.right.z) * forwardSpeed * Time.deltaTime);
         }
+        else
+        {
+            transform.Translate(new Vector3(-transform.forward.x, transform.forward.y, transform.right.z) * forwardSpeed * Time.deltaTime);
+        }
+
+
+
+        //Restrict Z position
+        if (limitZPosition)
+        {
+            Vector3 position = transform.position;
+            position.z = Mathf.Clamp(position.z, originZPosition - barrierLimit, originZPosition + barrierLimit);
+            transform.position = position;
+
+            if (transform.position.x > downBarrier.position.x)
+            {
+                transform.position = new Vector3(downBarrier.position.x, transform.position.y, transform.position.z);
+            }
+        }
+
+        //Restrict X position
+        if (limitXPosition)
+        {
+            Vector3 position = transform.position;
+            position.x = Mathf.Clamp(position.x, originXPosition - barrierLimit, originXPosition + barrierLimit);
+            transform.position = position;
+
+            if (transform.position.z > downBarrier.position.z)
+            {
+                transform.position = new Vector3(transform.position.x, transform.position.y, downBarrier.position.z);
+            }
+            // if (transform.position.z > 180)
+            // {
+            //     print(transform.position.z - 360);
+            // }
+            // else
+            // {
+            //     print(transform.position.z);
+            // }
+            // print(transform.position.z - 360);
+        }
+
+        Vector3 positionUpdate = transform.position;
+        positionUpdate.y = Mathf.Clamp(positionUpdate.y, minHeight, maxHeight);
+        transform.position = positionUpdate;
+
 
     }
-
 }
+
 
 
 

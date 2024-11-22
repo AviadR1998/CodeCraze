@@ -1,11 +1,14 @@
 import express from 'express'
-import { addUser, returnUser, deleteUser, topScore, addScore } from '../controllers/users.js'
+import { addUser, returnUser, deleteUser, topScore, addScore, saveState, getState } from '../controllers/users.js'
 var usersRouter = express.Router();
 
 usersRouter.post('/', addUser);
 usersRouter.post('/AddScore', addScore);
 usersRouter.get('/TopScore', topScore);
-usersRouter.get('/:user', returnUser);
 usersRouter.delete('/delete', deleteUser);
+usersRouter.post('/SaveState', saveState);
+usersRouter.get('/GetState', getState);
+
+usersRouter.get('/:user', returnUser);
 
 export default usersRouter;
