@@ -14,11 +14,16 @@ public class ButtonWheel : MonoBehaviour
     public GameObject child;
     public AudioSource soccesSound;
 
-    int rolling;
+    public static int rolling;
     bool canRoll;
     float currentTime, targetTime;
     // Start is called before the first frame update
     void Start()
+    {
+        
+    }
+
+    private void OnEnable()
     {
         canRoll = true;
         currentTime = targetTime = rolling = 0;
@@ -69,7 +74,7 @@ public class ButtonWheel : MonoBehaviour
                 soccesSound.Play();
                 orderCanvas.SetActive(false);
                 Movement.mission = child;
-                AdminMission.endOk = redButton.GetComponent<ButtonWheel>().enabled = false;
+                //AdminMission.endOk = redButton.GetComponent<ButtonWheel>().enabled = false;
                 AdminMission.canTalk = true;
             }
         }

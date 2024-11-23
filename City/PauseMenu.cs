@@ -3,30 +3,30 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Networking;
+using UnityEngine.SceneManagement;
 
 public class PauseMenu : MonoBehaviour
 {
     public GameObject pausePanel;
     public GameObject surePanel;
+    public GameObject leaderBoardPage;
+    public GameObject settingPage;
     static public bool isPaused, canPause;
-    public static string world, task;
-    public static int state;
 
     // Start is called before the first frame update
     public void Start()
     {
         isPaused = false;
         canPause = true;
-        world = "";
-        task = "";
-        state = 0;
     }
 
     public static void updateSave(string str1, string str2, int num)
     {
-        world = str1;
-        task = str2;
-        state = num;
+        if (Login.world != "Free") {
+            Login.world = str1;
+            Login.task = str2;
+            Login.state = num;
+        }
     }
 
     public void resume()
@@ -37,15 +37,21 @@ public class PauseMenu : MonoBehaviour
         Time.timeScale = 1.0f;
     }
 
+    public void backFromLeaderBoard()
+    {
+        leaderBoardPage.SetActive(false);
+        settingPage.SetActive(true);
+    }
+
     IEnumerator dataToServer()
     {
         WWWForm form = new WWWForm();
-        form.AddField("world", world);
-        form.AddField("task", task);
-        form.AddField("state", state);
-        using (UnityWebRequest request = UnityWebRequest.Post("http://" + MainMenu.serverIp + ":5000/api/Users/Save", form))
+        form.AddField("world", Login.world);
+        form.AddField("task", Login.task);
+        form.AddField("state", Login.state);
+        using (UnityWebRequest request = UnityWebRequest.Post("http://" + MainMenu.serverIp + ":5000/api/Users/SaveState", form))
         {
-            request.SetRequestHeader("Authorization", "Bearer " + Login.token);
+            request.SetRequestHeader("authorization", "Bearer " + Login.token);
             yield return request.SendWebRequest();
             if (request.isNetworkError || request.isHttpError)
             {
@@ -59,12 +65,21 @@ public class PauseMenu : MonoBehaviour
 
     public void saveGame()
     {
-        StartCoroutine(dataToServer());
+        if (Login.world != "Free")
+        {
+            StartCoroutine(dataToServer());
+        }
     }
 
     public void settings()
     {
 
+    }
+
+    public void leaderBoard()
+    {
+        settingPage.SetActive(false);
+        leaderBoardPage.SetActive(true);
     }
 
     public void exit()
@@ -74,6 +89,7 @@ public class PauseMenu : MonoBehaviour
 
     public void sureOk()
     {
+        //SceneManager.LoadSceneAsync(0);
         Application.Quit();
     }
 
@@ -97,7 +113,9 @@ public class PauseMenu : MonoBehaviour
                 Time.timeScale = 0;
                 Cursor.lockState = CursorLockMode.Confined;
                 isPaused = Cursor.visible = true;
+                leaderBoardPage.SetActive(false);
                 pausePanel.SetActive(true);
+                settingPage.SetActive(true);
             }
         }
     }

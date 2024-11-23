@@ -31,7 +31,7 @@ public class LeaderBoard : MonoBehaviour
     public IEnumerator getLeaderBoard()
     {
         UnityWebRequest requestQuestions = UnityWebRequest.Get("http://" + MainMenu.serverIp + ":5000/api/Users/TopScore");
-        requestQuestions.SetRequestHeader("Authorization", "Bearer " + Login.token);
+        requestQuestions.SetRequestHeader("authorization", "Bearer " + Login.token);
         yield return requestQuestions.SendWebRequest();
         if (requestQuestions.result == UnityWebRequest.Result.Success)
         {
@@ -43,7 +43,7 @@ public class LeaderBoard : MonoBehaviour
         }
         else
         {
-            print("error getting questions");
+            print("error");
         }
     }
 

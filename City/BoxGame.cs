@@ -12,13 +12,16 @@ public class BoxGame : MonoBehaviour
     public GameObject explanationsCanvas;
     public GameObject orderPanel;
     public GameObject practicalPanel;
+    public GameObject talkingPanel;
     public GameObject cheboxCanvas;
     public GameObject camera;
     public GameObject player;
     public GameObject arrow;
     public GameObject[] lettersObj;
     public GameObject practiceNPC;
+    public GameObject missionCompleteCanvas;
     public UnityEngine.UI.Button checkboxButton;
+    public UnityEngine.UI.Toggle[] toggles;
     public TMP_Text checkboxText;
     public TMP_Text practicalText;
     public TMP_Text orderText;
@@ -29,6 +32,8 @@ public class BoxGame : MonoBehaviour
     public delegate void EndFunc();
     public AudioSource soccesSound;
     public AudioSource failSound;
+    public GameObject[] numbersOnBox;
+    public static bool startFromQuestions = false;
 
     bool[] checkBoxArr;
     List<List<TextPartition>> texts;
@@ -115,6 +120,7 @@ public class BoxGame : MonoBehaviour
     {
         yield return new WaitForSeconds(3);
         cheboxCanvas.SetActive(false);
+        missionCompleteCanvas.SetActive(true);
     }
 
     GameObject createBall(int index, float x, float y, float z)
@@ -229,6 +235,7 @@ public class BoxGame : MonoBehaviour
             StartCoroutine(delayEnd());
             UnityEngine.Cursor.lockState = CursorLockMode.Locked;
             UnityEngine.Cursor.visible = false;
+            Practice.taskName = "array";
             Practice.canAsk = PauseMenu.canPause = true;
             Movement.mission = practiceNPC;
             Practice.nextMission = null;
@@ -343,6 +350,32 @@ public class BoxGame : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
+        if (other.tag == "Player" && Login.world != "City" && Movement.missionInProgress == "")
+        {
+            talkingPanel.SetActive(true);
+            checkboxButton.interactable = true;
+            for (int i = 0; i < numbersOnBox.Length; i++)
+            {
+                numbersOnBox[i].SetActive(true);
+            }
+            for (int i = 0; i < toggles.Length; i++)
+            {
+                checkBoxArr[i] = toggles[i].isOn = false;
+            }
+            checkBoxArr = new bool[7] { false, false, false, false, false, false, false };
+            boxLetters = new char[7] { '\0', '\0', '\0', '\0', '\0', '\0', '\0' };
+            levelFirst = arrayState = firstTouch = canPress = true;
+            level3Start = false;
+            level = 0;
+            Movement.missionInProgress = "array";
+            AdminMission.texts = texts;
+            AdminMission.currentSubMission = AdminMission.currentSubText = 0;
+            AdminMission.okFunc = arrayOkFunc;
+        }
+        if (Login.world != "City" && Movement.missionInProgress != "array")
+        {
+            return;
+        }
         if (firstTouch)
         {
             arrow.SetActive(false);
@@ -440,6 +473,14 @@ public class BoxGame : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        
+        if (startFromQuestions)
+        {
+            startFromQuestions = false;
+            firstTouch = false;
+            Practice.taskName = "array";
+            Practice.canAsk = PauseMenu.canPause = true;
+            Movement.mission = practiceNPC;
+            Practice.nextMission = null;
+        }
     }
 }

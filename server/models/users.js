@@ -15,7 +15,7 @@ async function insrtUser(details) {
         if (res.length > 0) {
             return 409;
         } else {
-            const ret = { username: details.username, password: details.password, mail: details.mail, age: details.age, world: details.world, task: details.task, state: -1, score: 0 };
+            const ret = { username: details.username, password: details.password, mail: details.mail, age: details.age, world: "Forest", task: "Swing", state: 0, score: 0 };
             await users.insertOne(ret);
             return ret;
         }
@@ -90,39 +90,40 @@ async function getTopScore(bearer, token, score) {
     try {
         const data = functions.validateToken(bearer, token);
         if (data === null) {
-            console.log(bearer + " " + token);
+            console.log(bearer  + " " +   token);
             return 401;
         }
         const client = new MongoClient("mongodb://127.0.0.1:27017");
         client.connect();
         const db = client.db('CodeCraze');
         const users = db.collection('Users');
-        let res = (await users.find({ username: 1, password: 0, mail: 0, age: 0, world: 0, task: 0, state: 0, score: 1 }).toArray()).sort((user1, user2) => {
+        /*let res = (await users.find({} , {username: 1, password: 0, mail: 0, age: 0, world: 0, task: 0, state: 0, score: 1 }).toArray()).sort((user1, user2) => {
             if (user2.score === user1.score) {
                 return user1.username.localeCompare(user2.username);
             }
             return user2.score - user1.score;
         });
-
-        /*const myHeap = new Heap((user1, user2) => {
+        return res.slice(0, 5);
+        */
+        let res = await users.find({} , {username: 1, password: 0, mail: 0, age: 0, world: 0, task: 0, state: 0, score: 1 }).toArray();
+        const myHeap = new Heap((user1, user2) => {
             if (user2.score === user1.score) {
                 return user1.username.localeCompare(user2.username);
             }
             return user1.score - user2.score;
         });
-        for (let user in res) {
+        res.forEach(user => {
             myHeap.push(user);
             if (myHeap.size() > 5) {
                 myHeap.pop();   
             }
-        }
+        });
         return myHeap.toArray().sort((user1, user2) => {
             if (user2.score === user1.score) {
                 return user1.username.localeCompare(user2.username);
             }
             return user2.score - user1.score;
-        });*/
-        return res.slice(0, 5);
+        });
     } catch (err) {
         return 401;
         //return res.status(401).send("Invalid Token");

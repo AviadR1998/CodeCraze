@@ -23,8 +23,10 @@ public class IfMissions : MonoBehaviour
     public GameObject arrow;
     public GameObject practiceNPC;
     public GameObject whileNPC;
+    public GameObject missionCompleteCanvas;
     public TMP_Text talkingText;
     public TMP_Text practicalText;
+    public TMP_Text objFoundHotCold;
     public GameObject[] findObjU;
     public static GameObject[] findObj;
     public GameObject hotColdCanvas;
@@ -33,11 +35,11 @@ public class IfMissions : MonoBehaviour
     List<EndFunc> funcs;
     List<List<TextPartition>> texts;
 
-    public static bool xLine;
+    public static bool xLine, startFromQuestions = false;
     bool talk, stop, startCutS, hotColdBool, findAll;
     float distance;
     public static int currentFindObj;
-    Vector3 startPoint = new Vector3(-19.54f, 1.46f, -13.42f) + new Vector3(-901.14f, 11.69f, 297.78f); //(-19.54f, 4.46f, -11.92f)
+    Vector3 startPoint = new Vector3(-19.54f, 1.46f, -13.42f) + new Vector3(-901.14f, 11.69f, 297.78f), carPosision; //(-19.54f, 4.46f, -11.92f)
 
     // Start is called before the first frame update
     void Start()
@@ -84,6 +86,8 @@ public class IfMissions : MonoBehaviour
         AdminMission.okFunc = ifOkFunc;
         Movement.mission = npc;
         PauseMenu.updateSave("City", "If", 0);
+
+        carPosision = new Vector3(car.transform.position.x, car.transform.position.y, car.transform.position.z);
     }
 
     private void OnEnable()
@@ -109,6 +113,25 @@ public class IfMissions : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
+        if (other.tag == "Player" && Login.world != "City" && Movement.missionInProgress == "")
+        {
+            objFoundHotCold.text = "0/3";
+            distance = float.MaxValue;
+            stopLine.SetActive(true);
+            findAll = hotColdBool = startCutS = stop = talk = xLine = false;
+            findObj = findObjU;
+            Movement.missionInProgress = "if";
+            AdminMission.texts = texts;
+            currentFindObj = AdminMission.currentSubMission = AdminMission.currentSubText = 0;
+            AdminMission.okFunc = ifOkFunc;
+            talk = false;
+            AdminMission.endOk = false;
+            car.transform.position = new Vector3(carPosision.x, carPosision.y, carPosision.z);
+        }
+        if (Login.world != "City" && Movement.missionInProgress != "if")
+        {
+            return;
+        }
         if (other.tag == "Player" && !talk)
         {
             //other.transform.LookAt(npc.transform);
@@ -147,12 +170,14 @@ public class IfMissions : MonoBehaviour
 
     void questions()
     {
+        missionCompleteCanvas.SetActive(true);
         canvasMission.SetActive(false);
         talkingPanel.SetActive(false);
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
         PauseMenu.canPause = true;
         player.GetComponent<CharacterController>().enabled = true;
+        Practice.taskName = "if";
         Practice.canAsk = player.GetComponent<Movement>().enabled = true;
         Movement.mission = practiceNPC;
         Practice.nextMission.Add(whileNPC);
@@ -171,6 +196,12 @@ public class IfMissions : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        if (startFromQuestions)
+        {
+            startFromQuestions = false;
+            talk = false;
+            questions();
+        }
         if (hotColdBool)
         {
             if (currentFindObj == 3)

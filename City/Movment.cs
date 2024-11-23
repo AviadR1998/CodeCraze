@@ -20,7 +20,7 @@ public class Movement : MonoBehaviour
     Vector3 moveDirection = Vector3.zero;
     float rotationX = 0;
     public static int npcMissionCounter = 0;
-    public static bool canMove = true, soccer = false, home = false;
+    public static bool canMove = true, soccer = false, home = false, loadOnce = true;
     CharacterController characterController;
     public AudioSource soccesSound;
     public AudioSource backgrounMusic;
@@ -39,13 +39,17 @@ public class Movement : MonoBehaviour
     GameObject ballBox;
     static public char currentLetter = '\0';
     static public bool hoverBall, hoverLetter;
-    int cheatTransfer = 0;
+    public static string missionInProgress;
+    int cheatTransfer = 0, addingToArrow = 0;
     Vector3[] cheatArr = new Vector3[3] {new Vector3(-1069.69f, 13.57452f, 340.8305f), new Vector3(-720, 14, 273), new Vector3(-951.55f, 15.18f, 306.67f)};
+    Dictionary<string, int> topiToNumbers = new Dictionary<string, int> { { "If", 0 }, { "While", 1 }, { "For", 2 }, { "Array", 3 } };
 
     // Start is called before the first frame update
     void Start()
     {
-        mission = GameObject.Find("IfNPC");//"RaceNPC"
+        missionInProgress = "";
+        //mission = GameObject.Find("IfNPC");//"RaceNPC"
+        mission = player;
         characterController = GetComponent<CharacterController>();
         Cursor.lockState = CursorLockMode.Locked;
         hoverLetter = hoverBall = Cursor.visible = false;
@@ -58,6 +62,51 @@ public class Movement : MonoBehaviour
     {
         backgrounMusic.Play();
         raceOn = false;
+        if (!loadOnce)
+        {
+            return;
+        }
+        loadOnce = false;
+        if (Login.world != "City")
+        {
+            addingToArrow = 50;
+            arrow.transform.position -= new Vector3(0, 50, 0);
+            for (int i = 0; i < npcs.Length; i++)
+            {
+                npcs[i].SetActive(true);
+            }
+        }
+        else
+        {
+            mission = player;
+            if (Login.task != "If")
+            {
+                npcs[0].SetActive(false);
+            }
+            npcMissionCounter = topiToNumbers[Login.task];
+            npcs[npcMissionCounter].SetActive(true);
+            mission = npcs[npcMissionCounter];
+            if (Login.task == "If" && Login.state == 1)
+            {
+                IfMissions.startFromQuestions = true;
+            }
+            if (Login.task == "While" && Login.state == 1)
+            {
+                WhileMissions.startFromQuestions = true;
+            }
+            if (Login.task == "For" && Login.state != 1)
+            {
+                AdminMission.currentSubMission = 1 + Login.state;
+            }
+            if (Login.task == "Array" && Login.state == 1)
+            {
+                BoxGame.startFromQuestions = true;
+            }
+            if (Login.state == 0)
+            {
+                Practice.canAsk = false;
+            }
+        }
     }
 
     private IEnumerator closeFindPanel()
@@ -70,7 +119,8 @@ public class Movement : MonoBehaviour
     {
         if (other.tag == "FindObj")
         {
-            Destroy(IfMissions.findObj[IfMissions.currentFindObj]);
+            IfMissions.findObj[IfMissions.currentFindObj].transform.position += new Vector3(0, 12, 0);
+            IfMissions.findObj[IfMissions.currentFindObj].SetActive(false);
             IfMissions.currentFindObj++;
             if(IfMissions.currentFindObj < 3) 
             {
@@ -164,7 +214,7 @@ public class Movement : MonoBehaviour
         {
             return;
         }
-        if (Input.GetKeyDown(KeyCode.Tab) && npcMissionCounter < 3)
+        if (Login.world == "City" && Input.GetKeyDown(KeyCode.Tab) && npcMissionCounter < 3)
         {
             Practice.canAsk = false;
             npcs[npcMissionCounter++].SetActive(false);
@@ -173,7 +223,8 @@ public class Movement : MonoBehaviour
         }
         if (home)
         {
-            player.transform.position = arrow.transform.position = new Vector3(-866.33f, 13.015f, 94.84f);
+            player.transform.position = new Vector3(-866.33f, 13.015f, 94.84f);
+            arrow.transform.position = new Vector3(-866.33f, 13.015f - addingToArrow, 94.84f);
             home = false;
             return;
         }
@@ -182,7 +233,7 @@ public class Movement : MonoBehaviour
             arrow.transform.position = Vector3.MoveTowards(arrow.transform.position,
             GameObject.Find("Player").transform.position + new Vector3(
             playerCamera.transform.forward.x * 5,
-            math.sin(playerCamera.transform.forward.y) * 5 + 0.7f,
+            math.sin(playerCamera.transform.forward.y) * 5 + 0.7f - addingToArrow,
             playerCamera.transform.forward.z * 5), arrowSpeed * Time.deltaTime);
             arrow.transform.LookAt(mission.transform);
         }

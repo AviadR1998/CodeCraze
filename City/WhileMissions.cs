@@ -25,10 +25,12 @@ public class WhileMissions : MonoBehaviour
     public GameObject orderCanvas;
     public GameObject player;
     public GameObject talkingPanel;
+    public GameObject missionCompleteCanvas;
+    public GameObject gate;
     public TMP_Text talkingText;
     public TMP_Text practicalText;
     public AudioSource honk;
-    public static bool canTalk, endOk;
+    public static bool canTalk, endOk, startFromQuestions = false;
     public GameObject practiceNPC;
     public GameObject forNPC;
 
@@ -83,13 +85,15 @@ public class WhileMissions : MonoBehaviour
 
     void questions()
     {
+        missionCompleteCanvas.SetActive(true);
         canvasMission.SetActive(false);
         talkingPanel.SetActive(false);
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
         Practice.canAsk = PauseMenu.canPause = true;
         player.GetComponent<Movement>().enabled = true;
-        Practice.nextMission.Add(forNPC);
+        Practice.taskName = "while";
+        Practice.nextMission.Add(practiceNPC);
         Practice.nextMission.Add(forNPC);
         Movement.mission = practiceNPC;
         PauseMenu.updateSave("City", "While", 1);
@@ -110,6 +114,20 @@ public class WhileMissions : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
+        if (other.tag == "Player" && Login.world != "City" && Movement.missionInProgress == "")
+        {
+            gate.transform.rotation = new UnityEngine.Quaternion(0, 0, 0, 0);
+            Movement.missionInProgress = "while";
+            AdminMission.texts = texts;
+            AdminMission.currentSubMission = 0;
+            honkScene = canTalk = true;
+            AdminMission.okFunc = whileOkFunc;
+            AdminMission.endOk = false;
+        }
+        if (Login.world != "City" && Movement.missionInProgress != "while")
+        {
+            return;
+        }
         if (canTalk && other.tag == "Player")
         {
             AdminMission.currentSubText = 0;
@@ -142,6 +160,11 @@ public class WhileMissions : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        
+        if (startFromQuestions)
+        {
+            startFromQuestions = false;
+            canTalk = false;
+            questions();
+        }
     }
 }
