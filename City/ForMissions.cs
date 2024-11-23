@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using TMPro;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class ForMission : MonoBehaviour
@@ -10,11 +11,13 @@ public class ForMission : MonoBehaviour
     public GameObject redButton;
     public GameObject talkingPanel;
     public GameObject canvasMission;
+    public GameObject Wheel;
     public TMP_Text talkingText;
     public TMP_Text practicalText;
     public GameObject practiceNPC;
     public GameObject player;
     public GameObject forNPC;
+    public GameObject missionCompleteCanvas;
 
     //int currentSubText, currentSubMission;
     List<List<TextPartition>> texts;
@@ -64,7 +67,6 @@ public class ForMission : MonoBehaviour
         AdminMission.currentSubMission = 0;
         AdminMission.canTalk = true;
         funcs = new List<EndFunc>();
-        //funcs.Add(soccerGame);
         funcs.Add(part1);
         funcs.Add(part1);
         funcs.Add(questions);
@@ -111,6 +113,8 @@ public class ForMission : MonoBehaviour
 
     void questions()
     {
+        redButton.SetActive(false);
+        missionCompleteCanvas.SetActive(true);
         canvasMission.SetActive(false);
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
@@ -118,6 +122,7 @@ public class ForMission : MonoBehaviour
         player.GetComponent<CharacterController>().enabled = true;
         player.GetComponent<Movement>().enabled = true;
         Movement.mission = practiceNPC;
+        Practice.taskName = "for";
         Practice.nextMission.Add(forNPC);
         PauseMenu.updateSave("City", "For", 1);
     }
@@ -148,6 +153,21 @@ public class ForMission : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
+        if (other.tag == "Player" && Login.world != "City" && Movement.missionInProgress == "")
+        {
+            Movement.missionInProgress = "for";
+            Wheel.transform.rotation = new UnityEngine.Quaternion(0, 0, 0, 0);
+            AdminMission.texts = texts;
+            AdminMission.currentSubMission = AdminMission.currentSubText = 0;
+            AdminMission.canTalk = true;
+            AdminMission.okFunc = forOkFunc;
+            AdminMission.endOk = false;
+            talkingPanel.SetActive(true);
+        }
+        if (Login.world != "City" && Movement.missionInProgress != "for")
+        {
+            return;
+        }
         if (AdminMission.canTalk && other.tag == "Player")
         {
             funcs[AdminMission.currentSubMission]();

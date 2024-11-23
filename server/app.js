@@ -23,24 +23,23 @@ const io = new Server(3000);
 export const myIo = io;
 export const arrSoc = socketArr;
 io.on('connection', (socket) => {
-    //console.log("hello");
     socket.on('username', (username) => {
-        socketArr.set(socket, username);
+        socketArr.set(username, socket);
+        console.log(socketArr.size);
         //console.log(username);
     })
-    socket.on('disconnect', () => {
-        if (roomsList.has(socketArr.get(socket))) {
-            if (roomsList.get(socketArr.get(socket)) != "--") {
+    socket.on('disconnect', (username) => {
+        if (roomsList.has(username)) {
+            if (roomsList.get(username) != "--") {
                 io.to(socket).emit('host', null);
             }
         }
-        socketArr.delete(socket);
+        socketArr.delete(username);
 
     });
 
     socket.on('cord', (username, x, y, z, speed) => {
-        console.log(x + "-" + y + "-" + z);
-        getKey(socketArr, username).emit('cord', x, y, z, speed);
+        socketArr.get(username).emit('cord', x, y, z, speed);
         //getKey(socketArr, username).emit('cord', x, y, z, speed);
         /*if (roomsList.has(username)) {
             getKey(socketArr, username).emit('cord', x, y, z);
@@ -50,7 +49,6 @@ io.on('connection', (socket) => {
     });
 
     socket.on('finish', (username) => {
-        console.log('finish');
         /*if (roomsList.has(username)) {
             getKey(socketArr, roomsList.get(username)).emit('finish', username);
         } else {
@@ -61,7 +59,7 @@ io.on('connection', (socket) => {
 
     socket.on('disjoin', (username) => {
         roomsList.set(username, "--");
-        getKey(arrSoc, username).emit("disjoin");
+        socketArr.get(username).emit("disjoin");
     });
 
 });

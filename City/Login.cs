@@ -26,9 +26,19 @@ public class QuestionListJSON
     public List<QuestionJSON> questionList;
 }
 
+[Serializable]
+public class SaveInfoJSON
+{
+    public string world;
+    public string task;
+    public int state;
+}
+
 public class Login : MonoBehaviour
 {
     public static string token, usernameConnected;
+    public static string world, task;
+    public static int state;
     public GameObject mainMenu;
     public GameObject firstMenu;
     public TMP_InputField usernameField;
@@ -43,7 +53,9 @@ public class Login : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        
+        /*world = "City";
+        task = "Array";
+        state = 1;*/
     }
 
     void OnEnable()
@@ -57,15 +69,6 @@ public class Login : MonoBehaviour
 
     public IEnumerator loginRequest()
     {
-        /*string jsonUser = "{\"username\": " + usernameField.text + ", \"password\": " + passwordField.text + "}", response;
-        using (var webRequest = new UnityWebRequest("http://localhost:5000/api/Tokens/", "POST"))
-        {
-            webRequest.uploadHandler = new UploadHandlerRaw(System.Text.Encoding.UTF8.GetBytes(jsonUser));
-            webRequest.downloadHandler = new DownloadHandlerBuffer();
-            webRequest.certificateHandler = new ForceAcceptAllCertificates();
-            await webRequest.SendWebRequest();
-            int responseCode = (HttpStatus)webRequest.responseCode;
-        }*/
         WWWForm form = new WWWForm();
         form.AddField("username", usernameField.text);
         form.AddField("password", passwordField.text);
@@ -81,7 +84,7 @@ public class Login : MonoBehaviour
                 foreach(string topic in topics)
                 {
                     UnityWebRequest requestQuestions = UnityWebRequest.Get("http://" + MainMenu.serverIp + ":5000/api/Questions/Topic/" + topic);
-                    requestQuestions.SetRequestHeader("Authorization", "Bearer " + Login.token);
+                    requestQuestions.SetRequestHeader("authorization", "Bearer " + Login.token);
                     yield return requestQuestions.SendWebRequest();
                     if (requestQuestions.result == UnityWebRequest.Result.Success)
                     {
@@ -97,6 +100,21 @@ public class Login : MonoBehaviour
                     {
                         print("error getting questions");
                     }
+                }
+
+                UnityWebRequest requestSaves = UnityWebRequest.Get("http://" + MainMenu.serverIp + ":5000/api/Users/GetState");
+                requestSaves.SetRequestHeader("authorization", "Bearer " + token);
+                yield return requestSaves.SendWebRequest();
+                if (requestSaves.result == UnityWebRequest.Result.Success)
+                {
+                    SaveInfoJSON saveInfo = JsonUtility.FromJson<SaveInfoJSON>(requestSaves.downloadHandler.text);
+                    world = saveInfo.world;
+                    task = saveInfo.task;
+                    state = saveInfo.state;
+                }
+                else
+                {
+                    print("error getting saves");
                 }
 
                 canvas.transform.GetComponent<Image>().sprite = Resources.Load("MainMenu", typeof(Sprite)) as Sprite;

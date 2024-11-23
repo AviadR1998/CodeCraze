@@ -176,9 +176,6 @@ public class Register : MonoBehaviour
         form.AddField("password", password.text);
         form.AddField("age", age.text);
         form.AddField("mail", email.text);
-        form.AddField("world", "empty");
-        form.AddField("task", "empty");
-        form.AddField("state", -1);
         using (UnityWebRequest request = UnityWebRequest.Post(uri, form))
         {
             yield return request.SendWebRequest();

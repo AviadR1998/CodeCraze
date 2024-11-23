@@ -12,25 +12,38 @@ public class MainMenu : MonoBehaviour
     public GameObject mainMenu;
     public GameObject optionsPage;
     public GameObject firstMenu;
-    public GameObject[] buttonsMain;
-    public GameObject[] buttonsOptions;
-    public GameObject[] buttonsFirst;
     public GameObject canvas;
     public GameObject loginPage;
     public GameObject registerPage;
+    public GameObject practicePage;
+    public GameObject freePlayPage;
+    public GameObject chooseTopicsPanel;
+    public UnityEngine.UI.Toggle[] topicToggleList;
 
-    public static string serverIp = "127.0.0.1";
+    string[] topicList;
+    public static string topicListSaved;
+    public static string serverIp = "10.0.0.9";
 
+    private bool[] topicToggleBoolList;
 
     // Start is called before the first frame update
     void Start()
     {
-        StartCoroutine(delayLogo());
+        if (RoomsMenu.activated)
+        {
+            RoomsMenu.activated = false;
+            canvas.transform.GetComponent<Image>().sprite = Resources.Load("MainMenu", typeof(Sprite)) as Sprite;
+            mainMenu.SetActive(true);
+        }
+        else
+        {
+            StartCoroutine(delayLogo());
+        }
+        topicList = new string[] { "Vars", "IO", "Arithmetic", "Logic", "If", "Loops", "Arrays", "Functions", "Class", "Recursion" };
     }
 
     void OnEnable()
     {
-
     }
 
     public void register()
@@ -53,15 +66,120 @@ public class MainMenu : MonoBehaviour
         mainMenu.SetActive(false);
     }
 
-    public void playCity()
+    IEnumerator newGameRequest()
     {
+        WWWForm form = new WWWForm();
+        form.AddField("world", "Forest");
+        form.AddField("task", "Swing");
+        form.AddField("state", 0);
+        using (UnityWebRequest request = UnityWebRequest.Post("http://" + MainMenu.serverIp + ":5000/api/Users/SaveState", form))
+        {
+            request.SetRequestHeader("authorization", "Bearer " + Login.token);
+            yield return request.SendWebRequest();
+            if (request.isNetworkError || request.isHttpError)
+            {
+                Login.world = "Forest";
+                Login.task = "Swing";
+                Login.state = 0;
+            }
+            else
+            {
+            }
+        }
+    }
+
+
+    public void newGame()
+    {
+        StartCoroutine(newGameRequest());
         SceneManager.LoadSceneAsync(1);
+    }
+
+    public void playWorld(int i)
+    {
+        SceneManager.LoadSceneAsync(i);
+    }
+
+    public void continueFunc()
+    {
+        if (Login.world == "Free")
+        {
+            canvas.transform.GetComponent<Image>().sprite = Resources.Load("FirstMenu", typeof(Sprite)) as Sprite;
+            mainMenu.SetActive(false);
+            freePlayPage.SetActive(true);
+        }
+        else
+        {
+            if (Login.world == "Forest")
+            {
+                SceneManager.LoadSceneAsync(1);
+            }
+            if (Login.world == "City")
+            {
+                SceneManager.LoadSceneAsync(2);
+            }
+            if (Login.world == "Island")
+            {
+                SceneManager.LoadSceneAsync(3);
+            }
+        }
+
     }
 
     public void options()
     {
         mainMenu.SetActive(false);
         optionsPage.SetActive(true);
+    }
+
+    public void practice()
+    {
+        mainMenu.SetActive(false);
+        practicePage.SetActive(true);
+        topicToggleBoolList = new bool[topicToggleList.Length];
+        for (int i = 0; i < topicToggleList.Length; i++)
+        {
+            topicToggleBoolList[i] = topicToggleList[i].isOn = false;
+        }
+    }
+    
+    public void clickCheckBox(int index)
+    {
+        topicToggleBoolList[index] = !topicToggleBoolList[index];
+    }
+
+    public void backFromPractice()
+    {
+        practicePage.SetActive(false);
+        mainMenu.SetActive(true);
+    }
+
+    public void backFromFreePlay()
+    {
+        freePlayPage.SetActive(false);
+        mainMenu.SetActive(true);
+    }
+
+    public void searchRooms()
+    {
+        topicListSaved = "";
+        for (int i = 0; i < topicToggleBoolList.Length; i++) 
+        {
+            if (topicToggleBoolList[i])
+            {
+                topicListSaved += (topicList[i] + ", ");
+            }
+        }
+        if (topicListSaved == "")
+        {
+            for (int i = 0; i < topicToggleBoolList.Length; i++)
+            {
+                topicListSaved += (topicList[i] + ", ");
+            }
+        }
+        topicListSaved = topicListSaved.Remove(topicListSaved.Length - 2, 1);
+        chooseTopicsPanel.SetActive(false);
+        SceneManager.LoadSceneAsync(4);
     }
 
     public void restart()
@@ -84,16 +202,9 @@ public class MainMenu : MonoBehaviour
 
     private IEnumerator SendDeleteRequest()
     {
-        // יצירת בקשת מחיקה
         UnityWebRequest request = UnityWebRequest.Delete("http://" + serverIp + ":5000/api/Users/delete");
-
-        // הוספת ה-Header עם ה-TOKEN
-        request.SetRequestHeader("Authorization", "Bearer " + Login.token);
-
-        // שליחת הבקשה
+        request.SetRequestHeader("authorization", "Bearer " + Login.token);
         yield return request.SendWebRequest();
-
-        // בדיקת התגובה מהשרת
         if (request.result == UnityWebRequest.Result.Success)
         {
             Debug.Log("User deleted successfully!");

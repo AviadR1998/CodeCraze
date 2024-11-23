@@ -20,6 +20,7 @@ public class SoccerMovment : MonoBehaviour
     public GameObject canvasSoccer;
     public GameObject questionSoccerCanvas;
     public GameObject nextMission;
+    public GameObject missionCompleteCanvas;
     public TMP_Text scoreText;
     public TMP_Text turnText;
     public TMP_Text timeText;
@@ -35,19 +36,14 @@ public class SoccerMovment : MonoBehaviour
     List<questionFunc> funcs;
 
     string explanation;
-    Vector3 enemyKeeperPos;
+    Vector3 enemyKeeperPos, startEnemyPos;
     int score, rnd, correctAnswer;
     float rndf;
-    bool kick, endGame;
+    bool kick, endGame, firstFrame;
     // Start is called before the first frame update
     void Start()
     {
-        score = 0;
-        enemyKeeperPos = new Vector3(pointGame[0].transform.position.x, pointGame[0].transform.position.y, pointGame[0].transform.position.z);
-        turn = true;
-        ifInitiateTurn = haveAnswer = endGame = kick = false;
-        boy.SetActive(true);
-        initiateTurn(0, 1, 0, new Vector3(0, 2.1f, 0), new Vector3(0, 2f, 0));
+        startEnemyPos = new Vector3(pointGame[0].transform.position.x, pointGame[0].transform.position.y, pointGame[0].transform.position.z);
         funcs = new List<questionFunc>();
         funcs.Add(sumFor);
         funcs.Add(factFor);
@@ -56,8 +52,17 @@ public class SoccerMovment : MonoBehaviour
         funcs.Add(continueFor);
         funcs.Add(countingFor);
         funcs.Add(calculateFor);
+    }
+
+    private void OnEnable()
+    {
+        score = 0;
+        scoreText.text = "0 - 0";
+        firstFrame = turn = true;
+        ifInitiateTurn = haveAnswer = endGame = kick = false;
+        boy.SetActive(true);
+        initiateTurn(0, 1, 0, new Vector3(0, 2.1f, 0), new Vector3(0, 2f, 0));
         InvokeRepeating("reduceSecond", 1f, 1f);
-        funcs[Random.Range(0, 7)]();
     }
 
     void initiateTurn(int i, int j, int ballI, Vector3 boyStart, Vector3 ballStart)
@@ -211,6 +216,16 @@ public class SoccerMovment : MonoBehaviour
         {
             return;
         }
+        if (firstFrame)
+        {
+            PauseMenu.canPause = false;
+            pointGame[0].transform.position = enemyKeeperPos = startEnemyPos;
+            boy.transform.position = startEnemyPos - new Vector3(0, 2, 0);
+            player.transform.LookAt(pointGame[0].transform);
+            arrow.transform.LookAt(pointGame[0].transform);
+            firstFrame = false;
+            funcs[Random.Range(0, 7)]();
+        }
         if (SoccerQuestion.timeStatic == 0 && !SoccerQuestion.questionAnswered)
         {
             failSound.Play();
@@ -229,7 +244,7 @@ public class SoccerMovment : MonoBehaviour
                     canvasSoccer.SetActive(true);
                     ifInitiateTurn = false;
                     arrow.SetActive(true);
-                    pointGame[0].transform.position = enemyKeeperPos;
+                    pointGame[0].transform.position = startEnemyPos;
                     initiateTurn(0, 1, 0, new Vector3(0, 2.1f, 0), new Vector3(0, 2f, 0));
                 }
                 turnText.SetText("Your Turn");
@@ -337,10 +352,14 @@ public class SoccerMovment : MonoBehaviour
         PauseMenu.canPause = true;
         canvasMission.SetActive(false);
         GameObject.Find("Player").GetComponent<Movement>().enabled = true;
-        Destroy(originalBoy);
-        Destroy(ball);
+        originalBoy.SetActive(Login.world != "City");
+        ball.transform.position = ballPos[0].transform.position;
+        boy.SetActive(false);
+        Movement.missionInProgress = "";
         nextMission.SetActive(true);
         Movement.mission = nextMission;
+        missionCompleteCanvas.SetActive(true);
+        ball.GetComponent<SoccerMovment>().enabled = false;
     }
 
     void loseOK()
@@ -428,11 +447,6 @@ public class SoccerMovment : MonoBehaviour
             }
             turn = !turn;
         }
-    }
-    private void OnEnable()
-    {
-        mainCamera.transform.rotation = Quaternion.Euler(0, 165, 0);
-        PauseMenu.canPause = false;
     }
 
     private void OnDestroy()

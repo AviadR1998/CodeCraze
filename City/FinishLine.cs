@@ -28,7 +28,7 @@ public class FinishLine : MonoBehaviour
         form.AddField("score", 10);
         using (UnityWebRequest request = UnityWebRequest.Post("http://" + MainMenu.serverIp + ":5000/api/Users/AddScore", form))
         {
-            request.SetRequestHeader("Authorization", "Bearer " + Login.token);
+            request.SetRequestHeader("authorization", "Bearer " + Login.token);
             yield return request.SendWebRequest();
             if (request.isNetworkError || request.isHttpError)
             {
@@ -45,11 +45,11 @@ public class FinishLine : MonoBehaviour
         if (!isWin)
         {
             StartCoroutine(delayPress());
-            RoomsMenu.socket.Emit("finish", "nir");
+            RoomsMenu.socket.Emit("finish", Login.usernameConnected);
             string winner = "Player";
             if (other.tag.ToString() == "Player")
             {
-                winner = "nir";
+                winner = Login.usernameConnected;
                 StartCoroutine(addScore());
             }
             else

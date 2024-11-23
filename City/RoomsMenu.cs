@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using TMPro;
 using Unity.VisualScripting;
+using UnityEngine.SceneManagement;
 using UnityEngine;
 using UnityEngine.Networking;
 
@@ -27,7 +28,6 @@ public class RoomsMenu : MonoBehaviour
     public GameObject raceField;
     public GameObject player;
     public GameObject raceCar;
-    public GameObject arrow;
     public GameObject questionsAndAnswersPanel;
     public TMP_Text errorText;
     public TMP_Text player1;
@@ -35,17 +35,18 @@ public class RoomsMenu : MonoBehaviour
     public static bool multiplayerStart;
     public static string obsList, opponent = "RedCar";
     public static SocketIOUnity socket;
+    public static bool activated = false;
 
     private int page;
     private string response;
     private List<string> rooms;
-    private string serverIp = "192.168.125.100", p2Name = "";
+    private string p2Name = "";
     private bool meHost, obsBool = false, joinBool = false, disJoinBool = false, removeRoomBool = false;
 
     // Start is called before the first frame update
     void Start()
     {
-        socket = new SocketIOUnity("http://" + serverIp + ":3000");
+        socket = new SocketIOUnity("http://" + MainMenu.serverIp + ":3000");
         socket.Connect();
         socket.On("obs", data =>
         {
@@ -72,10 +73,8 @@ public class RoomsMenu : MonoBehaviour
 
     void OnEnable()
     {
-        /*socket.OnConnected += (sender, e) =>
-        {
-            print("connect");
-        };*/
+        Cursor.lockState = CursorLockMode.Confined;
+        activated = Cursor.visible = true;
         meHost = joinBool = disJoinBool = removeRoomBool = obsBool = false;
         errorText.text = "";
         opponent = "RedCar";
@@ -87,27 +86,24 @@ public class RoomsMenu : MonoBehaviour
         waitingRoom.SetActive(false);
         roomsList.SetActive(true);
         roomsMenu.SetActive(false);
-        Cursor.lockState = CursorLockMode.Locked;
-        Cursor.visible = false;
         PauseMenu.canPause = true;
         Movement.raceOn = false;
         meHost = false;
         errorText.text = "";
+        SceneManager.LoadSceneAsync(0);
         //remove room if exsist
     }
 
     void play(float x, float y, float z)
     {
-        if (AdminMission.questions.Count < 20)
+        if (AdminMission.questions.Count < 10)
         {
             errorText.text = "Please wait a few seconds for loading the questions.";
             return;
         }
         errorText.text = "";
-        arrow.SetActive(false);
         raceField.SetActive(true);
         player.GetComponent<CharacterController>().enabled = false;
-        player.GetComponent<Movement>().enabled = false;
         player.GetComponent<RaceMovment>().enabled = true;
         player.transform.position = new Vector3(x, y, z);
         player.transform.LookAt(GameObject.Find("EndRace(unseen)").transform);
@@ -116,13 +112,18 @@ public class RoomsMenu : MonoBehaviour
 
     public void playSolo()
     {
-        raceCar.GetComponent<RaceCar>().enabled = true;
+        if (AdminMission.questions.Count < 10)
+        {
+            errorText.text = "Please wait a few seconds for loading the questions.";
+            return;
+        }
         play(-675, 11f, 368.5f);
+        raceCar.GetComponent<RaceCar>().enabled = true;
     }
 
     IEnumerator getAllRooms()
     {
-        string uri = "http://" + serverIp + ":5000/api/Rooms/";
+        string uri = "http://" + MainMenu.serverIp + ":5000/api/Rooms/";
         using (UnityWebRequest request = UnityWebRequest.Get(uri))
         {
             yield return request.SendWebRequest();
@@ -138,9 +139,8 @@ public class RoomsMenu : MonoBehaviour
 
     IEnumerator createRoomPost()
     {
-        string uri = "http://" + serverIp + ":5000/api/Rooms/Create/" + "nir";
+        string uri = "http://" + MainMenu.serverIp + ":5000/api/Rooms/Create/" + Login.usernameConnected;
         WWWForm form = new WWWForm();
-        //form.AddField("username", "nir");
         using (UnityWebRequest request = UnityWebRequest.Post(uri, form))
         {
             yield return request.SendWebRequest();
@@ -148,7 +148,7 @@ public class RoomsMenu : MonoBehaviour
                 response = request.error;
             else
             {
-                socket.Emit("username", "nir");
+                socket.Emit("username", Login.usernameConnected);
                 meHost = true;
                 roomsList.SetActive(false);
                 waitingRoom.SetActive(true);
@@ -159,7 +159,7 @@ public class RoomsMenu : MonoBehaviour
 
     IEnumerator DeleteRoom()
     {
-        string uri = "http://" + serverIp + ":5000/api/Rooms/Delete/" + player1.text;
+        string uri = "http://" + MainMenu.serverIp + ":5000/api/Rooms/Delete/" + player1.text;
         WWWForm form = new WWWForm();
         using (UnityWebRequest request = UnityWebRequest.Delete(uri))
         {
@@ -176,9 +176,9 @@ public class RoomsMenu : MonoBehaviour
 
     IEnumerator joinRoomPost(string roomName)
     {
-        string uri = "http://" + serverIp + ":5000/api/Rooms/Join/" + roomName;
+        string uri = "http://" + MainMenu.serverIp + ":5000/api/Rooms/Join/" + roomName;
         WWWForm form = new WWWForm();
-        form.AddField("player", "nir2");
+        form.AddField("player", Login.usernameConnected);
         using (UnityWebRequest request = UnityWebRequest.Post(uri, form))
         {
             yield return request.SendWebRequest();
@@ -190,19 +190,19 @@ public class RoomsMenu : MonoBehaviour
             else
             {
                 opponent = roomName;
-                socket.Emit("username", "nir2");
+                socket.Emit("username", Login.usernameConnected);
                 roomsList.SetActive(false);
                 waitingRoom.SetActive(true);
                 raceCar.GetComponent<RaceCar>().enabled = false;
                 player1.text = roomName;
-                player2.text = "nir2";
+                player2.text = Login.usernameConnected;
             }
         }
     }
 
     IEnumerator startMulti(string roomName)
     {
-        string uri = "http://" + serverIp + ":5000/api/Rooms/Start/" + roomName;
+        string uri = "http://" + MainMenu.serverIp + ":5000/api/Rooms/Start/" + roomName;
         WWWForm form = new WWWForm();
         using (UnityWebRequest request = UnityWebRequest.Post(uri, form))
         {
@@ -219,14 +219,14 @@ public class RoomsMenu : MonoBehaviour
 
     public void createRoom()
     {
-        if (AdminMission.questions.Count < 20)
+        if (AdminMission.questions.Count < 10)
         {
             errorText.text = "Please wait a few seconds for loading the questions.";
             return;
         }
         StartCoroutine(createRoomPost());
         errorText.text = "";
-        player1.text = "nir";
+        player1.text = Login.usernameConnected;
         player2.text = "--";
     }
 
@@ -290,25 +290,24 @@ public class RoomsMenu : MonoBehaviour
 
     public void endRace()
     {
-        Cursor.lockState = CursorLockMode.Locked;
-        Cursor.visible = false;
+        Cursor.lockState = CursorLockMode.Confined;
+        Cursor.visible = true;
         PauseMenu.canPause = true;
         questionsAndAnswersPanel.SetActive(true);
         GameObject.Find("EndRaceMenu").SetActive(false);
         GameObject.Find("RaceDetails").SetActive(false);
-        player.GetComponent<Movement>().enabled = true;
         GameObject.Find("Main Camera").transform.position -= new Vector3(0, 2f, 0);
-        player.transform.position = new Vector3(-720, 14, 273);
-        arrow.SetActive(true);
+        player.transform.position = new Vector3(-675, 11f, 368.5f);
         raceField.SetActive(false);
         player.GetComponent<CharacterController>().enabled = true;
         player.GetComponent<RaceMovment>().enabled = false;
+        SceneManager.LoadSceneAsync(0);
     }
 
 
     public void enterRoom(TMP_Text button)
     {
-        if (AdminMission.questions.Count < 20)
+        if (AdminMission.questions.Count < 10)
         {
             errorText.text = "Please wait a few seconds for loading the questions.";
             return;
@@ -333,7 +332,8 @@ public class RoomsMenu : MonoBehaviour
             return;
         }
         raceCar.GetComponent<RaceCar>().enabled = false;
-        StartCoroutine(startMulti("nir"));
+        StartCoroutine(startMulti(Login.usernameConnected));
+        while (obsList != "") { }
         multiplayerStart = true;
         if (meHost)
         {

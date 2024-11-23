@@ -144,7 +144,7 @@ public class RaceMovment : MonoBehaviour
         string obsList = "";
         if (RoomsMenu.multiplayerStart)
         {
-            //while (RoomsMenu.obsList == "") { } // could fix some bugs and could crash the unity
+            while (RoomsMenu.obsList == "") { } // could fix some bugs and could crash the unity
             obsList = RoomsMenu.obsList;
         }
         for (int i = 0; i < 45; i++)
@@ -194,28 +194,17 @@ public class RaceMovment : MonoBehaviour
 
     void sndLocation()
     {
-        //RoomsMenu.socket.Emit("cord", RoomsMenu.opponent, this.transform.position.x, this.transform.position.y, this.transform.position.z);
         RoomsMenu.socket.Emit("cord", RoomsMenu.opponent, this.transform.position.x, this.transform.position.y, this.transform.position.z, speed);
     }
 
     void OnEnable()
     {
-        //questionsText.text = "loading questions...";
-        //answersText.text = "loading answers...";
-        //questionsText.text = "Rules:\n1. move with the arrows keys or with W, A, D keys\n2. avoid from the obstacles. (each colide will reduce your speed by 5)\n3. answer the question by pressing the answer's number. (correct answer will increase your speed by 10 and wrong answer will reduce by 5)\n4. finish first and have fun!!!!";
         questionsText.text = "Rules:\n1. move with the arrows keys or with A, D keys\n2. avoid from the obstacles.\n3. answer the question by pressing the answer's number.\n4. finish first and have fun!!!!";
         answersText.text = "loading questions and answers...";
         iniColors();
         allObstacles = new List<GameObject>();
         obstaclesL = new List<GameObject>();
         obstaclesR = new List<GameObject>();
-        /*RoomsMenu.socket.On("finish", data =>
-        {
-            if (data.GetValue<string>() == RoomsMenu.opponent)
-            {
-                CancelInvoke("sndLocation");
-            }
-        });*/
         if (RoomsMenu.multiplayerStart)
         {
             InvokeRepeating("sndLocation", 4f, 0.2f);
@@ -235,12 +224,15 @@ public class RaceMovment : MonoBehaviour
         answersList = new List<string>();
         rightAnswerList = new List<string>();
         AdminMission.readQuestion = true;
-        while (AdminMission.geminiActivate) { }
+        //while (AdminMission.geminiActivate) { }
         for (int i = 0; i < 10; i++)
         {
             questionList.Add(AdminMission.questions.Pop());
             answersList.Add(AdminMission.answers.Pop());
             rightAnswerList.Add(AdminMission.rightAnswers.Pop());
+            /*questionList.Add("aaa");
+            answersList.Add("bbb");
+            rightAnswerList.Add("1");*/
         }
         AdminMission.readQuestion = false;
         StartCoroutine(delayDrive());
