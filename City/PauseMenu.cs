@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Networking;
 using UnityEngine.SceneManagement;
+using UnityEngine.UI;
 
 public class PauseMenu : MonoBehaviour
 {
@@ -12,12 +13,14 @@ public class PauseMenu : MonoBehaviour
     public GameObject leaderBoardPage;
     public GameObject settingPage;
     static public bool isPaused, canPause;
+    public static bool activated = false;
 
     // Start is called before the first frame update
     public void Start()
     {
         isPaused = false;
         canPause = true;
+        activated = true;
     }
 
     public static void updateSave(string str1, string str2, int num)
@@ -39,6 +42,7 @@ public class PauseMenu : MonoBehaviour
 
     public void backFromLeaderBoard()
     {
+        pausePanel.transform.GetComponent<Image>().sprite = Resources.Load("PauseMenu", typeof(Sprite)) as Sprite;
         leaderBoardPage.SetActive(false);
         settingPage.SetActive(true);
     }
@@ -78,19 +82,25 @@ public class PauseMenu : MonoBehaviour
 
     public void leaderBoard()
     {
+        pausePanel.transform.GetComponent<Image>().sprite = Resources.Load("LeaderBoard", typeof(Sprite)) as Sprite;
         settingPage.SetActive(false);
         leaderBoardPage.SetActive(true);
     }
 
     public void exit()
     {
-        surePanel.SetActive(true);
+        StartCoroutine(dataToServer());
+        Time.timeScale = 1.0f;
+        SceneManager.LoadSceneAsync(0);
+        //surePanel.SetActive(true);
     }
 
     public void sureOk()
     {
-        //SceneManager.LoadSceneAsync(0);
-        Application.Quit();
+        StartCoroutine(dataToServer());
+        Time.timeScale = 1.0f;
+        SceneManager.LoadSceneAsync(0);
+        //Application.Quit();
     }
 
     public void sureBack()

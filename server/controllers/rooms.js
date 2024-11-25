@@ -1,12 +1,13 @@
 //import myModels from '../models/rooms.js'
 import {myIo ,arrSoc} from "../app.js"
 export const roomsList = new Map();
+export const roomsListTopics = new Map();
 
 const returnAllRooms = async (req, res) => {
     //const myRes = await myModels.getRooms(req.headers.authorization.split(" ")[0], req.headers.authorization.split(" ")[1]);
     let myRes = {host : []}
     for (let [key, value] of roomsList) {
-        if (value === "--"){
+        if (value === "--" && req.body.topics == roomsListTopics.get(key)){
             myRes.host.push(key);
         }
     }
@@ -21,6 +22,7 @@ const returnAllRooms = async (req, res) => {
 const createRoom = async (req, res) => {
     //const myRes = await myModels.postRooms(req.params.username, req.headers.authorization.split(" ")[0], req.headers.authorization.split(" ")[1]);
     roomsList.set(req.params.username, "--");
+    roomsListTopics.set(req.params.username, req.body.topics)
     console.log(roomsList);
     res.status(200);
     res.end();
@@ -34,6 +36,7 @@ const removeRoom = async (req, res) => {
         //arrSoc.delete(getKey(arrSoc, player2));
     }
     roomsList.delete(req.params.username);
+    roomsListTopics.delete(req.params.username);
     //arrSoc.delete(getKey(req.params.username));
     res.status(200);
     res.end();
@@ -74,6 +77,5 @@ const startGame = async (req, res) => {
     res.status(200);
     res.end();
 }
-
 
 export { returnAllRooms, createRoom, removeRoom, joinRoom, startGame, getKey};

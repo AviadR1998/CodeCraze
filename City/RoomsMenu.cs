@@ -81,7 +81,7 @@ public class RoomsMenu : MonoBehaviour
         refresh();
     }
 
-    public void close()
+    public void close(bool close)
     {
         waitingRoom.SetActive(false);
         roomsList.SetActive(true);
@@ -90,7 +90,10 @@ public class RoomsMenu : MonoBehaviour
         Movement.raceOn = false;
         meHost = false;
         errorText.text = "";
-        SceneManager.LoadSceneAsync(0);
+        if (close)
+        {
+            SceneManager.LoadSceneAsync(0);
+        }
         //remove room if exsist
     }
 
@@ -107,7 +110,7 @@ public class RoomsMenu : MonoBehaviour
         player.GetComponent<RaceMovment>().enabled = true;
         player.transform.position = new Vector3(x, y, z);
         player.transform.LookAt(GameObject.Find("EndRace(unseen)").transform);
-        close();
+        close(false);
     }
 
     public void playSolo()
@@ -141,6 +144,7 @@ public class RoomsMenu : MonoBehaviour
     {
         string uri = "http://" + MainMenu.serverIp + ":5000/api/Rooms/Create/" + Login.usernameConnected;
         WWWForm form = new WWWForm();
+        form.AddField("topics", MainMenu.topicListSaved);
         using (UnityWebRequest request = UnityWebRequest.Post(uri, form))
         {
             yield return request.SendWebRequest();
@@ -179,6 +183,7 @@ public class RoomsMenu : MonoBehaviour
         string uri = "http://" + MainMenu.serverIp + ":5000/api/Rooms/Join/" + roomName;
         WWWForm form = new WWWForm();
         form.AddField("player", Login.usernameConnected);
+        form.AddField("topics", MainMenu.topicListSaved);
         using (UnityWebRequest request = UnityWebRequest.Post(uri, form))
         {
             yield return request.SendWebRequest();

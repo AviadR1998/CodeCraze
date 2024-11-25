@@ -5,7 +5,7 @@ import tokensRouter from './routes/tokens.js';
 import questionsRouter from './routes/questions.js';
 import roomsRouter from './routes/rooms.js';
 import explanationsRouter from './routes/explanations.js';
-import { roomsList, getKey } from "./controllers/rooms.js";
+import { roomsList, getKey, roomsListTopics } from "./controllers/rooms.js";
 //import { handleClientMsg } from './sockets/socket.js'
 import cors from 'cors';
 const app = express();
@@ -55,6 +55,7 @@ io.on('connection', (socket) => {
             getKey(socketArr, getKey(roomsList, username)).emit('finish', username);
         }*/
         roomsList.delete(username);
+        roomsListTopics.delete(username);
     });
 
     socket.on('disjoin', (username) => {

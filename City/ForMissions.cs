@@ -19,6 +19,7 @@ public class ForMission : MonoBehaviour
     public GameObject forNPC;
     public GameObject missionCompleteCanvas;
 
+    public static bool startFromQuestions = false, startFromAfterQuestions = false;
     //int currentSubText, currentSubMission;
     List<List<TextPartition>> texts;
     List<EndFunc> funcs;
@@ -177,6 +178,18 @@ public class ForMission : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        
+        if (startFromQuestions)
+        {
+            startFromQuestions = false;
+            AdminMission.canTalk = false;
+            AdminMission.currentSubMission = 2;
+            questions();
+        }
+        if (startFromAfterQuestions)
+        {
+            startFromAfterQuestions = false;
+            AdminMission.canTalk = true;
+            AdminMission.currentSubMission = 3;
+        }
     }
 }

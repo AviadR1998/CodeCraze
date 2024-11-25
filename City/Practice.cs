@@ -28,7 +28,6 @@ public class Practice : MonoBehaviour
     {
         if (other.tag == "Player" && canAsk)
         {
-            print("Enter");
             retCanvas = questionObj.GetComponent<CreateQuestionsCanvas>().CreateQCanvas(taskName + "CSV.csv");
             Cursor.lockState = CursorLockMode.Confined;
             activeCanvas = Cursor.visible = true;
@@ -49,7 +48,7 @@ public class Practice : MonoBehaviour
                 if (nextMission[0] != null)
                 {
                     AdminMission.currentSubMission++;
-                    PauseMenu.updateSave("City", "For", AdminMission.currentSubMission);
+                    PauseMenu.updateSave("City", "For", AdminMission.currentSubMission - 1);
                     Movement.mission = nextMission[0];
                     nextMission[0].SetActive(true);
                     AdminMission.canTalk = true;

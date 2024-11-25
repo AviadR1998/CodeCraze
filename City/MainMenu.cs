@@ -5,6 +5,7 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 using UnityEngine.Networking;
+using static QuestionCanvas;
 
 
 public class MainMenu : MonoBehaviour
@@ -22,16 +23,16 @@ public class MainMenu : MonoBehaviour
 
     string[] topicList;
     public static string topicListSaved;
-    public static string serverIp = "10.0.0.9";
+    public static string serverIp = "127.0.0.1";
 
     private bool[] topicToggleBoolList;
 
     // Start is called before the first frame update
     void Start()
     {
-        if (RoomsMenu.activated)
+        if (RoomsMenu.activated || PauseMenu.activated)
         {
-            RoomsMenu.activated = false;
+            PauseMenu.activated = RoomsMenu.activated = false;
             canvas.transform.GetComponent<Image>().sprite = Resources.Load("MainMenu", typeof(Sprite)) as Sprite;
             mainMenu.SetActive(true);
         }
@@ -62,6 +63,8 @@ public class MainMenu : MonoBehaviour
     public void logOut()
     {
         canvas.transform.GetComponent<Image>().sprite = Resources.Load("FirstMenu", typeof(Sprite)) as Sprite;
+        Login.token = "";
+        Login.usernameConnected = "";
         firstMenu.SetActive(true);
         mainMenu.SetActive(false);
     }
@@ -78,9 +81,7 @@ public class MainMenu : MonoBehaviour
             yield return request.SendWebRequest();
             if (request.isNetworkError || request.isHttpError)
             {
-                Login.world = "Forest";
-                Login.task = "Swing";
-                Login.state = 0;
+                
             }
             else
             {
@@ -91,6 +92,9 @@ public class MainMenu : MonoBehaviour
 
     public void newGame()
     {
+        Login.world = "Forest";
+        Login.task = "Swing";
+        Login.state = 0;
         StartCoroutine(newGameRequest());
         SceneManager.LoadSceneAsync(1);
     }
@@ -104,7 +108,7 @@ public class MainMenu : MonoBehaviour
     {
         if (Login.world == "Free")
         {
-            canvas.transform.GetComponent<Image>().sprite = Resources.Load("FirstMenu", typeof(Sprite)) as Sprite;
+            canvas.transform.GetComponent<Image>().sprite = Resources.Load("FreePlay", typeof(Sprite)) as Sprite;
             mainMenu.SetActive(false);
             freePlayPage.SetActive(true);
         }
@@ -116,6 +120,7 @@ public class MainMenu : MonoBehaviour
             }
             if (Login.world == "City")
             {
+                Movement.loadOnce = true;
                 SceneManager.LoadSceneAsync(2);
             }
             if (Login.world == "Island")
@@ -134,12 +139,15 @@ public class MainMenu : MonoBehaviour
 
     public void practice()
     {
-        mainMenu.SetActive(false);
-        practicePage.SetActive(true);
-        topicToggleBoolList = new bool[topicToggleList.Length];
-        for (int i = 0; i < topicToggleList.Length; i++)
+        if (Login.world == "Free")
         {
-            topicToggleBoolList[i] = topicToggleList[i].isOn = false;
+            mainMenu.SetActive(false);
+            practicePage.SetActive(true);
+            topicToggleBoolList = new bool[topicToggleList.Length];
+            for (int i = 0; i < topicToggleList.Length; i++)
+            {
+                topicToggleBoolList[i] = topicToggleList[i].isOn = false;
+            }
         }
     }
     
@@ -156,12 +164,17 @@ public class MainMenu : MonoBehaviour
 
     public void backFromFreePlay()
     {
+        canvas.transform.GetComponent<Image>().sprite = Resources.Load("MainMenu", typeof(Sprite)) as Sprite;
         freePlayPage.SetActive(false);
         mainMenu.SetActive(true);
     }
 
     public void searchRooms()
     {
+        AdminMission.questions = new Stack<string>();
+        AdminMission.answers = new Stack<string>();
+        AdminMission.rightAnswers = new Stack<string>();
+        AdminMission.loadAll = AdminMission.geminiActivate = false;
         topicListSaved = "";
         for (int i = 0; i < topicToggleBoolList.Length; i++) 
         {

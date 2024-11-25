@@ -76,7 +76,7 @@ async function updateScore(bearer, token, score) {
         client.connect();
         const db = client.db('CodeCraze');
         const users = db.collection('Users');
-        await users.updateOne({ username: data.username }, { $inc: { score: score } });
+        await users.updateOne({ username: data.username }, { $inc: { score: parseInt(score) } });
         return 200;
     } catch (err) {
         return 401;
@@ -124,6 +124,28 @@ async function getTopScore(bearer, token, score) {
             }
             return user2.score - user1.score;
         });
+    } catch (err) {
+        return 401;
+        //return res.status(401).send("Invalid Token");
+    } finally {
+        //client.close();
+    }
+}
+
+async function resetUserModels(bearer, token, details) {
+    try {
+        const data = functions.validateToken(bearer, token);
+        if (data === null) {
+            console.log(bearer + " " + token);
+            return 401;
+        }
+        const client = new MongoClient("mongodb://127.0.0.1:27017");
+        client.connect();
+        const db = client.db('CodeCraze');
+        const users = db.collection('Users');
+        await users.updateOne({ username: data.username },
+            { $set: { world: "Forest", task: "Swing", state: 0, score: 0 } });
+        return 200;
     } catch (err) {
         return 401;
         //return res.status(401).send("Invalid Token");
@@ -183,4 +205,4 @@ async function getState(bearer, token) {
     }
 }
 
-export default { insrtUser, getUserInfo, delUser, updateScore, getTopScore, saveState, getState }
+export default { insrtUser, getUserInfo, delUser, resetUserModels, updateScore, getTopScore, saveState, getState }
