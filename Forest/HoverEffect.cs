@@ -5,19 +5,21 @@ using UnityEngine;
 
 public class HoverEffect : MonoBehaviour
 {
-    public float hoverSpeed = 2.0f; // מהירות התנועה
-    public float hoverAmount = 0.5f; // כמה רחוק הוא יזוז למעלה ולמטה
-
+    //spped
+    public float hoverSpeed = 2.0f; 
+    // How far will it move up and down.
+    public float hoverAmount = 0.5f; 
     private Vector3 startPos;
 
     void Start()
     {
-        startPos = transform.position; // שמירת מיקום התחלתי
+        //Start place.
+        startPos = transform.position; 
     }
 
     void Update()
     {
-        // חישוב המיקום החדש באמצעות Sin כדי ליצור אפקט של תנועה מחזורית למעלה ולמטה
+        //Move arrow.
         float newY = startPos.y + Mathf.Sin(Time.time * hoverSpeed) * hoverAmount;
         transform.position = new Vector3(startPos.x, newY, startPos.z);
     }

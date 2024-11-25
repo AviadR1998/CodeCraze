@@ -20,7 +20,6 @@ public class fishCount : MonoBehaviour
     bool flag = false;
     public GameObject[] fish;
     int i = 0;
-    public AudioClip collapseSound;
     public AudioClip BloopSound;
     private AudioSource audioSource;
     public GameObject arrow2;
@@ -30,9 +29,10 @@ public class fishCount : MonoBehaviour
     private Vector3 originalCameraPosition;
     private Quaternion originalCameraRotation;
     private bool isTaskActive = false;
-
+    public GameObject finishMission;
     public TaskManager taskManager;
     private bool isTaskCompletedOnce = false;
+    public AudioSource BackgroundMusic;
 
 
     void Start()
@@ -40,26 +40,25 @@ public class fishCount : MonoBehaviour
         audioSource = GetComponent<AudioSource>();
     }
 
-
-
     private void OnCollisionEnter(Collision other)
     {
         if (other.gameObject.tag == "Player" && !isTaskActive)
         {
+            BackgroundMusic.Pause();
             isTaskActive = true;
-            //Save Player data
+            //Save PLAYER position and rotation.
             originalPlayerPosition = FindObjectOfType<FirstPersonController>().transform.position;
             originalPlayerRotation = FindObjectOfType<FirstPersonController>().transform.rotation;
-            //Save Camera data
+            //Save CAMERA position and rotation.
             originalCameraPosition = FindObjectOfType<FirstPersonController>().playerCamera.transform.position;
             originalCameraRotation = FindObjectOfType<FirstPersonController>().playerCamera.transform.rotation;
-            //change rotation + position
+            //CHANGE position and rotation.
             FindObjectOfType<FirstPersonController>().playerCamera.transform.position = destination.position;
             FindObjectOfType<FirstPersonController>().playerCamera.transform.rotation = destination.rotation;
             FindObjectOfType<FirstPersonController>().cameraCanMove = false;
             FindObjectOfType<FirstPersonController>().playerCanMove = false;
             FindObjectOfType<FirstPersonController>().enableHeadBob = false;
-
+            arrow2.SetActive(false);
             canvas.SetActive(true);
             Cursor.lockState = CursorLockMode.None;
             Cursor.visible = true;
@@ -69,6 +68,7 @@ public class fishCount : MonoBehaviour
 
             explainCode.text = "int main() {\n \tint fish = 1;  // Starting with 1 fish in the lake.\n \tfish++;  // Now fish is 2 so we have two fish in the lake..\n \tfish++; // Now fish is 3 so we have three fish in the lake..\n \treturn 0;.\n";
 
+            //Remove all fishs from river.
             i = 0;
             foreach (GameObject f in fish)
             {
@@ -87,13 +87,13 @@ public class fishCount : MonoBehaviour
 
     void Update()
     {
-
         if (flag == true)
         {
             if (Input.GetKeyDown(KeyCode.Equals))
             {
                 if (i <= 3)
                 {
+                    //Make sounds when new fish is in the river.
                     if (BloopSound != null && audioSource != null)
                     {
                         audioSource.PlayOneShot(BloopSound);
@@ -103,6 +103,7 @@ public class fishCount : MonoBehaviour
                 }
             }
         }
+        //No more fishs to put.
         if (i == 4)
         {
             animationCanvas.SetActive(false);
@@ -111,33 +112,21 @@ public class fishCount : MonoBehaviour
             {
                 endcanvas.SetActive(false);
                 i++;
-                if (collapseSound != null && audioSource != null)
-                {
-                    //Return to original place.
-                    FindObjectOfType<FirstPersonController>().transform.position = originalPlayerPosition;
-                    FindObjectOfType<FirstPersonController>().transform.rotation = originalPlayerRotation;
-                    FindObjectOfType<FirstPersonController>().playerCamera.transform.position = originalCameraPosition;
-                    FindObjectOfType<FirstPersonController>().playerCamera.transform.rotation = originalCameraRotation;
-                    FindObjectOfType<FirstPersonController>().cameraCanMove = true;
-                    FindObjectOfType<FirstPersonController>().playerCanMove = true;
-                    FindObjectOfType<FirstPersonController>().enableHeadBob = true;
-                    audioSource.PlayOneShot(collapseSound);
-                    CompleteTask();
-                    //wait 5 seconds and let the child play again if he want to.
-                    StartCoroutine(WaitBeforeDeactivatingTask());
-                }
+                StartCoroutine(HandleQuestionsAndCompleteTask());
             }
         }
     }
     private IEnumerator WaitBeforeDeactivatingTask()
     {
-        yield return new WaitForSeconds(3);
+        yield return new WaitForSeconds(5);
+        arrow2.SetActive(true);
         isTaskActive = false;
     }
 
     public void CompleteTask()
     {
-        if (!isTaskCompletedOnce)
+        BackgroundMusic.Play();
+        if (!isTaskCompletedOnce && TaskManager.currentTaskIndex == 4)
         {
             isTaskCompletedOnce = true; // מסמן שהמשימה הושלמה
 
@@ -150,5 +139,31 @@ public class fishCount : MonoBehaviour
                 Debug.LogError("TaskManager is not assigned in the Inspector!");
             }
         }
+    }
+    private IEnumerator HandleQuestionsAndCompleteTask()
+    {
+        //Start practice questions.
+        FreeQueFish.ask = true;
+        FreeQueFish.keepWhile = true;
+        //Wait until player finish all pratice questions.
+        yield return new WaitUntil(() => !FreeQueFish.keepWhile);
+
+        //PLAYER get back to the original place.
+        FindObjectOfType<FirstPersonController>().transform.position = originalPlayerPosition;
+        FindObjectOfType<FirstPersonController>().transform.rotation = originalPlayerRotation;
+        //CAMERA get back to the original place.
+        FindObjectOfType<FirstPersonController>().playerCamera.transform.position = originalCameraPosition;
+        FindObjectOfType<FirstPersonController>().playerCamera.transform.rotation = originalCameraRotation;
+        FindObjectOfType<FirstPersonController>().cameraCanMove = true;
+        FindObjectOfType<FirstPersonController>().playerCanMove = true;
+        FindObjectOfType<FirstPersonController>().enableHeadBob = true;
+        //Finish mission sounds.
+        finishMission.GetComponent<SoundEffects>().PlaySoundClip();
+        finishMission.SetActive(true);
+        CompleteTask();
+        //Save state.
+        PauseMenu.updateSave("Forest", "Bike", 0);
+        //Wait 5 seconds and let the player do the mission again if he want to.
+        StartCoroutine(WaitBeforeDeactivatingTask());
     }
 }

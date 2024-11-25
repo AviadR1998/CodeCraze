@@ -169,7 +169,7 @@ public class FirstPersonController : MonoBehaviour
 
     public GameObject GetTouchedBox()
     {
-        return touchedBox; 
+        return touchedBox;
     }
     void Start()
     {
@@ -224,7 +224,7 @@ public class FirstPersonController : MonoBehaviour
 
     private void Update()
     {
-        if (PauseMenu.isPaused || PracticeManage.questionActivated)
+        if (PauseMenu.isPaused || FreeQueSign.questionActivated || FreeQueFish.questionActivated || FreeQueFire.questionActivated ||FreeQueBike.questionActivated  || BikeMission.isQuestionActive || FreeQueBox.questionActivated)
         {
             return;
         }
@@ -392,7 +392,8 @@ public class FirstPersonController : MonoBehaviour
 
     void FixedUpdate()
     {
-        if (PauseMenu.isPaused || PracticeManage.questionActivated)
+        if (PauseMenu.isPaused || FreeQueSign.questionActivated || FreeQueFish.questionActivated ||FreeQueFire.questionActivated  ||FreeQueBike.questionActivated  || BikeMission.isQuestionActive ||
+        FreeQueBox.questionActivated )
         {
             return;
         }

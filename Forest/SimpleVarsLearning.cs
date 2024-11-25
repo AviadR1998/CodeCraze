@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
 using System;
+using TreeEditor;
 
 
 public class SimpleVarsLearning : MonoBehaviour
@@ -11,15 +12,12 @@ public class SimpleVarsLearning : MonoBehaviour
     public GameObject canvaGameExplain;
     public TMP_Text expressionText; public string[] expressions = { "4", "Hello", "'A'", "3.14", "'c'", "5", "Apple", "3.1", "True", "False" };
     public string[] correctBoxes = { "Int", "String", "Char", "Float", "Char", "Int", "String", "Float", "Bool", "Bool" };
-
     private int currentExpressionIndex = 0;
-    public GameObject player; //player data
+    public GameObject player;
     public bool flagGame;
-    public AudioSource correctSound; // Sound for correct answer.
-    public GameObject backgroundMusicObject; // כאן תגרור את ה-Empty Object של המוזיקה
+    public AudioSource correctSound;
+    public GameObject backgroundMusicObject;
     private AudioSource audioSource;
-
-    public AudioSource FinishSound;
     public Transform destination;
     private Vector3 originalPlayerPosition;
     private Quaternion originalPlayerRotation;
@@ -27,16 +25,17 @@ public class SimpleVarsLearning : MonoBehaviour
     private Quaternion originalCameraRotation;
     private bool isTaskActive = false;
     public GameObject arrow;
-
     public TaskManager taskManager;
     private bool isTaskCompletedOnce = false;
-
+    public GameObject finishMission;
+    public GameObject trig;
+    private bool canCheck = true;
+    private GameObject lastTouchedBox = null;
 
     // Start is called before the first frame update
     void Start()
     {
         audioSource = backgroundMusicObject.GetComponent<AudioSource>();
-
     }
 
     private void OnCollisionEnter(Collision other)
@@ -44,13 +43,13 @@ public class SimpleVarsLearning : MonoBehaviour
         if (other.gameObject.tag == "Player" && !isTaskActive)
         {
             isTaskActive = true;
-            //Save Player data
+            //Save PLAYER position and rotation.
             originalPlayerPosition = FindObjectOfType<FirstPersonController>().transform.position;
             originalPlayerRotation = FindObjectOfType<FirstPersonController>().transform.rotation;
-            //Save Camera data
+            //Save CAMERA position and rotation.
             originalCameraPosition = FindObjectOfType<FirstPersonController>().playerCamera.transform.position;
             originalCameraRotation = FindObjectOfType<FirstPersonController>().playerCamera.transform.rotation;
-            //change rotation + position
+            //CHANGE position and rotation.
             FindObjectOfType<FirstPersonController>().playerCamera.transform.position = destination.position;
             FindObjectOfType<FirstPersonController>().playerCamera.transform.rotation = destination.rotation;
             FindObjectOfType<FirstPersonController>().cameraCanMove = false;
@@ -74,65 +73,71 @@ public class SimpleVarsLearning : MonoBehaviour
         Cursor.visible = true;
     }
 
-
     public void ButtonGameExplain()
     {
         canvaGameExplain.SetActive(false);
         Cursor.lockState = CursorLockMode.Confined;
         Cursor.visible = true;
-
+        //PLAYER get back to the original place.
         FindObjectOfType<FirstPersonController>().transform.position = originalPlayerPosition;
         FindObjectOfType<FirstPersonController>().transform.rotation = originalPlayerRotation;
+        //CAMERA get back to the original place.
         FindObjectOfType<FirstPersonController>().playerCamera.transform.position = originalCameraPosition;
         FindObjectOfType<FirstPersonController>().playerCamera.transform.rotation = originalCameraRotation;
         FindObjectOfType<FirstPersonController>().cameraCanMove = true;
         FindObjectOfType<FirstPersonController>().playerCanMove = true;
         FindObjectOfType<FirstPersonController>().enableHeadBob = true;
         ShowNextExpression();
-        //game loop
+        //Game loop.
         StartCoroutine(GameLoop());
-        audioSource.Play();
     }
-    private bool canCheck = true;
-    private GameObject lastTouchedBox = null;
+
 
     IEnumerator GameLoop()
     {
+        //Need to track player movments.
         FirstPersonController playerController = player.GetComponent<FirstPersonController>();
         if (playerController != null)
         {
+            //Game didn't finish yet.
             while (currentExpressionIndex < expressions.Length)
             {
+                //Can check the answer.
                 if (canCheck)
                 {
                     bool isTouching = playerController.IsTouchingBox();
+                    //Check if playet touch one of the boxes.
                     if (isTouching)
                     {
+                        //Get the tag of the box the player is touching.
                         GameObject touchedBox = playerController.GetTouchedBox();
+                        //Ensure the player is touch a new box.
                         if (touchedBox != lastTouchedBox)
                         {
+                            //Update the last touched box.
                             lastTouchedBox = touchedBox;
+                            //Playet touch the right Box.
                             if (touchedBox.CompareTag(correctBoxes[currentExpressionIndex]))
                             {
                                 correctSound.Play();
+                                //Update next expression index.
                                 currentExpressionIndex++;
                                 canCheck = false;
+                                //Still have questions.
                                 if (currentExpressionIndex < expressions.Length)
                                 {
+                                    //Display the next expression.
                                     ShowNextExpression();
                                     canCheck = true;
                                 }
+                                //Finish game.
                                 else
                                 {
-                                    if (FinishSound != null && audioSource != null)
-                                    {
-                                        FinishSound.Play();
-                                        arrow.SetActive(true);
-                                        CompleteTask();
-                                        StartCoroutine(WaitBeforeDeactivatingTask());
-
-
-                                    }
+                                    GameObject myPlayer = GameObject.FindGameObjectWithTag("Player");
+                                    //Before asking practice queations move player to different position.
+                                    myPlayer.transform.position = trig.transform.position;
+                                    StartCoroutine(WaitBeforeDeactivatingTask());
+                                    StartCoroutine(HandleQuestionsAndCompleteTask());
                                     expressionText.text = "";
                                     yield break;
                                 }
@@ -144,10 +149,7 @@ public class SimpleVarsLearning : MonoBehaviour
                 yield return null;
             }
         }
-
     }
-
-
 
     void ShowNextExpression()
     {
@@ -172,9 +174,10 @@ public class SimpleVarsLearning : MonoBehaviour
 
     public void CompleteTask()
     {
-        if (!isTaskCompletedOnce)
+        audioSource.Play();
+        if (!isTaskCompletedOnce && TaskManager.currentTaskIndex == 3)
         {
-            isTaskCompletedOnce = true; // מסמן שהמשימה הושלמה
+            isTaskCompletedOnce = true;
 
             if (taskManager != null)
             {
@@ -187,4 +190,18 @@ public class SimpleVarsLearning : MonoBehaviour
         }
     }
 
+    private IEnumerator HandleQuestionsAndCompleteTask()
+    {
+        //Open practice queations.
+        FreeQueBox.ask = true;
+        FreeQueBox.keepWhile = true;
+        //Finish all practice qustions.
+        yield return new WaitUntil(() => !FreeQueBox.keepWhile);
+        CompleteTask();
+        //Finish mission sound + canvas.
+        finishMission.GetComponent<SoundEffects>().PlaySoundClip();
+        finishMission.SetActive(true);
+        //Update state.
+        PauseMenu.updateSave("Forest", "Fish", 0);
+    }
 }
