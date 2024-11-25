@@ -9,6 +9,7 @@ public class UpdateSignText : MonoBehaviour
     public TMP_InputField inputField;
     public TMP_Text signText;
     public AudioClip WriteSound;
+    public AudioSource BackgroundMusic;
     private AudioSource audioSource;
     public Transform destination;
     private Vector3 originalPlayerPosition;
@@ -19,8 +20,7 @@ public class UpdateSignText : MonoBehaviour
     public GameObject arrow;
     public TaskManager taskManager;
     private bool isTaskCompletedOnce = false;
-    // public GameObject askQuestion;
-
+    public GameObject finishMission;
 
     void Start()
     {
@@ -31,19 +31,14 @@ public class UpdateSignText : MonoBehaviour
     {
         if (other.tag == "Player" && !isTaskActive)
         {
+            BackgroundMusic.Pause();
             isTaskActive = true;
-            //Save Player data
+            //Save PLAYER position and rotation.
             originalPlayerPosition = FindObjectOfType<FirstPersonController>().transform.position;
             originalPlayerRotation = FindObjectOfType<FirstPersonController>().transform.rotation;
-            //Save Camera data
+            //Save CAMERA position and rotation.
             originalCameraPosition = FindObjectOfType<FirstPersonController>().playerCamera.transform.position;
             originalCameraRotation = FindObjectOfType<FirstPersonController>().playerCamera.transform.rotation;
-
-            // Debug.Log("Original Player Position: " + originalPlayerPosition);
-            // Debug.Log("Original Player Rotation: " + originalPlayerRotation.eulerAngles);
-            // Debug.Log("Original Camera Position: " + originalCameraPosition);
-            // Debug.Log("Original Camera Rotation: " + originalCameraRotation.eulerAngles);
-
             //change rotation + position
             FindObjectOfType<FirstPersonController>().playerCamera.transform.position = destination.position;
             FindObjectOfType<FirstPersonController>().playerCamera.transform.rotation = destination.rotation;
@@ -66,47 +61,38 @@ public class UpdateSignText : MonoBehaviour
     public void ButtonSingClick()
     {
         string userInput = inputField.text;
+        //Limit to name size.
         if (userInput.Length > 7)
         {
             userInput = userInput.Substring(0, 7);
         }
+        //Put the input on the sign.
         signText.text = userInput;
         canvas.SetActive(false);
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
+        //Write sound.
         if (WriteSound != null && audioSource != null)
         {
             audioSource.PlayOneShot(WriteSound);
         }
-        StartCoroutine(ExampleCoroutine());
         arrow.SetActive(true);
-        // askQuestion.SetActive(true);
-        // while (askQuestion.active)
-        // {
-
-        // }
-        // PracticeManage.ask = true;
+        //Wait couple of seconds.
         StartCoroutine(HandleQuestionsAndCompleteTask());
-
-
     }
 
-    IEnumerator ExampleCoroutine()
+    IEnumerator BacktoPosition()
     {
-
-        yield return new WaitForSeconds(1.1f);
+        yield return new WaitForSeconds(0.4f);
+        //PLAYER get back to the original place.
         FindObjectOfType<FirstPersonController>().transform.position = originalPlayerPosition;
         FindObjectOfType<FirstPersonController>().transform.rotation = originalPlayerRotation;
+        //CAMERA get back to the original place.
         FindObjectOfType<FirstPersonController>().playerCamera.transform.position = originalCameraPosition;
         FindObjectOfType<FirstPersonController>().playerCamera.transform.rotation = originalCameraRotation;
         FindObjectOfType<FirstPersonController>().cameraCanMove = true;
         FindObjectOfType<FirstPersonController>().playerCanMove = true;
         FindObjectOfType<FirstPersonController>().enableHeadBob = true;
-        // Debug.Log("----------------------------------------------------------------");
-        // Debug.Log("Player Position: " + FindObjectOfType<FirstPersonController>().transform.position);
-        // Debug.Log("Player Rotation: " + FindObjectOfType<FirstPersonController>().transform.rotation.eulerAngles);
-        // Debug.Log("Camera Position: " + FindObjectOfType<FirstPersonController>().playerCamera.transform.position);
-        // Debug.Log("Camera Rotation: " + FindObjectOfType<FirstPersonController>().playerCamera.transform.rotation.eulerAngles);
         StartCoroutine(WaitBeforeDeactivatingTask());
     }
 
@@ -117,9 +103,10 @@ public class UpdateSignText : MonoBehaviour
     }
     public void CompleteTask()
     {
-        if (!isTaskCompletedOnce)
+        BackgroundMusic.Play();
+        if (!isTaskCompletedOnce && TaskManager.currentTaskIndex == 1)
         {
-            isTaskCompletedOnce = true; // מסמן שהמשימה הושלמה
+            isTaskCompletedOnce = true; 
 
             if (taskManager != null)
             {
@@ -133,13 +120,18 @@ public class UpdateSignText : MonoBehaviour
     }
     private IEnumerator HandleQuestionsAndCompleteTask()
     {
-        // הפעלת השאלות
-        PracticeManage.ask = true;
-        PracticeManage.keepWhile = true;
-        // המתנה עד שהשאלות יסיימו
-        yield return new WaitUntil(() => !PracticeManage.keepWhile);
-
-        // קריאה ל-CompleteTask רק אחרי שהשאלות סיימו
+        yield return new WaitForSeconds(1.2f);
+        //Start practice questions.
+        FreeQueSign.ask = true;
+        FreeQueSign.keepWhile = true;
+        //Finish all practice qustions.
+        yield return new WaitUntil(() => !FreeQueSign.keepWhile);
         CompleteTask();
+        //Send player to next mission.
+        finishMission.GetComponent<SoundEffects>().PlaySoundClip();
+        finishMission.SetActive(true);
+        //Update state for saving the game.
+        PauseMenu.updateSave("Forest", "Coffee", 0);
+        StartCoroutine(BacktoPosition());
     }
 }

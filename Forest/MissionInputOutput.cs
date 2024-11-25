@@ -20,7 +20,8 @@ public class MissionInputOutput : MonoBehaviour
     public GameObject arrow;
     public TaskManager taskManager;
     private bool isTaskCompletedOnce = false;
-
+    public GameObject finishMission;
+    public AudioSource BackgroundMusic;
 
 
     void Start()
@@ -32,21 +33,20 @@ public class MissionInputOutput : MonoBehaviour
     {
         if (other.tag == "Player" && !isTaskActive)
         {
+            BackgroundMusic.Pause();
             isTaskActive = true;
-            //Save Player data
+            //Save PLAYER position and rotation.
             originalPlayerPosition = FindObjectOfType<FirstPersonController>().transform.position;
             originalPlayerRotation = FindObjectOfType<FirstPersonController>().transform.rotation;
-            //Save Camera data
+            //Save CAMERA position and rotation.
             originalCameraPosition = FindObjectOfType<FirstPersonController>().playerCamera.transform.position;
             originalCameraRotation = FindObjectOfType<FirstPersonController>().playerCamera.transform.rotation;
-            //change rotation + position
+            //CHANGE position and rotation.
             FindObjectOfType<FirstPersonController>().playerCamera.transform.position = destination.position;
             FindObjectOfType<FirstPersonController>().playerCamera.transform.rotation = destination.rotation;
             FindObjectOfType<FirstPersonController>().cameraCanMove = false;
             FindObjectOfType<FirstPersonController>().playerCanMove = false;
-            //remoce shakes.
             FindObjectOfType<FirstPersonController>().enableHeadBob = false;
-            arrow.SetActive(false);
             arrow.SetActive(false);
             canvas.SetActive(true);
             Cursor.lockState = CursorLockMode.None;
@@ -64,26 +64,37 @@ public class MissionInputOutput : MonoBehaviour
     {
         Cursor.lockState = CursorLockMode.Confined;
         Cursor.visible = true;
-        if (int.TryParse(inputField.text, out int numberOfRotations))
+        //Number of swings are correct.
+        if (int.TryParse(inputField.text, out int numberOfRotations) && numberOfRotations >= 0)
         {
             inputField.text = "";
+            //Move swing.
             swingScript.StartCarousel(numberOfRotations);
             canvas.SetActive(false);
+            //Wait until swing finish to move.
             yield return new WaitUntil(() => !swingScript.isCarouselRunning);
+            //PLAYER get back to the original place.
             FindObjectOfType<FirstPersonController>().transform.position = originalPlayerPosition;
             FindObjectOfType<FirstPersonController>().transform.rotation = originalPlayerRotation;
+            //CAMERA get back to the original place.
             FindObjectOfType<FirstPersonController>().playerCamera.transform.position = originalCameraPosition;
             FindObjectOfType<FirstPersonController>().playerCamera.transform.rotation = originalCameraRotation;
             FindObjectOfType<FirstPersonController>().cameraCanMove = true;
             FindObjectOfType<FirstPersonController>().playerCanMove = true;
             FindObjectOfType<FirstPersonController>().enableHeadBob = true;
+            //Wait 4 seconds and let the player do the task again if he want to.
             StartCoroutine(WaitBeforeDeactivatingTask());
             arrow.SetActive(true);
+            //Finish mission canvas.
+            finishMission.GetComponent<SoundEffects>().PlaySoundClip();
+            finishMission.SetActive(true);
             CompleteTask();
-
+            //Update state.
+            PauseMenu.updateSave("Forest", "Sign", 0);
         }
         else
         {
+            //Not a valid number.
             if (ErrSound != null && audioSource != null)
             {
                 audioSource.PlayOneShot(ErrSound);
@@ -104,7 +115,8 @@ public class MissionInputOutput : MonoBehaviour
 
     public void CompleteTask()
     {
-        if (!isTaskCompletedOnce)
+        BackgroundMusic.Play();
+        if (!isTaskCompletedOnce && TaskManager.currentTaskIndex == 0)
         {
             isTaskCompletedOnce = true; // מסמן שהמשימה הושלמה
 
@@ -118,7 +130,4 @@ public class MissionInputOutput : MonoBehaviour
             }
         }
     }
-
-
-
 }
