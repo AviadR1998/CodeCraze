@@ -164,6 +164,8 @@ public class learnIntCoffee : MonoBehaviour
 
     public void CompleteTask()
     {
+        Cursor.lockState = CursorLockMode.None;
+        Cursor.visible = false;
         BackgroundMusic.Play();
         if (!isTaskCompletedOnce && TaskManager.currentTaskIndex == 2)
         {
