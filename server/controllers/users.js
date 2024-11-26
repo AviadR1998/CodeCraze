@@ -20,6 +20,12 @@ const returnUser = async (req, res) => {
     res.end();
 }
 
+const resetUser = async (req, res) => {
+    const myRes = await myModels.resetUserModels(req.headers.authorization.split(" ")[0], req.headers.authorization.split(" ")[1]);
+    res.status(myRes);
+    res.end();
+}
+
 const deleteUser = async (req, res) => {
     const myRes = await myModels.delUser(req.headers.authorization.split(" ")[0], req.headers.authorization.split(" ")[1]);
     res.status(myRes);
@@ -69,4 +75,4 @@ const getState = async (req, res) => {
     }
 };
 
-export { addUser, returnUser, deleteUser, addScore, topScore, saveState, getState };
+export { addUser, returnUser, deleteUser, resetUser, addScore, topScore, saveState, getState };

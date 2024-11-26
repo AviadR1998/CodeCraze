@@ -223,7 +223,6 @@ public class RaceMovment : MonoBehaviour
         questionList = new List<string>();
         answersList = new List<string>();
         rightAnswerList = new List<string>();
-        AdminMission.readQuestion = true;
         //while (AdminMission.geminiActivate) { }
         for (int i = 0; i < 10; i++)
         {
@@ -234,7 +233,6 @@ public class RaceMovment : MonoBehaviour
             answersList.Add("bbb");
             rightAnswerList.Add("1");*/
         }
-        AdminMission.readQuestion = false;
         StartCoroutine(delayDrive());
     }
 

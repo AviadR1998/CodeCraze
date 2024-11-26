@@ -49,7 +49,7 @@ public class Movement : MonoBehaviour
     {
         missionInProgress = "";
         //mission = GameObject.Find("IfNPC");//"RaceNPC"
-        mission = player;
+        //mission = player;
         characterController = GetComponent<CharacterController>();
         Cursor.lockState = CursorLockMode.Locked;
         hoverLetter = hoverBall = Cursor.visible = false;
@@ -94,9 +94,13 @@ public class Movement : MonoBehaviour
             {
                 WhileMissions.startFromQuestions = true;
             }
-            if (Login.task == "For" && Login.state != 1)
+            if (Login.task == "For" && Login.state == 1)
             {
-                AdminMission.currentSubMission = 1 + Login.state;
+                ForMission.startFromQuestions = true;
+            }
+            if (Login.task == "For" && Login.state == 2)
+            {
+                ForMission.startFromAfterQuestions = true;
             }
             if (Login.task == "Array" && Login.state == 1)
             {
@@ -257,7 +261,7 @@ public class Movement : MonoBehaviour
         {
             ballBox.transform.position = GameObject.Find("Player").transform.position + new Vector3(
             playerCamera.transform.forward.x * 1,
-            math.sin(playerCamera.transform.forward.y) * 0 + -0.3f,
+            math.sin(playerCamera.transform.forward.y) * 0 - 0.4f,
             playerCamera.transform.forward.z * 1);
         }
 
@@ -265,7 +269,7 @@ public class Movement : MonoBehaviour
         {
             ballBox.transform.position = GameObject.Find("Player").transform.position + new Vector3(
             playerCamera.transform.forward.x * 2,
-            math.sin(playerCamera.transform.forward.y) * 0 + -0.3f,
+            math.sin(playerCamera.transform.forward.y) * 0 - 0.3f,
             playerCamera.transform.forward.z * 2);
         }
 
