@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class CreateQuestionsCanvas : MonoBehaviour
@@ -8,7 +6,7 @@ public class CreateQuestionsCanvas : MonoBehaviour
     private Canvas ClonedCanvas;
     void Start()
     {
-        //CreateQCanvas("Assets\\Island\\data\\ques.csv");
+        //CreateQCanvas("Assets\\Island\\data\\q_recursion.csv");
 
     }
 
@@ -18,6 +16,7 @@ public class CreateQuestionsCanvas : MonoBehaviour
 
         if (ClonedCanvas != null)
         {
+            print("Q_canvas Active!");
             ClonedCanvas.gameObject.SetActive(true);
             ClonedCanvas.GetComponent<QuestionCanvas>().StartAsking(csvPath);
 

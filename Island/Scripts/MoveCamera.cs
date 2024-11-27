@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -26,14 +24,18 @@ public class MoveCamera : MonoBehaviour
             nextBtn2.onClick.AddListener(startSmooshLookAt2);
         }
 
-        Invoke("initStartMission", 3f);
+        // Invoke("initStartMission", 3f);
 
     }
 
-    public void initStartMission()
+    public void InitStartMission()
     {
-        this.GetComponent<BlockPlayerCamera>().stopCamera();
+        GetComponent<BlockPlayerCamera>().stopCamera();
         Invoke("lockCameraAndMovePlayer", 1f);
+        numOfClicks1 = 0;
+        numOfClicks2 = 0;
+        isSmoosh1 = false;
+        isSmoosh2 = false;
     }
 
     public void lockCameraAndMovePlayer()

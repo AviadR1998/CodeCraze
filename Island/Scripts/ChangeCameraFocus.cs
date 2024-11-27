@@ -66,13 +66,10 @@ public class ChangeCameraFocus : MonoBehaviour
     {
         if ((!isSailing || (workOnSail && (!justWhenBack || goingBack))) && !StatueLimitation.shouldLimit)
         {
+            print("Change camera");
             if (workOnSail)
             {
                 isSailing = false;
-            }
-            if (goingBack)
-            {
-                goingBack = false;
             }
             shouldLookAtTarget = true;
             foreach (GameObject gameObject in objectsToDeactivate)

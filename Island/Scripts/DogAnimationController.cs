@@ -15,8 +15,9 @@ public class DogAnimationController : MonoBehaviour
     public CanvasGroup canvasGroup;
     public bool isSpawn = false;
     public GameObject bedObject = null;
+    public static bool canBarkWhenClicked = true;
     private string bedColor = "Yellow";
-    private bool isTriggered = false, toConfigure = false, editOpen = false, canBarkWhenClicked = true;
+    private bool isTriggered = false, toConfigure = false, editOpen = false;
     private Dog dog;
 
     public class Dog
@@ -393,9 +394,5 @@ public class DogAnimationController : MonoBehaviour
         GetComponent<BlockPlayerCamera>().resumeCamera();
     }
 
-    public void MakeCanClickOnDogFalse()
-    {
-        canBarkWhenClicked = false;
-    }
 }
 

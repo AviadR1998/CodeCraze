@@ -11,9 +11,9 @@ public class MissionCanvas : MonoBehaviour
     public GameObject nextCanvas;
     public bool turnOffWhenFinish = false;
 
-    // Start is called before the first frame update
-    void Start()
+    void OnEnable()
     {
+        stringNum = 0;
         innerText.text = stringArray[stringNum++];
         innerText.text = innerText.text.Replace("\\n", "\n");
     }
@@ -38,4 +38,6 @@ public class MissionCanvas : MonoBehaviour
             }
         }
     }
+
+
 }

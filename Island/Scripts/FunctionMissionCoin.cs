@@ -1,36 +1,31 @@
 using System;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
+using Unity.VisualScripting;
 
 public class FunctionMissionCoin : MonoBehaviour
 {
     private int functionCalls;
-    public Button startBtn;
-    public GameObject startCanvas, missionCanvas1, endOfMissionCanvas;
-    public Button startTheMissionBtn;
+    public GameObject startCanvas, missionCanvas1, endOfMissionCanvas, youCollectedCanvas;
+    public Button startBtn, startTheMissionBtn, playBtn, saveFinish;
     public TextMeshProUGUI textTorch;
     public TextMeshProUGUI textMatch;
     public TextMeshProUGUI textLitMatch;
     public TextMeshProUGUI textNumOfFunCalls;
-    public GameObject youCollectedCanvas;
-    public Button playBtn;
+    public GameObject TurnOffTorchesParent, InBoxTurnOffTorches, InBoxTurnOnTorches, InBoxMatches, OutsideMatches;
 
     private int numOfTorches, numOfMatches;
-    private bool isStart = false, finishInstruction = false, endMission = false;
-    // Start is called before the first frame update
-    void Start()
+    private bool isStart = false, finishInstruction = false, endMission = false, initMission = false;
+
+
+    private void Start()
     {
         startBtn.onClick.AddListener(StartCanvases);
         startTheMissionBtn.onClick.AddListener(StartMission);
         playBtn.onClick.AddListener(CreateLitTorches);
-        numOfTorches = 0;
-        numOfMatches = 0;
-        functionCalls = 0;
+        saveFinish.onClick.AddListener(SavedFinishMission);
     }
-
     // Update is called once per frame
     void Update()
     {
@@ -42,29 +37,44 @@ public class FunctionMissionCoin : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-        if (!isStart)
+        if (initMission)
         {
-            //Start mission Canvas
-            startCanvas.SetActive(true);
-            isStart = true;
-        }
-        else if (endMission)
-        {
-            if (!endOfMissionCanvas.activeInHierarchy)
+            if (!isStart)
             {
-                textNumOfFunCalls.text = functionCalls.ToString();
-                endOfMissionCanvas.SetActive(true);
+                //Start mission Canvas
+                startCanvas.SetActive(true);
+                isStart = true;
             }
-
-        }
-        else if (finishInstruction)
-        {
-            if (!youCollectedCanvas.activeInHierarchy)
+            else if (endMission)
             {
-                youCollectedCanvas.SetActive(true);
+                if (!endOfMissionCanvas.activeInHierarchy)
+                {
+                    textNumOfFunCalls.text = functionCalls.ToString();
+                    endOfMissionCanvas.SetActive(true);
+                }
+
+            }
+            else if (finishInstruction)
+            {
+                if (!youCollectedCanvas.activeInHierarchy)
+                {
+                    youCollectedCanvas.SetActive(true);
+                }
             }
         }
 
+
+    }
+
+    public void InitMission()
+    {
+        initMission = true;
+        numOfTorches = 0;
+        numOfMatches = 0;
+        functionCalls = 0;
+        isStart = false;
+        finishInstruction = false;
+        endMission = false;
     }
 
     private void StartCanvases()
@@ -77,7 +87,19 @@ public class FunctionMissionCoin : MonoBehaviour
     {
         isStart = true;
         finishInstruction = true;
+
+        TurnOnOrOffAllChildren(TurnOffTorchesParent, true);
+        TurnOnOrOffAllChildren(OutsideMatches, true);
         return;
+    }
+
+    private void TurnOnOrOffAllChildren(GameObject parent, bool turnTo)
+    {
+        for (int i = 0; i < parent.transform.childCount; i++)
+        {
+            Transform child = parent.transform.GetChild(i);
+            child.gameObject.SetActive(turnTo);
+        }
     }
 
 
@@ -107,6 +129,27 @@ public class FunctionMissionCoin : MonoBehaviour
         {
             endMission = true;
         }
+        youCollectedCanvas.gameObject.SetActive(false);
+
+
+    }
+
+    public void SavedFinishMission()
+    {
+        TurnOnOrOffAllChildren(InBoxTurnOffTorches, false);
+        TurnOnOrOffAllChildren(InBoxMatches, false);
+        TurnOnOrOffAllChildren(InBoxTurnOnTorches, false);
+        TurnOnOrOffAllChildren(OutsideMatches, false);
+        TurnOnOrOffAllChildren(TurnOffTorchesParent, false);
+
+        if (!GameFlow.finishAllMissions)
+        {
+            gameObject.SetActive(false);
+            GameFlow.mission = 1;
+            return;
+        }
+
+        InitMission();
 
     }
 }
