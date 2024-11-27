@@ -1,0 +1,16 @@
+question,Op1,Op2,Op3,Op4,AnsNum
+What is a class in Java?$,A blueprint for objects$,A runtime error$,An IDE tool$,A data type$,1$,A class in Java serves as a blueprint for creating objects, defining their properties and behavior.
+What is an object in Java?$,A collection of classes$,An instance of a class$,A package$,A primitive data type$,2$,An object is an instance of a class created using the 'new' keyword.
+Which keyword is used to create an object in Java?$,new$,create$,object$,make$,1$,The 'new' keyword is used to instantiate an object from a class.
+What is encapsulation in Java?$,Hiding implementation details$,Inheriting methods$,Running a program$,Breaking down a problem$,1$,Encapsulation involves bundling data and methods within a class and restricting access to them.
+What is the correct way to declare a class in Java?$,class MyClass {},MyClass class {},new class MyClass {},public object MyClass {},1$,The syntax 'class MyClass {}' is used to define a class.
+What is the default access modifier for a class in Java?$,public$,private$,default$,package-private$,4$,Classes in Java without a specified modifier have package-private access by default.
+How do you access a member variable of an object?$,object.variable$,class.variable$,variable.object$,variable.class$,1$,The syntax 'object.variable' is used to access a member variable of an object.
+What is the purpose of a constructor in Java?$,To initialize an object$,To destroy an object$,To copy an object$,To compile the code$,1$,Constructors are special methods used to initialize new objects.
+Which keyword is used to refer to the current object in Java?$,this$,current$,object$,instance$,1$,The 'this' keyword refers to the current object in a class.
+Can a class extend multiple classes in Java?$,Yes$,No$,Only in special cases$,Depends on the compiler$,2$,Java does not support multiple inheritance to avoid ambiguity.
+What is an abstract class in Java?$,A class with no methods$,A class that must be extended$,A class with only static methods$,A primitive type$,2$,Abstract classes are intended to be extended and can have abstract methods.
+What is the purpose of the 'static' keyword in Java?$,To create multiple objects$,To define a constant$,To define a class-level member$,To inherit methods$,3$,Static members belong to the class, not any specific object.
+How do you define a method in Java?$,method name() {},void name() {},int name() {},type name() {},2$,A method is defined with a return type, a name, and parentheses.
+What does the keyword 'extends' mean in Java?$,To implement an interface$,To inherit from a class$,To override a method$,To add new variables$,2$,The 'extends' keyword is used for inheritance between classes.
+What is the difference between a class and an object?$,A class is an instance of an object$,A class is a blueprint, and an object is an instance$,They are the same$,An object defines the blueprint$,2$,A class is a blueprint for objects, and an object is a specific instance of a class

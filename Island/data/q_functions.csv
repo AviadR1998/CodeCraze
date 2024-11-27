@@ -1,0 +1,16 @@
+question,Op1,Op2,Op3,Op4,AnsNum
+What is the correct way to define a function in Java?$,function myFunction() { }$,void myFunction() { }$,def myFunction() { }$,fun myFunction() { }$,2$,The correct syntax to define a method in Java uses the void keyword.
+Which keyword is used to return a value from a function in Java?$,return$,output$,yield$,export$,1$,The return keyword is used to pass a value back to the calling code.
+What is the return type of a function that does not return any value?$,null$,void$,empty$,none$,2$,The void keyword indicates the method does not return any value.
+Which of these is a valid method name in Java?$,123method$,_myMethod$,my-Method$,my Method$,2$,In Java, method names can start with an underscore but not with numbers or spaces.
+What is the purpose of the main method in Java?$,To define global variables$,To start the execution of a Java program$,To declare constants$,To handle exceptions$,2$,The main method serves as the entry point for program execution.
+What is the default return type of the main method in Java?$,void$,int$,String$,boolean$,1$,The main method in Java does not return a value and uses void as its return type.
+How can you pass arguments to a function in Java?$,By calling it with parentheses$,By specifying the arguments inside parentheses when calling the function$,By using curly braces$,By using the return keyword$,2$,Arguments are passed inside parentheses in Java.
+What will the following code output? System.out.println(add(3, 4));$,34$,7$,Error$,add$,2$,The function correctly adds 3 and 4, resulting in 7.
+Which of the following is true about method overloading?$,Methods must have the same name and same parameters$,Methods must have the same name but different parameters$,Methods must have different names and the same parameters$,Methods must have different return types$,2$,Method overloading allows multiple methods with the same name but different parameter lists.
+What is the keyword used to define a static method in Java?$,public$,static$,void$,method$,2$,Static methods are defined using the static keyword.
+What will the following code output? System.out.println(greet("Alice"));$,Hello, Alice$,Hello Alice$,Alice$,Error$,1$,The string concatenation produces 'Hello, Alice'.
+What is the term for a function inside a class in Java?$,Method$,Subroutine$,Action$,Task$,1$,In Java, functions inside a class are called methods.
+What is the return type of this function: public static int multiply(int a, int b)?$,int$,void$,String$,float$,1$,The multiply function returns an integer.
+How do you call a method named calculate from another method in the same class?$,call calculate();$,calculate();$,this.calculate();$,run calculate();$,2$,Methods in the same class are called directly by their name with parentheses.
+What is printed by the following code? System.out.println(square(5));$,5$,10$,25$,Error$,3$,The square function computes 5*5, resulting in 25.

@@ -48,12 +48,6 @@ public class DogBed : MonoBehaviour
             return;
         }
 
-        print("Dog name: " + dogName
-                + "\nDog Age: " + numericValue
-                + "\n Breed: " + selectedBreed
-                + "\nSigMove: " + selectedSigMove
-                + "\nBed Color: " + selectedColor);
-
         activateDog(dogName, numericValue, selectedBreed, selectedSigMove, selectedColor);
 
     }
@@ -85,7 +79,7 @@ public class DogBed : MonoBehaviour
 
         if (dogSpawner)
         {
-            dogSpawner.SpawnDog(selectedPrefab, dogLocation, getAnimationInt(sigMove), (uint)age,
+            dog = dogSpawner.SpawnDog(selectedPrefab, dogLocation, getAnimationInt(sigMove), (uint)age,
              dogName, selectedColor, transform.parent.gameObject);
         }
 
@@ -155,6 +149,17 @@ public class DogBed : MonoBehaviour
             GetComponentInParent<BlockPlayerCamera>().stopCamera();
             createDogCanvas.gameObject.SetActive(true);
         }
+    }
+
+    public void RestartBed()
+    {
+        if (dog)
+        {
+            dog.GetComponent<DogAnimationController>().SetBedColor("Yellow");
+            Destroy(dog);
+            dogCreated = false;
+        }
+
     }
 
 }

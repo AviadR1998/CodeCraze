@@ -1,18 +1,18 @@
+using System.ComponentModel;
 using UnityEngine;
-using UnityEngine.InputSystem;  // Needed for input handling
 
 public class BoatController : MonoBehaviour
 {
     public GameObject boat;
     public Camera boatCamera;
     public Canvas getOnBoatCanvas;
-    private bool isRender = true;
+    public int missionIndex;
 
     private bool isPlayerInTrigger = false;
 
     private void OnTriggerEnter(Collider other)
     {
-        if (other.CompareTag("Player"))
+        if (other.CompareTag("Player") && GameFlow.mission >= missionIndex)
         { // Ensure only the player triggers this
             isPlayerInTrigger = true;
             getOnBoatCanvas.gameObject.SetActive(true);

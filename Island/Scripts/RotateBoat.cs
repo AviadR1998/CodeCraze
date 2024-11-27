@@ -194,6 +194,10 @@ public class RotateBoat : MonoBehaviour
             {
                 transform.position = new Vector3(downBarrier.position.x, transform.position.y, transform.position.z);
             }
+            else if (transform.position.x < upBarrier.position.x)
+            {
+                transform.position = new Vector3(upBarrier.position.x, transform.position.y, transform.position.z);
+            }
         }
 
         //Restrict X position
@@ -206,6 +210,10 @@ public class RotateBoat : MonoBehaviour
             if (transform.position.z > downBarrier.position.z)
             {
                 transform.position = new Vector3(transform.position.x, transform.position.y, downBarrier.position.z);
+            }
+            else if (transform.position.z < upBarrier.position.z)
+            {
+                transform.position = new Vector3(transform.position.x, transform.position.y, upBarrier.position.z);
             }
             // if (transform.position.z > 180)
             // {

@@ -8,7 +8,8 @@ public class RecursionMission : MonoBehaviour
     public Transform playerRespawnPoint;
     public Button beforeMissionNextBtn, afterMissionNextBtn;
     public Canvas firstMissionCanvas, afterMissionCompleteCanvas, missionComplete;
-    public GameObject BackgroundAudio;
+    public GameObject BackgroundAudio, RecursionTree, arrow;
+    public GameObject[] PearsToActivate, PearsToDeactivate;
     public float playerRespawnHeight = -1f;
     private int dragonPears = 5, dragonPearsCollected = 0, beforeMissionNextCounter = 0, numOfClicksToStartMission = 13;
     private int afterMissionNextCounter = 0, numOfClicksToFinishMission = 3;
@@ -25,7 +26,6 @@ public class RecursionMission : MonoBehaviour
         {
             afterMissionNextBtn.onClick.AddListener(ClickNextSecondCanvas);
         }
-        Invoke("ActivateFirstCanvas", 4f);
     }
 
     private void ActivateFirstCanvas()
@@ -71,6 +71,16 @@ public class RecursionMission : MonoBehaviour
                 soundEffects.PlaySoundClip();
                 missionComplete.gameObject.SetActive(true);
             }
+            if (!GameFlow.finishAllMissions)
+            {
+                gameObject.SetActive(false);
+            }
+            else
+            {
+                arrow.SetActive(true);
+            }
+
+            StartRecursionMission.startMission = false;
         }
 
     }
@@ -148,23 +158,70 @@ public class RecursionMission : MonoBehaviour
         if (collectAll && !backToDragon)
         {
             backToDragon = true;
-            Transform startMissionObject = transform.Find("StartMission");
 
-            if (startMissionObject != null)
+            MoveCamera moveCamera = GetComponent<MoveCamera>();
+
+            if (moveCamera != null)
             {
-                MoveCamera moveCamera = startMissionObject.GetComponent<MoveCamera>();
+                moveCamera.lockCameraAndMovePlayer();
 
-                if (moveCamera != null)
+                if (afterMissionCompleteCanvas != null)
                 {
-                    moveCamera.lockCameraAndMovePlayer();
-
-                    if (afterMissionCompleteCanvas != null)
-                    {
-                        GetComponent<BlockPlayerCamera>().stopCamera();
-                        afterMissionCompleteCanvas.gameObject.SetActive(true);
-                    }
+                    GetComponent<BlockPlayerCamera>().stopCamera();
+                    afterMissionCompleteCanvas.gameObject.SetActive(true);
                 }
             }
+        }
+    }
+
+    public void StartMission()
+    {
+        Invoke("ActivateFirstCanvas", 1f);
+        GetComponent<MoveCamera>().InitStartMission();
+        dragonPearsCollected = 0;
+        beforeMissionNextCounter = 0;
+        afterMissionNextCounter = 0;
+        collectAll = false;
+        backToDragon = false;
+
+        foreach (GameObject pear in PearsToActivate)
+        {
+            pear.SetActive(true);
+        }
+
+        foreach (GameObject pear in PearsToDeactivate)
+        {
+            pear.SetActive(false);
+        }
+        RestorePoleAndBridge(RecursionTree.transform);
+        arrow.SetActive(false);
+    }
+
+
+    private void RestorePoleAndBridge(Transform transform)
+    {
+        foreach (Transform child in transform)
+        {
+            if (child.name == "RopeNPole")
+            {
+                PoleAndBridge poleAndBridge = child.GetComponent<PoleAndBridge>();
+                if (poleAndBridge != null)
+                {
+                    poleAndBridge.NumOfCollectedPears = 0;
+                    poleAndBridge.ZeroPearsCollected = false;
+                    poleAndBridge.AllPearsCollected = false;
+                }
+                RestorePoleAndBridge(child);
+            }
+        }
+
+    }
+
+    private void OnEnable()
+    {
+        if (!arrow.activeInHierarchy)
+        {
+            arrow.SetActive(true);
         }
     }
 

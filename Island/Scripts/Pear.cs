@@ -6,18 +6,6 @@ public class Pear : MonoBehaviour
     public bool ZeroPears = false;
     private bool IsCollected = false;
 
-    // Start is called before the first frame update
-    void Start()
-    {
-
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-
-    }
-
     private void OnTriggerEnter(Collider other)
     {
         if (!IsCollected)
@@ -36,6 +24,11 @@ public class Pear : MonoBehaviour
             gameObject.SetActive(false);
         }
 
+    }
+
+    private void OnEnable()
+    {
+        IsCollected = false;
     }
 
 

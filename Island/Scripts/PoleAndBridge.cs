@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class PoleAndBridge : MonoBehaviour
@@ -7,7 +5,7 @@ public class PoleAndBridge : MonoBehaviour
 
     public int NeededPears = 0, NumOfCollectedPears = 0;
     public bool HasChildrenWithZeroPears = false;
-    private bool AllPearsCollected = false, ZeroPearsCollected = false;
+    public bool AllPearsCollected = false, ZeroPearsCollected = false;
 
     // Update is called once per frame
     void Update()
@@ -15,13 +13,7 @@ public class PoleAndBridge : MonoBehaviour
         if (!AllPearsCollected && NeededPears == NumOfCollectedPears && (!HasChildrenWithZeroPears || ZeroPearsCollected))
         {
             print("In Pole And Bridge Update");
-            foreach (Transform child in transform)
-            {
-                if (child.name == "pear")
-                {
-                    child.gameObject.SetActive(true);
-                }
-            }
+            SetChildPearsTo(true);
             AllPearsCollected = true;
         }
     }
@@ -36,6 +28,17 @@ public class PoleAndBridge : MonoBehaviour
         if (HasChildrenWithZeroPears)
         {
             ZeroPearsCollected = true;
+        }
+    }
+
+    public void SetChildPearsTo(bool setTo)
+    {
+        foreach (Transform child in transform)
+        {
+            if (child.name == "pear")
+            {
+                child.gameObject.SetActive(setTo);
+            }
         }
     }
 

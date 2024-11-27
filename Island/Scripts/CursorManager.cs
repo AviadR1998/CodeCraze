@@ -7,6 +7,7 @@ public class CursorManager : MonoBehaviour
     [SerializeField] private Canvas canvasToIgnore2;
     [SerializeField] private Canvas canvasToIgnore3;
     [SerializeField] private Canvas canvasToIgnore4;
+    public Canvas[] canvasesToIgnore;
 
     void Update()
     {
@@ -15,11 +16,26 @@ public class CursorManager : MonoBehaviour
 
         // Check if any canvas is active except the ignored ones
         bool isAnyCanvasActive = false;
+        bool toIgnore = false;
         foreach (Canvas canvas in allCanvases)
         {
-            if (canvas == canvasToIgnore1 || canvas == canvasToIgnore2
-                || canvas == canvasToIgnore3 || canvas == canvasToIgnore4)
-                continue; // Skip ignored canvases
+            // if (canvas == canvasToIgnore1 || canvas == canvasToIgnore2
+            //     || canvas == canvasToIgnore3 || canvas == canvasToIgnore4)
+            //     continue; // Skip ignored canvases
+
+            foreach (Canvas canvasToIgnore in canvasesToIgnore)
+            {
+                if (canvasToIgnore == canvas)
+                {
+                    toIgnore = true;
+                    break;
+                }
+            }
+            if (toIgnore)
+            {
+                toIgnore = false;
+                continue;
+            }
 
             if (canvas.gameObject.activeInHierarchy)
             {
