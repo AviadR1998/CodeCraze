@@ -62,11 +62,6 @@ public class Movement : MonoBehaviour
     {
         backgrounMusic.Play();
         raceOn = false;
-        if (!loadOnce)
-        {
-            return;
-        }
-        loadOnce = false;
         if (Login.world != "City")
         {
             addingToArrow = 50;
@@ -78,6 +73,11 @@ public class Movement : MonoBehaviour
         }
         else
         {
+            if (!loadOnce)
+            {
+                return;
+            }
+            loadOnce = false;
             mission = player;
             if (Login.task != "If")
             {

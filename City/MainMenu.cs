@@ -24,6 +24,7 @@ public class MainMenu : MonoBehaviour
     string[] topicList;
     public static string topicListSaved;
     public static string serverIp = "127.0.0.1";
+    public static bool activateRace = false;
 
     private bool[] topicToggleBoolList;
 
@@ -175,6 +176,7 @@ public class MainMenu : MonoBehaviour
         AdminMission.answers = new Stack<string>();
         AdminMission.rightAnswers = new Stack<string>();
         AdminMission.loadAll = AdminMission.geminiActivate = false;
+        activateRace = true;
         topicListSaved = "";
         for (int i = 0; i < topicToggleBoolList.Length; i++) 
         {

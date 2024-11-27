@@ -74,7 +74,6 @@ public class AdminMission : MonoBehaviour
     public TMP_Text talkingText;
     public TMP_Text practicalText;
     public TMP_Text questioNumberText;
-    public bool isRace;
     public static Stack<string> questions;
     public static Stack<string> answers;
     public static Stack<string> rightAnswers;
@@ -191,6 +190,7 @@ public class AdminMission : MonoBehaviour
         geminiActivate = false;
         questioNumberText.text = "questions: " + (questions.Count > 10 ? 10 : questions.Count) + "/10";
         loadAll = questions.Count >= 10;
+        MainMenu.activateRace = !loadAll;
     }
 
     IEnumerator callGpt()
@@ -239,11 +239,12 @@ public class AdminMission : MonoBehaviour
         geminiActivate = false;
         questioNumberText.text = "questions: " + (questions.Count > 10 ? 10 : questions.Count) + "/10";
         loadAll = questions.Count >= 10;
+        MainMenu.activateRace = !loadAll;
     }
 
     void Update()
     {
-        if (questions.Count < 10 && !geminiActivate && !loadAll)
+        if (MainMenu.activateRace && questions.Count < 10 && !geminiActivate && !loadAll)
         {
             geminiActivate = true;
             StartCoroutine(callGemini());
