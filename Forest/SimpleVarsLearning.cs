@@ -58,7 +58,7 @@ public class SimpleVarsLearning : MonoBehaviour
             arrow.SetActive(false);
             audioSource.Stop();
             canvas.SetActive(true);
-            Cursor.lockState = CursorLockMode.None;
+            Cursor.lockState = CursorLockMode.Confined;
             Cursor.visible = true;
         }
     }
@@ -66,18 +66,14 @@ public class SimpleVarsLearning : MonoBehaviour
     public void ButtonInfoClick()
     {
         canvas.SetActive(false);
-        Cursor.lockState = CursorLockMode.Confined;
-        Cursor.visible = true;
         canvaGameExplain.SetActive(true);
-        Cursor.lockState = CursorLockMode.Confined;
-        Cursor.visible = true;
     }
 
     public void ButtonGameExplain()
     {
         canvaGameExplain.SetActive(false);
-        Cursor.lockState = CursorLockMode.Confined;
-        Cursor.visible = true;
+        Cursor.lockState = CursorLockMode.Locked;
+        Cursor.visible = false;
         //PLAYER get back to the original place.
         FindObjectOfType<FirstPersonController>().transform.position = originalPlayerPosition;
         FindObjectOfType<FirstPersonController>().transform.rotation = originalPlayerRotation;
@@ -175,6 +171,8 @@ public class SimpleVarsLearning : MonoBehaviour
     public void CompleteTask()
     {
         audioSource.Play();
+        // Cursor.lockState = CursorLockMode.Confined;
+        // Cursor.visible = true;
         if (!isTaskCompletedOnce && TaskManager.currentTaskIndex == 3)
         {
             isTaskCompletedOnce = true;

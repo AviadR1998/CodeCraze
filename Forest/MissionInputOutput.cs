@@ -49,7 +49,7 @@ public class MissionInputOutput : MonoBehaviour
             FindObjectOfType<FirstPersonController>().enableHeadBob = false;
             arrow.SetActive(false);
             canvas.SetActive(true);
-            Cursor.lockState = CursorLockMode.None;
+            Cursor.lockState = CursorLockMode.Confined;
             Cursor.visible = true;
         }
     }
@@ -57,13 +57,13 @@ public class MissionInputOutput : MonoBehaviour
 
     public void ButtonSwingClick()
     {
+        Cursor.lockState = CursorLockMode.None;
+        Cursor.visible = false;
         StartCoroutine(ButtonSwingClickCoroutine());
     }
 
     private IEnumerator ButtonSwingClickCoroutine()
     {
-        Cursor.lockState = CursorLockMode.Confined;
-        Cursor.visible = true;
         //Number of swings are correct.
         if (int.TryParse(inputField.text, out int numberOfRotations) && numberOfRotations >= 0)
         {
