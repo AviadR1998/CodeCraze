@@ -27,8 +27,7 @@ public class GateScript : MonoBehaviour
         }
     }
 
-    // Start is called before the first frame update
-    void Start()
+    void OnEnable()
     {
         helpMessage.text = "The driver: Help!";
         InvokeRepeating("angryDriver", 0f, 2f);

@@ -43,7 +43,7 @@ public class Practice : MonoBehaviour
             Cursor.lockState = CursorLockMode.Locked;
             canAsk = activeCanvas = Cursor.visible = false;
             PauseMenu.canPause = player.GetComponent<Movement>().enabled = true;
-            if (nextMission != null)
+            if (nextMission.Count > 0)
             {
                 if (nextMission[0] != null)
                 {
@@ -79,6 +79,7 @@ public class Practice : MonoBehaviour
             else
             {
                 Movement.missionInProgress = "";
+
             }
         }
     }

@@ -238,7 +238,6 @@ public class BoxGame : MonoBehaviour
             Practice.taskName = "array";
             Practice.canAsk = PauseMenu.canPause = true;
             Movement.mission = practiceNPC;
-            Practice.nextMission = null;
             PauseMenu.updateSave("City", "Array", 1);
         }
         else

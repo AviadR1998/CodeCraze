@@ -88,18 +88,18 @@ public class SoccerMovment : MonoBehaviour
         }
     }
 
-    List<int> createAnswers(int correct)
+    List<int> createAnswers(int correct, int lowerBound, int upperBound)
     {
         List<int> ret = new List<int>();
         ret.Add(correct);
         while (ret.Count != 4)
         {
-            int rnd = Random.Range(Mathf.Max(0, correct - 20), correct + 10);
+            int rnd = Random.Range(Mathf.Max(0, correct - lowerBound), correct + upperBound);
             for (int i = 0; i < ret.Count; i++)
             {
                 if (ret[i] == rnd)
                 {
-                    rnd = Random.Range(Mathf.Max(0, correct - 20), correct + 10);
+                    rnd = Random.Range(Mathf.Max(0, correct - lowerBound), correct + upperBound);
                     i = -1;
                 }
             }
@@ -118,7 +118,7 @@ public class SoccerMovment : MonoBehaviour
             sum += i;
         }
         correctAnswer = sum;
-        List<int> answers = createAnswers(sum);
+        List<int> answers = createAnswers(sum, 20, 10);
         string questionText = "What is the output?";
         explanation = "The answer is " + sum + " because if you add all the numbers from 1 to " + range + " you will get " + sum + ".";
         questionSoccerCanvas.SetActive(true);
@@ -134,7 +134,7 @@ public class SoccerMovment : MonoBehaviour
             sum *= i;
         }
         correctAnswer = sum;
-        List<int> answers = createAnswers(sum);
+        List<int> answers = createAnswers(sum, 20, 10);
         string questionText = "What is the output?";
         explanation = "The answer is " + sum + " because if you multiply all the numbers from 1 to " + range + " you will get " + sum + ".";
         questionSoccerCanvas.SetActive(true);
@@ -148,7 +148,7 @@ public class SoccerMovment : MonoBehaviour
         string questionCode = "for (int i = 0; i " + opr + " _; i++) {\n\tSystem.out.println(i);\n}";
         string questionText = "complete the for so that it runs " + range + " times.";
         explanation = "The answer is " + (range - option) + " because the operator was " + opr + " and the for need to run " + range + " times.";
-        List<int> answers = createAnswers(range - option);
+        List<int> answers = createAnswers(range - option, 20, 10);
         correctAnswer = range - option;
         questionSoccerCanvas.SetActive(true);
         SoccerQuestion.initiateQuestion(questionCode, questionText, explanation, answers, (range - option) + "");
@@ -161,7 +161,7 @@ public class SoccerMovment : MonoBehaviour
         string questionCode = "for (int i = 0; i < " + range + "; i++) {\n\tif (i == " + brFor + ") {\n\t\tbreak;\n\t}\n\tSystem.out.println(i);\n}";
         string questionText = "how many times the for will run?";
         explanation = "the for will run " + brFor + " times because when the for reach to that number the for will break.";
-        List<int> answers = createAnswers(brFor);
+        List<int> answers = createAnswers(brFor, 20, 10);
         correctAnswer = brFor;
         questionSoccerCanvas.SetActive(true);
         SoccerQuestion.initiateQuestion(questionCode, questionText, explanation, answers, brFor + "");
@@ -174,7 +174,7 @@ public class SoccerMovment : MonoBehaviour
         string questionCode = "for (int i = 0; i < " + range + "; i++) {\n\tif (i == " + conFor + ") {\n\t\tcontinue;\n\t}\n\tSystem.out.println(i);\n}";
         string questionText = "which number will not be printed?";
         explanation = "the for will not print the number " + conFor + " because when the for reach to that number the for will skip to next number.";
-        List<int> answers = createAnswers(conFor);
+        List<int> answers = createAnswers(conFor, 20, range - conFor);
         correctAnswer = conFor;
         questionSoccerCanvas.SetActive(true);
         SoccerQuestion.initiateQuestion(questionCode, questionText, explanation, answers, conFor + "");
@@ -191,7 +191,7 @@ public class SoccerMovment : MonoBehaviour
         string questionText = "What is the output?";
         string questionCode = "int sum = 0;\nfor (int i = 0; i < " + range + "; i += " + incF + ") {\n\tsum += " + addF + ";\n\tsum *= 2;\n}\nSystem.out.println(sum);";
         explanation = "The for runs " + ((range / incF) + (range % incF)) + " times and in each iteration the sum increase by " + addF + " and multiply by 2.";
-        List<int> answers = createAnswers(sum);
+        List<int> answers = createAnswers(sum, 20, 10);
         correctAnswer = sum;
         questionSoccerCanvas.SetActive(true);
         SoccerQuestion.initiateQuestion(questionCode, questionText, explanation, answers, sum + "");
@@ -203,7 +203,7 @@ public class SoccerMovment : MonoBehaviour
         string questionText = "How many times the for will run?";
         string questionCode = "for (int i = 0; i < " + range + "; i++) {\n\tSystem.out.println(i);\n}";
         explanation = "The for run " + range + " times because when the \'i\' equal to that number the for is finished.";
-        List<int> answers = createAnswers(range);
+        List<int> answers = createAnswers(range, 20, 10);
         correctAnswer = range;
         questionSoccerCanvas.SetActive(true);
         SoccerQuestion.initiateQuestion(questionCode, questionText, explanation, answers, range + "");

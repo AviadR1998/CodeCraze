@@ -25,6 +25,7 @@ public class WhileMissions : MonoBehaviour
     public GameObject orderCanvas;
     public GameObject player;
     public GameObject talkingPanel;
+    public GameObject practicalOrderPanel;
     public GameObject missionCompleteCanvas;
     public GameObject gate;
     public TMP_Text talkingText;
@@ -103,6 +104,7 @@ public class WhileMissions : MonoBehaviour
     {
         canvasMission.SetActive(false);
         orderCanvas.SetActive(true);
+        practicalOrderPanel.SetActive(true);
         ticketMachine.GetComponent<GateScript>().enabled = true;
         AdminMission.currentSubMission++;
         player.GetComponent<Movement>().enabled = true;

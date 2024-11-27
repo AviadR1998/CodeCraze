@@ -39,11 +39,12 @@ public class IfMissions : MonoBehaviour
     bool talk, stop, startCutS, hotColdBool, findAll;
     float distance;
     public static int currentFindObj;
-    Vector3 startPoint = new Vector3(-19.54f, 1.46f, -13.42f) + new Vector3(-901.14f, 11.69f, 297.78f), carPosision; //(-19.54f, 4.46f, -11.92f)
+    Vector3 startPoint = new Vector3(-19.54f, 1.46f, -13.42f) + new Vector3(-901.14f, 11.69f, 297.78f), carPosision, cameraPos; //(-19.54f, 4.46f, -11.92f)
 
     // Start is called before the first frame update
     void Start()
     {
+        cameraPos = camera.transform.position;
         distance = float.MaxValue;
         stopLine.SetActive(true);
         findAll = hotColdBool = startCutS = stop = talk = xLine = false;
@@ -249,7 +250,7 @@ public class IfMissions : MonoBehaviour
             blackCar.SetActive(true);
             blueCar.SetActive(true);
             player.transform.position = new Vector3(-901.3398f, 11.69172f, 297.0288f);
-            camera.transform.position = new Vector3(0.1645798f, 0.0239689f, 0.01668368f) + player.transform.position;
+            camera.transform.position = new Vector3(0.2895798f, 0.1069689f, 0.02268368f) + player.transform.position; //0.1645798f, 0.0239689f, 0.01668368f
             player.transform.rotation = Quaternion.Euler(0, 91.5f, 0);
             camera.transform.rotation = Quaternion.Euler(-4.5f, 90, 0);
             AdminMission.currentSubText = 0;

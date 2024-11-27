@@ -106,6 +106,8 @@ public class RoomsMenu : MonoBehaviour
         }
         errorText.text = "";
         raceField.SetActive(true);
+        Cursor.lockState = CursorLockMode.Locked;
+        Cursor.visible = false;
         player.GetComponent<CharacterController>().enabled = false;
         player.GetComponent<RaceMovment>().enabled = true;
         player.transform.position = new Vector3(x, y, z);
