@@ -47,7 +47,7 @@ public class Login : MonoBehaviour
     public GameObject canvas;
     public GameObject loginPage;
 
-    string[] topics = {"for", "if", "array", "while", "dowhile" };
+    string[] topics = { "Var", "InputOutput", "CountPlusPlus", "Arithmetic", "Logical", "for", "if", "array", "while", "dowhile" };
 
 
     // Start is called before the first frame update

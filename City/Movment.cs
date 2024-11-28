@@ -214,7 +214,7 @@ public class Movement : MonoBehaviour
         {
             backgrounMusic.Play();
         }
-        if (soccer || PauseMenu.isPaused)
+        if (soccer || PauseMenu.isPaused || EndWorldScript.activated)
         {
             return;
         }

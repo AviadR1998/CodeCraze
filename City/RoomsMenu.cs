@@ -128,7 +128,7 @@ public class RoomsMenu : MonoBehaviour
 
     IEnumerator getAllRooms()
     {
-        string uri = "http://" + MainMenu.serverIp + ":5000/api/Rooms/";
+        string uri = "http://" + MainMenu.serverIp + ":5000/api/Rooms/" + MainMenu.topicListSaved;
         using (UnityWebRequest request = UnityWebRequest.Get(uri))
         {
             yield return request.SendWebRequest();

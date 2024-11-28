@@ -11,6 +11,7 @@ public class PauseMenu : MonoBehaviour
     public GameObject pausePanel;
     public GameObject surePanel;
     public GameObject leaderBoardPage;
+    public GameObject pauseButtons;
     public GameObject settingPage;
     static public bool isPaused, canPause;
     public static bool activated = false;
@@ -44,7 +45,7 @@ public class PauseMenu : MonoBehaviour
     {
         pausePanel.transform.GetComponent<Image>().sprite = Resources.Load("PauseMenu", typeof(Sprite)) as Sprite;
         leaderBoardPage.SetActive(false);
-        settingPage.SetActive(true);
+        pauseButtons.SetActive(true);
     }
 
     IEnumerator dataToServer()
@@ -77,13 +78,14 @@ public class PauseMenu : MonoBehaviour
 
     public void settings()
     {
-
+        SettingsMenu.activateButtons = false;
+        settingPage.SetActive(true);
     }
 
     public void leaderBoard()
     {
         pausePanel.transform.GetComponent<Image>().sprite = Resources.Load("LeaderBoard", typeof(Sprite)) as Sprite;
-        settingPage.SetActive(false);
+        pauseButtons.SetActive(false);
         leaderBoardPage.SetActive(true);
     }
 
@@ -125,7 +127,7 @@ public class PauseMenu : MonoBehaviour
                 isPaused = Cursor.visible = true;
                 leaderBoardPage.SetActive(false);
                 pausePanel.SetActive(true);
-                settingPage.SetActive(true);
+                pauseButtons.SetActive(true);
             }
         }
     }
