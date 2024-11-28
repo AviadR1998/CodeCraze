@@ -36,7 +36,6 @@ public class BikeMission : MonoBehaviour
     private AudioSource audioSource;
     public AudioSource BackgroundMusic;
 
-
     void Start()
     {
         audioSource = GetComponent<AudioSource>();
@@ -106,7 +105,6 @@ public class BikeMission : MonoBehaviour
         isQuestionActive = true;
     }
 
-
     private void InitializeOperations()
     {
         // 0 = +, 1 = -, 2 = /, 3 = %, 4 = *
@@ -166,6 +164,8 @@ public class BikeMission : MonoBehaviour
 
     void GenerateQuestion()
     {
+        Cursor.lockState = CursorLockMode.Confined;
+        Cursor.visible = true;
         //If the operations list is empty, stop and do not generate a new question.
         if (operations.Count == 0) return;
         int num1 = Random.Range(1, 13);
@@ -213,6 +213,8 @@ public class BikeMission : MonoBehaviour
     {
         if (isMoving)
         {
+            Cursor.lockState = CursorLockMode.None;
+            Cursor.visible = false;
             //Check if the bike has reached the next point (distance is less than 0.1).
             if (Vector3.Distance(transform.position, dots[currentDotIndex].transform.position) < 0.1f)
             {
