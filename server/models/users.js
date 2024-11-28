@@ -97,14 +97,6 @@ async function getTopScore(bearer, token, score) {
         client.connect();
         const db = client.db('CodeCraze');
         const users = db.collection('Users');
-        /*let res = (await users.find({} , {username: 1, password: 0, mail: 0, age: 0, world: 0, task: 0, state: 0, score: 1 }).toArray()).sort((user1, user2) => {
-            if (user2.score === user1.score) {
-                return user1.username.localeCompare(user2.username);
-            }
-            return user2.score - user1.score;
-        });
-        return res.slice(0, 5);
-        */
         let res = await users.find({} , {username: 1, password: 0, mail: 0, age: 0, world: 0, task: 0, state: 0, score: 1 }).toArray();
         const myHeap = new Heap((user1, user2) => {
             if (user2.score === user1.score) {
@@ -132,7 +124,7 @@ async function getTopScore(bearer, token, score) {
     }
 }
 
-async function resetUserModels(bearer, token, details) {
+async function resetUserModels(bearer, token) {
     try {
         const data = functions.validateToken(bearer, token);
         if (data === null) {

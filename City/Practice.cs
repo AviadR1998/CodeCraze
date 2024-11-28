@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class Practice : MonoBehaviour
 {
@@ -10,6 +11,7 @@ public class Practice : MonoBehaviour
     public GameObject questionObj;
     public GameObject player;
     public GameObject arrow;
+    public GameObject finalScreenCanvas;
 
     Canvas retCanvas;
     bool activeCanvas;
@@ -79,7 +81,12 @@ public class Practice : MonoBehaviour
             else
             {
                 Movement.missionInProgress = "";
-
+                if (Login.world != "Free")
+                {
+                    finalScreenCanvas.SetActive(true);
+                    Cursor.lockState = CursorLockMode.Confined;
+                    Cursor.visible = true;
+                }
             }
         }
     }

@@ -5,8 +5,8 @@ var usersRouter = express.Router();
 usersRouter.post('/', addUser);
 usersRouter.post('/AddScore', addScore);
 usersRouter.get('/TopScore', topScore);
-usersRouter.delete('/delete', deleteUser);
-usersRouter.delete('/reset', resetUser);
+usersRouter.delete('/Delete', deleteUser);
+usersRouter.post('/Reset', resetUser);
 usersRouter.post('/SaveState', saveState);
 usersRouter.get('/GetState', getState);
 

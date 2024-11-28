@@ -6,8 +6,9 @@ export const roomsListTopics = new Map();
 const returnAllRooms = async (req, res) => {
     //const myRes = await myModels.getRooms(req.headers.authorization.split(" ")[0], req.headers.authorization.split(" ")[1]);
     let myRes = {host : []}
+    console.log("-" + req.params.topics + "-");
     for (let [key, value] of roomsList) {
-        if (value === "--" && req.body.topics == roomsListTopics.get(key)){
+        if (value === "--" && (req.params.topics + ' ') === roomsListTopics.get(key)){
             myRes.host.push(key);
         }
     }
@@ -20,10 +21,12 @@ const returnAllRooms = async (req, res) => {
 }
 
 const createRoom = async (req, res) => {
+    console.log(req.body.topics);
     //const myRes = await myModels.postRooms(req.params.username, req.headers.authorization.split(" ")[0], req.headers.authorization.split(" ")[1]);
     roomsList.set(req.params.username, "--");
     roomsListTopics.set(req.params.username, req.body.topics)
     console.log(roomsList);
+    console.log(roomsListTopics);
     res.status(200);
     res.end();
 }

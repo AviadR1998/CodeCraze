@@ -5,13 +5,12 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 using UnityEngine.Networking;
-using static QuestionCanvas;
 
 
 public class MainMenu : MonoBehaviour
 {
     public GameObject mainMenu;
-    public GameObject optionsPage;
+    public GameObject settingPage;
     public GameObject firstMenu;
     public GameObject canvas;
     public GameObject loginPage;
@@ -134,8 +133,8 @@ public class MainMenu : MonoBehaviour
 
     public void options()
     {
-        mainMenu.SetActive(false);
-        optionsPage.SetActive(true);
+        SettingsMenu.activateButtons = true;
+        settingPage.SetActive(true);
     }
 
     public void practice()
@@ -202,32 +201,9 @@ public class MainMenu : MonoBehaviour
 
     }
 
-    public void backToMainMenu()
-    {
-        optionsPage.SetActive(false);
-        mainMenu.SetActive(true);
-    }
-
     public void Quit()
     {
         Application.Quit();
-        //StartCoroutine(SendDeleteRequest());
-    }
-
-
-    private IEnumerator SendDeleteRequest()
-    {
-        UnityWebRequest request = UnityWebRequest.Delete("http://" + serverIp + ":5000/api/Users/delete");
-        request.SetRequestHeader("authorization", "Bearer " + Login.token);
-        yield return request.SendWebRequest();
-        if (request.result == UnityWebRequest.Result.Success)
-        {
-            Debug.Log("User deleted successfully!");
-        }
-        else
-        {
-            Debug.LogError($"Error deleting user: {request.error}");
-        }
     }
 
     private IEnumerator delayLogo()
