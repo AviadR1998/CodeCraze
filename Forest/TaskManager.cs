@@ -10,11 +10,15 @@ public class TaskManager : MonoBehaviour
     public GameObject[] taskObjects;
     public static int currentTaskIndex = 0;
     public GameObject CastleBox;
-    public GameObject taskCanvas; // הקנבס לתצוגה זמנית
+    public GameObject taskCanvas;
+    public GameObject endAllCanvas;
+    private AudioSource audioSource;
+    public AudioClip finishAudioSource;
 
     void Update()
     {
-        //Cheats for playing the game :)
+        audioSource = GetComponent<AudioSource>();
+        //Cheats for playing the game!
         if (Input.GetKeyDown(KeyCode.Tab))
         {
             ActivateNextTask();
@@ -26,55 +30,54 @@ public class TaskManager : MonoBehaviour
 
     }
 
-   
     public void ActivateTaskByIndex(int taskIndex)
     {
         switch (taskIndex)
         {
             case 0: // Task 1 - Swing in the park
                 ActivateArrowAndObject(taskIndex);
-                ShowCanvasWithMessage("Task 1: Head to the park and find the pink arrow near the swing!😀");
+                ShowCanvasWithMessage("Task 1: Head to the park and find the pink arrow near the swing!");
                 break;
 
             case 1: // Task 2 - Sign near the swing
                 ActivateArrowAndObject(taskIndex);
                 PauseMenu.updateSave("Forest", "Sign", 0);
-                ShowCanvasWithMessage("Task 2: Go to the sign next to the swing, marked with the pink arrow!😀");
+                ShowCanvasWithMessage("Task 2: Go to the sign next to the swing, marked with the pink arrow!");
                 break;
 
             case 2: // Task 3 - Coffee area
                 ActivateArrowAndObject(taskIndex);
                 PauseMenu.updateSave("Forest", "Coffee", 0);
-                ShowCanvasWithMessage("Task 3: Walk to the café area where the pink arrow points!😀");
+                ShowCanvasWithMessage("Task 3: Walk to the café area where the pink arrow points!");
                 break;
 
             case 3: // Task 4 - Boxes near the castle
                 ActivateArrowAndObject(taskIndex);
                 PauseMenu.updateSave("Forest", "Box", 0);
-                ShowCanvasWithMessage("Task 4: Make your way to the castle and look for the boxes near the pink arrow!😀");
+                ShowCanvasWithMessage("Task 4: Make your way to the castle and look for the boxes near the pink arrow!");
                 break;
 
             case 4: // Task 5 - Boat at the river
                 ActivateArrowAndObject(taskIndex);
                 PauseMenu.updateSave("Forest", "Fish", 0);
-                ShowCanvasWithMessage("Task 5: Head to the river and find the boat near the pink arrow!😀");
+                ShowCanvasWithMessage("Task 5: Head to the river and find the boat near the pink arrow!");
                 break;
 
             case 5: // Task 6 - Red bike
                 ActivateArrowAndObject(taskIndex);
                 PauseMenu.updateSave("Forest", "Bike", 0);
-                ShowCanvasWithMessage("Task 6: Go to the bike trail and find the red bike by the pink arrow!😀");
+                ShowCanvasWithMessage("Task 6: Go to the bike trail and find the red bike by the pink arrow!");
                 break;
 
             case 6: // Task 7 - Camping area
                 ActivateArrowAndObject(taskIndex);
                 PauseMenu.updateSave("Forest", "Fire", 0);
-                ShowCanvasWithMessage("Task 7: Walk to the camping area where the pink arrow is pointing!😀");
+                ShowCanvasWithMessage("Task 7: Walk to the camping area where the pink arrow is pointing!");
                 break;
 
             default:
                 PauseMenu.updateSave("Forest", "Finish", 0);
-                //ShowCanvasWithMessage("Congratulations! You’ve completed ALL the tasks!😀");
+                StartCoroutine(ShowEndCanvasWithDelay());
                 CastleBox.SetActive(true);
                 break;
         }
@@ -83,7 +86,6 @@ public class TaskManager : MonoBehaviour
 
     private void ShowCanvasWithMessage(string message)
     {
-       
         taskCanvas.SetActive(true);
         taskCanvas.GetComponentInChildren<TMP_Text>().text = message;
         StartCoroutine(HideCanvasAfterDelay());
@@ -91,25 +93,38 @@ public class TaskManager : MonoBehaviour
 
     private IEnumerator HideCanvasAfterDelay()
     {
-        yield return new WaitForSeconds(6); 
-        taskCanvas.SetActive(false); 
+        yield return new WaitForSeconds(6);
+        taskCanvas.SetActive(false);
     }
-
 
     public void ActivateArrowAndObject(int index)
     {
         if (index < taskArrows.Length && index < taskObjects.Length)
         {
             //Arrow.
-            taskArrows[index].SetActive(true); 
+            taskArrows[index].SetActive(true);
             //Object to clash.
-            taskObjects[index].SetActive(true); 
+            taskObjects[index].SetActive(true);
         }
     }
 
     public void ActivateNextTask()
     {
-        currentTaskIndex++; 
-        ActivateTaskByIndex(currentTaskIndex); 
+        currentTaskIndex++;
+        ActivateTaskByIndex(currentTaskIndex);
+    }
+
+    private IEnumerator ShowEndCanvasWithDelay()
+    {
+        //Wait 6 seconds until show canvas.
+        yield return new WaitForSeconds(6);
+        if (finishAudioSource != null && audioSource != null)
+        {
+            audioSource.PlayOneShot(finishAudioSource);
+        }
+        endAllCanvas.SetActive(true);
+        //End canvas after 10 seconds.
+        yield return new WaitForSeconds(10);
+        endAllCanvas.SetActive(false);
     }
 }

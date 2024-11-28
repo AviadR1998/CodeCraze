@@ -26,7 +26,7 @@ public class FreeQueFire : MonoBehaviour
             CreateQuestionsCanvas createQuestionsCanvas = GetComponent<CreateQuestionsCanvas>();
             if (createQuestionsCanvas != null)
             {
-                qcanvas = createQuestionsCanvas.CreateQCanvas("LogicalOperations.csv");
+                qcanvas = createQuestionsCanvas.CreateQCanvas("LogicalCSV.csv");
             }
             Cursor.lockState = CursorLockMode.Confined;
             Cursor.visible = true;
@@ -34,7 +34,7 @@ public class FreeQueFire : MonoBehaviour
             questionActivated = true;
         }
 
-        //Once qcanva is off we know practice questions end.
+        //Once qcanva is off we know practice questions END.
         if (qcanvas != null && !qcanvas.gameObject.active && questionActivated)
         {
             Cursor.lockState = CursorLockMode.Locked;

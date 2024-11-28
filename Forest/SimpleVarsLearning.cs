@@ -5,7 +5,6 @@ using TMPro;
 using System;
 using TreeEditor;
 
-
 public class SimpleVarsLearning : MonoBehaviour
 {
     public GameObject canvas;
@@ -40,9 +39,11 @@ public class SimpleVarsLearning : MonoBehaviour
 
     private void OnCollisionEnter(Collision other)
     {
-        if (other.gameObject.tag == "Player" && !isTaskActive)
+        if (other.gameObject.tag == "Player" && !isTaskActive && !NotSimultTasks.someMission)
         {
+            NotSimultTasks.someMission = true;
             isTaskActive = true;
+
             //Save PLAYER position and rotation.
             originalPlayerPosition = FindObjectOfType<FirstPersonController>().transform.position;
             originalPlayerRotation = FindObjectOfType<FirstPersonController>().transform.rotation;
@@ -55,6 +56,7 @@ public class SimpleVarsLearning : MonoBehaviour
             FindObjectOfType<FirstPersonController>().cameraCanMove = false;
             FindObjectOfType<FirstPersonController>().playerCanMove = false;
             FindObjectOfType<FirstPersonController>().enableHeadBob = false;
+
             arrow.SetActive(false);
             audioSource.Stop();
             canvas.SetActive(true);
@@ -74,6 +76,7 @@ public class SimpleVarsLearning : MonoBehaviour
         canvaGameExplain.SetActive(false);
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
+
         //PLAYER get back to the original place.
         FindObjectOfType<FirstPersonController>().transform.position = originalPlayerPosition;
         FindObjectOfType<FirstPersonController>().transform.rotation = originalPlayerRotation;
@@ -84,14 +87,14 @@ public class SimpleVarsLearning : MonoBehaviour
         FindObjectOfType<FirstPersonController>().playerCanMove = true;
         FindObjectOfType<FirstPersonController>().enableHeadBob = true;
         ShowNextExpression();
+
         //Game loop.
         StartCoroutine(GameLoop());
     }
 
-
     IEnumerator GameLoop()
     {
-        //Need to track player movments.
+        //Need to track player movements.
         FirstPersonController playerController = player.GetComponent<FirstPersonController>();
         if (playerController != null)
         {
@@ -102,7 +105,7 @@ public class SimpleVarsLearning : MonoBehaviour
                 if (canCheck)
                 {
                     bool isTouching = playerController.IsTouchingBox();
-                    //Check if playet touch one of the boxes.
+                    //Check if player touch one of the boxes.
                     if (isTouching)
                     {
                         //Get the tag of the box the player is touching.
@@ -112,7 +115,7 @@ public class SimpleVarsLearning : MonoBehaviour
                         {
                             //Update the last touched box.
                             lastTouchedBox = touchedBox;
-                            //Playet touch the right Box.
+                            //Player touch the right Box.
                             if (touchedBox.CompareTag(correctBoxes[currentExpressionIndex]))
                             {
                                 correctSound.Play();
@@ -170,9 +173,8 @@ public class SimpleVarsLearning : MonoBehaviour
 
     public void CompleteTask()
     {
+        NotSimultTasks.someMission = false;
         audioSource.Play();
-        // Cursor.lockState = CursorLockMode.Confined;
-        // Cursor.visible = true;
         if (!isTaskCompletedOnce && TaskManager.currentTaskIndex == 3)
         {
             isTaskCompletedOnce = true;

@@ -34,7 +34,6 @@ public class fishCount : MonoBehaviour
     private bool isTaskCompletedOnce = false;
     public AudioSource BackgroundMusic;
 
-
     void Start()
     {
         audioSource = GetComponent<AudioSource>();
@@ -42,10 +41,12 @@ public class fishCount : MonoBehaviour
 
     private void OnCollisionEnter(Collision other)
     {
-        if (other.gameObject.tag == "Player" && !isTaskActive)
+        if (other.gameObject.tag == "Player" && !isTaskActive && !NotSimultTasks.someMission)
         {
+            NotSimultTasks.someMission = true;
             BackgroundMusic.Pause();
             isTaskActive = true;
+
             //Save PLAYER position and rotation.
             originalPlayerPosition = FindObjectOfType<FirstPersonController>().transform.position;
             originalPlayerRotation = FindObjectOfType<FirstPersonController>().transform.rotation;
@@ -58,6 +59,7 @@ public class fishCount : MonoBehaviour
             FindObjectOfType<FirstPersonController>().cameraCanMove = false;
             FindObjectOfType<FirstPersonController>().playerCanMove = false;
             FindObjectOfType<FirstPersonController>().enableHeadBob = false;
+
             arrow2.SetActive(false);
             canvas.SetActive(true);
             Cursor.lockState = CursorLockMode.None;
@@ -72,7 +74,7 @@ public class fishCount : MonoBehaviour
             i = 0;
             foreach (GameObject f in fish)
             {
-                f.SetActive(false); //remove fish
+                f.SetActive(false);
             }
         }
 
@@ -116,6 +118,7 @@ public class fishCount : MonoBehaviour
             }
         }
     }
+
     private IEnumerator WaitBeforeDeactivatingTask()
     {
         yield return new WaitForSeconds(5);
@@ -125,11 +128,11 @@ public class fishCount : MonoBehaviour
 
     public void CompleteTask()
     {
+        NotSimultTasks.someMission = false;
         BackgroundMusic.Play();
         if (!isTaskCompletedOnce && TaskManager.currentTaskIndex == 4)
         {
-            isTaskCompletedOnce = true; // מסמן שהמשימה הושלמה
-
+            isTaskCompletedOnce = true;
             if (taskManager != null)
             {
                 taskManager.ActivateNextTask();
@@ -157,7 +160,8 @@ public class fishCount : MonoBehaviour
         FindObjectOfType<FirstPersonController>().cameraCanMove = true;
         FindObjectOfType<FirstPersonController>().playerCanMove = true;
         FindObjectOfType<FirstPersonController>().enableHeadBob = true;
-        //Finish mission sounds.
+
+        //Finish mission Sounds.
         finishMission.GetComponent<SoundEffects>().PlaySoundClip();
         finishMission.SetActive(true);
         CompleteTask();

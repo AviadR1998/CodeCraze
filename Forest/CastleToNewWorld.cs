@@ -6,7 +6,7 @@ using UnityEngine.SceneManagement;
 
 public class CastleToNewWorld : MonoBehaviour
 {
-    //When playet enter the castle.
+    //When player enter the castle.
     private void OnTriggerEnter(Collider other)
     {
         if (other.tag == "Player")

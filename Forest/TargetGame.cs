@@ -4,14 +4,13 @@ using UnityEngine;
 
 public class TargetGame : MonoBehaviour
 {
-   
 
     private void OnCollisionEnter(Collision other)
     {
         if (other.gameObject.tag == "Player")
         {
-           Cursor.lockState = CursorLockMode.Confined;
-        Cursor.visible = true;
+            Cursor.lockState = CursorLockMode.Confined;
+            Cursor.visible = true;
         }
     }
     // Start is called before the first frame update

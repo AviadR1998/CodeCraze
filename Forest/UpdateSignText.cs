@@ -29,10 +29,12 @@ public class UpdateSignText : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-        if (other.tag == "Player" && !isTaskActive)
+        if (other.tag == "Player" && !isTaskActive && !NotSimultTasks.someMission)
         {
+            NotSimultTasks.someMission = true;
             BackgroundMusic.Pause();
             isTaskActive = true;
+
             //Save PLAYER position and rotation.
             originalPlayerPosition = FindObjectOfType<FirstPersonController>().transform.position;
             originalPlayerRotation = FindObjectOfType<FirstPersonController>().transform.rotation;
@@ -45,6 +47,7 @@ public class UpdateSignText : MonoBehaviour
             FindObjectOfType<FirstPersonController>().cameraCanMove = false;
             FindObjectOfType<FirstPersonController>().playerCanMove = false;
             FindObjectOfType<FirstPersonController>().enableHeadBob = false;
+
             arrow.SetActive(false);
             canvas.SetActive(true);
             Cursor.lockState = CursorLockMode.None;
@@ -84,6 +87,7 @@ public class UpdateSignText : MonoBehaviour
     IEnumerator BacktoPosition()
     {
         yield return new WaitForSeconds(0.4f);
+
         //PLAYER get back to the original place.
         FindObjectOfType<FirstPersonController>().transform.position = originalPlayerPosition;
         FindObjectOfType<FirstPersonController>().transform.rotation = originalPlayerRotation;
@@ -93,6 +97,7 @@ public class UpdateSignText : MonoBehaviour
         FindObjectOfType<FirstPersonController>().cameraCanMove = true;
         FindObjectOfType<FirstPersonController>().playerCanMove = true;
         FindObjectOfType<FirstPersonController>().enableHeadBob = true;
+
         StartCoroutine(WaitBeforeDeactivatingTask());
     }
 
@@ -103,10 +108,11 @@ public class UpdateSignText : MonoBehaviour
     }
     public void CompleteTask()
     {
+        NotSimultTasks.someMission = false;
         BackgroundMusic.Play();
         if (!isTaskCompletedOnce && TaskManager.currentTaskIndex == 1)
         {
-            isTaskCompletedOnce = true; 
+            isTaskCompletedOnce = true;
 
             if (taskManager != null)
             {

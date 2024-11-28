@@ -44,10 +44,13 @@ public class BikeMission : MonoBehaviour
 
     private void OnCollisionEnter(Collision other)
     {
-        if (other.gameObject.tag == "Player" && !isTaskActive)
+        if (other.gameObject.tag == "Player" && !isTaskActive && !NotSimultTasks.someMission)
         {
+            NotSimultTasks.someMission = true;
+            //Close background music.
             BackgroundMusic.Pause();
             isTaskActive = true;
+
             //Save PLAYER position and rotation.
             originalPlayerPosition = FindObjectOfType<FirstPersonController>().transform.position;
             originalPlayerRotation = FindObjectOfType<FirstPersonController>().transform.rotation;
@@ -60,6 +63,7 @@ public class BikeMission : MonoBehaviour
             FindObjectOfType<FirstPersonController>().cameraCanMove = false;
             FindObjectOfType<FirstPersonController>().playerCanMove = false;
             FindObjectOfType<FirstPersonController>().enableHeadBob = false;
+
             arrow.SetActive(false);
             Firstcanvas.SetActive(true);
             Cursor.lockState = CursorLockMode.None;
@@ -74,6 +78,7 @@ public class BikeMission : MonoBehaviour
         Cursor.lockState = CursorLockMode.Confined;
         Cursor.visible = true;
         canvas.SetActive(true);
+
         //PLAYER get back to the original place.
         FindObjectOfType<FirstPersonController>().transform.position = originalPlayerPosition;
         FindObjectOfType<FirstPersonController>().transform.rotation = originalPlayerRotation;
@@ -94,6 +99,7 @@ public class BikeMission : MonoBehaviour
 
     private void GameStarted()
     {
+        //Reset num of question to ask to 0, reset oepration and make new question.
         questionCounter = 0;
         InitializeOperations();
         GenerateQuestion();
@@ -107,6 +113,7 @@ public class BikeMission : MonoBehaviour
         operations = new List<int> { 0, 0, 1, 1, 2, 2, 3, 3, 4, 4 };
     }
 
+    //This function works when user click on "Check answer" button.
     public void CheckAnswer()
     {
         int playerAnswer;
@@ -115,6 +122,7 @@ public class BikeMission : MonoBehaviour
             //Correct answer.
             if (playerAnswer == correctAnswer)
             {
+                answerInput.image.color = Color.white;
                 //Make succes sound.
                 if (SuccSound != null && audioSource != null)
                 {
@@ -142,6 +150,7 @@ public class BikeMission : MonoBehaviour
                 if (WrongSound != null && audioSource != null)
                 {
                     audioSource.PlayOneShot(WrongSound);
+                    answerInput.image.color = Color.red;
                 }
             }
         }
@@ -260,6 +269,7 @@ public class BikeMission : MonoBehaviour
 
     public void CompleteTask()
     {
+        NotSimultTasks.someMission = false;
         BackgroundMusic.Play();
         if (!isTaskCompletedOnce && TaskManager.currentTaskIndex == 5)
         {

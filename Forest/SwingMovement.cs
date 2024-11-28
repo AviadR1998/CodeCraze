@@ -12,8 +12,8 @@ public class SwingMovement : MonoBehaviour
     private bool isSpinning = false;
     public AudioClip rotationSound;
     private AudioSource audioSource;
-    public bool isCarouselRunning = false;
     // Indicates if the carousel is actively spinning.
+    public bool isCarouselRunning = false;
 
     void Start()
     {
@@ -45,10 +45,9 @@ public class SwingMovement : MonoBehaviour
             targetRotations = 1;
             currentRotation = 0;
             isSpinning = true;
-            //Because isSpinning = true noq the update function is working.
+            //Because isSpinning = true, the update function is working.
             while (isSpinning)
             {
-                // Wait until the rotation is complete (controlled by `Update`).
                 yield return null;
             }
             //Sound when rotation is done.

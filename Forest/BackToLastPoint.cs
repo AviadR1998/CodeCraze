@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class BackToLastPoint : MonoBehaviour
 {
-    public TaskManager taskManager; 
+    public TaskManager taskManager;
     public GameObject endAllCanvas;
     public GameObject CastleBox;
 
@@ -13,18 +13,19 @@ public class BackToLastPoint : MonoBehaviour
         string savedTask = Login.task;
         int taskIndex = GetTaskIndex(savedTask);
         TaskManager.currentTaskIndex = taskIndex;
-        //ALL missions should be open.
+        //ALL missions should be open if he finish the forest or all the worlds.
         if (Login.world == "Free" || Login.task == "Finish")
         {
             for (int i = 0; i < 7; i++)
             {
-                taskManager.ActivateArrowAndObject(i); 
+                taskManager.ActivateArrowAndObject(i);
             }
             StartCoroutine(ShowEndCanvasWithDelay());
             CastleBox.SetActive(true);
             return;
         }
 
+        //Player didn't finish all forest missions.
         if (taskIndex != -1)
         {
             taskManager.ActivateTaskByIndex(taskIndex);
@@ -32,7 +33,7 @@ public class BackToLastPoint : MonoBehaviour
             {
                 for (int i = 0; i < taskIndex; i++)
                 {
-                    taskManager.ActivateArrowAndObject(i); 
+                    taskManager.ActivateArrowAndObject(i);
                 }
             }
         }
@@ -63,7 +64,7 @@ public class BackToLastPoint : MonoBehaviour
             case "Finish":
                 return 7;
             default:
-                return -1; 
+                return -1;
         }
     }
     private IEnumerator ShowEndCanvasWithDelay()
@@ -71,7 +72,7 @@ public class BackToLastPoint : MonoBehaviour
         yield return new WaitForSeconds(1);
         //Open end canvas.
         endAllCanvas.SetActive(true);
-        //wait 10 seconds and close canvas.
+        //Wait 10 seconds and close canvas.
         yield return new WaitForSeconds(10);
         endAllCanvas.SetActive(false);
     }
