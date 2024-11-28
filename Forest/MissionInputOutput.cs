@@ -23,7 +23,6 @@ public class MissionInputOutput : MonoBehaviour
     public GameObject finishMission;
     public AudioSource BackgroundMusic;
 
-
     void Start()
     {
         audioSource = GetComponent<AudioSource>();
@@ -31,10 +30,12 @@ public class MissionInputOutput : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-        if (other.tag == "Player" && !isTaskActive)
+        if (other.tag == "Player" && !isTaskActive && !NotSimultTasks.someMission)
         {
+            NotSimultTasks.someMission = true;
             BackgroundMusic.Pause();
             isTaskActive = true;
+
             //Save PLAYER position and rotation.
             originalPlayerPosition = FindObjectOfType<FirstPersonController>().transform.position;
             originalPlayerRotation = FindObjectOfType<FirstPersonController>().transform.rotation;
@@ -47,6 +48,7 @@ public class MissionInputOutput : MonoBehaviour
             FindObjectOfType<FirstPersonController>().cameraCanMove = false;
             FindObjectOfType<FirstPersonController>().playerCanMove = false;
             FindObjectOfType<FirstPersonController>().enableHeadBob = false;
+
             arrow.SetActive(false);
             canvas.SetActive(true);
             Cursor.lockState = CursorLockMode.Confined;
@@ -54,11 +56,8 @@ public class MissionInputOutput : MonoBehaviour
         }
     }
 
-
     public void ButtonSwingClick()
     {
-        Cursor.lockState = CursorLockMode.None;
-        Cursor.visible = false;
         StartCoroutine(ButtonSwingClickCoroutine());
     }
 
@@ -67,12 +66,16 @@ public class MissionInputOutput : MonoBehaviour
         //Number of swings are correct.
         if (int.TryParse(inputField.text, out int numberOfRotations) && numberOfRotations >= 0)
         {
+            Cursor.lockState = CursorLockMode.None;
+            Cursor.visible = false;
+            inputField.image.color = Color.white;
             inputField.text = "";
             //Move swing.
             swingScript.StartCarousel(numberOfRotations);
             canvas.SetActive(false);
             //Wait until swing finish to move.
             yield return new WaitUntil(() => !swingScript.isCarouselRunning);
+
             //PLAYER get back to the original place.
             FindObjectOfType<FirstPersonController>().transform.position = originalPlayerPosition;
             FindObjectOfType<FirstPersonController>().transform.rotation = originalPlayerRotation;
@@ -83,6 +86,7 @@ public class MissionInputOutput : MonoBehaviour
             FindObjectOfType<FirstPersonController>().playerCanMove = true;
             FindObjectOfType<FirstPersonController>().enableHeadBob = true;
             //Wait 4 seconds and let the player do the task again if he want to.
+
             StartCoroutine(WaitBeforeDeactivatingTask());
             arrow.SetActive(true);
             //Finish mission canvas.
@@ -99,6 +103,7 @@ public class MissionInputOutput : MonoBehaviour
             {
                 audioSource.PlayOneShot(ErrSound);
             }
+            inputField.image.color = Color.red;
             inputField.text = "";
         }
     }
@@ -115,10 +120,11 @@ public class MissionInputOutput : MonoBehaviour
 
     public void CompleteTask()
     {
+        NotSimultTasks.someMission = false;
         BackgroundMusic.Play();
         if (!isTaskCompletedOnce && TaskManager.currentTaskIndex == 0)
         {
-            isTaskCompletedOnce = true; // מסמן שהמשימה הושלמה
+            isTaskCompletedOnce = true;
 
             if (taskManager != null)
             {

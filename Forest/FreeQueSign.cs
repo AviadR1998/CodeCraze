@@ -19,14 +19,13 @@ public class FreeQueSign : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-
         if (ask)
         {
             //Open canvas.
             CreateQuestionsCanvas createQuestionsCanvas = GetComponent<CreateQuestionsCanvas>();
             if (createQuestionsCanvas != null)
             {
-                qcanvas = createQuestionsCanvas.CreateQCanvas("InputOutputQuestions.csv");
+                qcanvas = createQuestionsCanvas.CreateQCanvas("InputOutputCSV.csv");
             }
             Cursor.lockState = CursorLockMode.Confined;
             Cursor.visible = true;
@@ -34,7 +33,7 @@ public class FreeQueSign : MonoBehaviour
             questionActivated = true;
         }
 
-        //Once qcanva is off we know practice questions end.
+        //Once qcanva is off we know practice questions END.
         if (qcanvas != null && !qcanvas.gameObject.active && questionActivated)
         {
             Cursor.lockState = CursorLockMode.Locked;

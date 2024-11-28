@@ -27,17 +27,18 @@ public class FireMission : MonoBehaviour
     public TaskManager taskManager;
     private bool isTaskCompletedOnce = false;
     public GameObject finishMission;
-    public GameObject endAllCanvas;
     public GameObject CastleBox;
     public AudioSource BackgroundMusic;
 
 
     private void OnCollisionEnter(Collision other)
     {
-        if (other.gameObject.tag == "Player" && !isTaskActive)
+        if (other.gameObject.tag == "Player" && !isTaskActive && !NotSimultTasks.someMission)
         {
+            NotSimultTasks.someMission = true;
             BackgroundMusic.Pause();
             isTaskActive = true;
+
             //Save PLAYER position and rotation.
             originalPlayerPosition = FindObjectOfType<FirstPersonController>().transform.position;
             originalPlayerRotation = FindObjectOfType<FirstPersonController>().transform.rotation;
@@ -74,8 +75,6 @@ public class FireMission : MonoBehaviour
         Cursor.lockState = CursorLockMode.Confined;
         Cursor.visible = true;
         canvasGame.SetActive(true);
-        // Cursor.lockState = CursorLockMode.Confined;
-        // Cursor.visible = true;
     }
 
     public void ButtonInfoClickGame()
@@ -104,13 +103,13 @@ public class FireMission : MonoBehaviour
             SetInputFieldColor(inputField1, Color.white);
             SetInputFieldColor(inputField2, Color.white);
             SetInputFieldColor(inputField3, Color.white);
-            arrow.SetActive(true);
         }
         else
         //Player didn't answer the right answer.
         {
             audioSource.clip = WrongClip;
             audioSource.Play();
+            //Mark the wrong fields in red color.
             SetInputFieldColor(inputField1, isCorrect1 ? Color.white : Color.red);
             SetInputFieldColor(inputField2, isCorrect2 ? Color.white : Color.red);
             SetInputFieldColor(inputField3, isCorrect3 ? Color.white : Color.red);
@@ -125,22 +124,23 @@ public class FireMission : MonoBehaviour
     void Start()
     {
         audioSource = GetComponent<AudioSource>();
-
     }
 
     private void SetInputFieldColor(TMP_InputField inputField, Color color)
     {
         inputField.image.color = color;
     }
+
     private IEnumerator WaitBeforeDeactivatingTask()
     {
-        //wait 15 seconds and let user do the mission again if he want to.
+        //Wait 15 seconds and let user do the mission again if he want to.
         yield return new WaitForSeconds(15);
         isTaskActive = false;
     }
 
     public void CompleteTask()
     {
+        NotSimultTasks.someMission = false;
         BackgroundMusic.Play();
         if (!isTaskCompletedOnce && TaskManager.currentTaskIndex == 6)
         {
@@ -161,8 +161,9 @@ public class FireMission : MonoBehaviour
         //Open practice questions.
         FreeQueFire.ask = true;
         FreeQueFire.keepWhile = true;
-        //Waiy until player finish all the practice questions and then continue.
+        //Wait until player finish all the practice questions and then continue.
         yield return new WaitUntil(() => !FreeQueFire.keepWhile);
+
         //PLAYER get back to the original place.
         FindObjectOfType<FirstPersonController>().transform.position = originalPlayerPosition;
         FindObjectOfType<FirstPersonController>().transform.rotation = originalPlayerRotation;
@@ -172,6 +173,7 @@ public class FireMission : MonoBehaviour
         FindObjectOfType<FirstPersonController>().cameraCanMove = true;
         FindObjectOfType<FirstPersonController>().playerCanMove = true;
         FindObjectOfType<FirstPersonController>().enableHeadBob = true;
+
         //Finish task sound.
         finishMission.GetComponent<SoundEffects>().PlaySoundClip();
         finishMission.SetActive(true);
@@ -179,17 +181,6 @@ public class FireMission : MonoBehaviour
         PauseMenu.updateSave("Forest", "Finish", 0);
         CastleBox.SetActive(true);
         CompleteTask();
-        //Player finish all tasks we want to tell him he can move to castle.
-        StartCoroutine(ShowEndCanvasWithDelay());
-    }
-
-    private IEnumerator ShowEndCanvasWithDelay()
-    {
-        //Wait 6 seconds until show canvas.
-        yield return new WaitForSeconds(6);
-        endAllCanvas.SetActive(true);
-        //End canvas after 10 seconds.
-        yield return new WaitForSeconds(10);
-        endAllCanvas.SetActive(false);
+        arrow.SetActive(true);
     }
 }

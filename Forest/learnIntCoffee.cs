@@ -30,7 +30,6 @@ public class learnIntCoffee : MonoBehaviour
     public GameObject finishMission;
     public AudioSource BackgroundMusic;
 
-
     void Start()
     {
         audioSource = GetComponent<AudioSource>();
@@ -38,10 +37,12 @@ public class learnIntCoffee : MonoBehaviour
 
     private void OnCollisionEnter(Collision other)
     {
-        if (other.gameObject.tag == "Player" && !isTaskActive)
+        if (other.gameObject.tag == "Player" && !isTaskActive && !NotSimultTasks.someMission)
         {
+            NotSimultTasks.someMission = true;
             BackgroundMusic.Pause();
             isTaskActive = true;
+
             //Save PLAYER position and rotation.
             originalPlayerPosition = FindObjectOfType<FirstPersonController>().transform.position;
             originalPlayerRotation = FindObjectOfType<FirstPersonController>().transform.rotation;
@@ -54,6 +55,7 @@ public class learnIntCoffee : MonoBehaviour
             FindObjectOfType<FirstPersonController>().cameraCanMove = false;
             FindObjectOfType<FirstPersonController>().playerCanMove = false;
             FindObjectOfType<FirstPersonController>().enableHeadBob = false;
+
             arrow.SetActive(false);
             canvas.SetActive(true);
             Cursor.lockState = CursorLockMode.None;
@@ -81,6 +83,7 @@ public class learnIntCoffee : MonoBehaviour
         finishMission.SetActive(true);
         //Save state.
         PauseMenu.updateSave("Forest", "Box", 0);
+
         //PLAYER get back to the original place.
         FindObjectOfType<FirstPersonController>().transform.position = originalPlayerPosition;
         FindObjectOfType<FirstPersonController>().transform.rotation = originalPlayerRotation;
@@ -90,6 +93,7 @@ public class learnIntCoffee : MonoBehaviour
         FindObjectOfType<FirstPersonController>().cameraCanMove = true;
         FindObjectOfType<FirstPersonController>().playerCanMove = true;
         FindObjectOfType<FirstPersonController>().enableHeadBob = true;
+
         //Wait 4 seconds and let the player do the task again if he want to.
         StartCoroutine(WaitBeforeDeactivatingTask());
         inputUser.text = "";
@@ -99,7 +103,6 @@ public class learnIntCoffee : MonoBehaviour
         arrow.SetActive(true);
         CompleteTask();
     }
-
 
     public void RunButtonClick()
     {
@@ -113,6 +116,7 @@ public class learnIntCoffee : MonoBehaviour
         //Check if input is between 0 to 4.
         int num;
         //Not correct number- if number is noy less then 0 or more then 4.
+        //Use 'out' to store the converted integer value if TryParse succeeds
         if (!int.TryParse(userInput, out num) || num < 0 || num > 4)
         {
             if (ErrSound != null && audioSource != null)
@@ -131,7 +135,6 @@ public class learnIntCoffee : MonoBehaviour
             {
                 audioSource.PlayOneShot(AddCoffeeSound);
             }
-
             //Show cup of coffee and remove if needed.
             for (int i = 3; i >= int.Parse(userInput); i--)
             {
@@ -151,7 +154,7 @@ public class learnIntCoffee : MonoBehaviour
 
     private IEnumerator HideCanvasAfterTime(float delay)
     {
-        //Close error mesage after "delay" seconds.
+        //Close error mesage after "3 delay" seconds.
         yield return new WaitForSeconds(delay);
         canvasError.SetActive(false);
     }
@@ -166,10 +169,11 @@ public class learnIntCoffee : MonoBehaviour
     {
         Cursor.lockState = CursorLockMode.None;
         Cursor.visible = false;
+        NotSimultTasks.someMission = false;
         BackgroundMusic.Play();
         if (!isTaskCompletedOnce && TaskManager.currentTaskIndex == 2)
         {
-            isTaskCompletedOnce = true; // מסמן שהמשימה הושלמה
+            isTaskCompletedOnce = true;
 
             if (taskManager != null)
             {

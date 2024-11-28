@@ -26,7 +26,7 @@ public class FreeQueBike : MonoBehaviour
             CreateQuestionsCanvas createQuestionsCanvas = GetComponent<CreateQuestionsCanvas>();
             if (createQuestionsCanvas != null)
             {
-                qcanvas = createQuestionsCanvas.CreateQCanvas("ArithmeticOperations.csv");
+                qcanvas = createQuestionsCanvas.CreateQCanvas("ArithmeticCSV.csv");
             }
             Cursor.lockState = CursorLockMode.Confined;
             Cursor.visible = true;
@@ -34,7 +34,7 @@ public class FreeQueBike : MonoBehaviour
             questionActivated = true;
         }
 
-        //Once qcanva is off we know practice questions end.
+        //Once qcanva is off we know practice questions END.
         if (qcanvas != null && !qcanvas.gameObject.active && questionActivated)
         {
             Cursor.lockState = CursorLockMode.Locked;
