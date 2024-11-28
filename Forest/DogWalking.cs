@@ -42,6 +42,7 @@ public class DogWalking : MonoBehaviour
             obj.transform.LookAt(points[nextPosition].transform);
         }
 
+        //Show dog's name.
         if (player != null && nameTagCanvas != null)
         {
             //Calculate the straight-line distance between the player's position and the dog position

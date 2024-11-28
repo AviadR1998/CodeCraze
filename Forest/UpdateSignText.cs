@@ -2,7 +2,6 @@ using UnityEngine;
 using TMPro;
 using System.Collections;
 
-
 public class UpdateSignText : MonoBehaviour
 {
     public GameObject canvas;
