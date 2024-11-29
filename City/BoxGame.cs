@@ -148,7 +148,7 @@ public class BoxGame : MonoBehaviour
         {
             ballNumbers[1] = Random.Range(0, 7);
         }
-        practicalText.text = "insert the balls into box numer [" + ballNumbers[0] + "]\nand box number [" + ballNumbers[1] + "]\nWhen you finish go back to gradma and press on 'F'";
+        practicalText.text = "insert the balls into box number [" + ballNumbers[0] + "]\nand box number [" + ballNumbers[1] + "]\nWhen you finish go back to gradma and press on 'F'";
     }
 
     void randomNumber()
@@ -179,7 +179,7 @@ public class BoxGame : MonoBehaviour
         balls.Add(createBall(2, -1065.36f, 9.834f, 353.66f));
         balls.Add(createBall(3, -1069.36f, 9.834f, 357.66f));
         randomNumber();
-        practicalText.text = "insert the balls into box numer [" + ballNumbers[0] + "]\nand box number [" + ballNumbers[1] + "]\nand box number [" + ballNumbers[2] + "]\nWhen you finish go back to gradma and press on 'F'";
+        practicalText.text = "insert the balls into box number [" + ballNumbers[0] + "]\nand box number [" + ballNumbers[1] + "]\nand box number [" + ballNumbers[2] + "]\nWhen you finish go back to gradma and press on 'F'";
     }
 
     void level2()
@@ -223,9 +223,10 @@ public class BoxGame : MonoBehaviour
         }
         if (cnt == 3)
         {
+            camera.GetComponent<Camera>().fieldOfView = 60;
             soccesSound.Play();
             checkboxText.text = "correct! you finished all the tasks here Good luck!!!";
-            player.transform.position += new Vector3(0, 1, 17);
+            player.transform.position += new Vector3(0, 1, 19);
             arrow.SetActive(true);
             arrow.transform.position = player.transform.position;
             //arrow.transform.position += new Vector3(0, 0, 15);
@@ -263,7 +264,8 @@ public class BoxGame : MonoBehaviour
         player.GetComponent<Movement>().enabled = false;
         if (levelFirst)
         {
-            player.transform.position += new Vector3(0, 0, -17);
+            camera.GetComponent<Camera>().fieldOfView = 21;
+            player.transform.position += new Vector3(0, 0, -19);
             //arrow.transform.position += new Vector3(0, 0, -15);
             levelFirst = false;
         }
@@ -280,7 +282,7 @@ public class BoxGame : MonoBehaviour
             Vector3 box = GameObject.Find("BoxArr" + ballNumbers[i - 1]).transform.position;
             balls.Add(createBall(i, box.x, box.y, box.z));
         }
-        practicalText.text = "in which indexses the balls are?";
+        practicalText.text = "in which indexes the balls are?";
     }
 
     void arrayOkFunc()
@@ -414,7 +416,7 @@ public class BoxGame : MonoBehaviour
                 boxLetters[i] = '\0';
             }
             failSound.Play();
-            practicalText.text = "Worong placment!";
+            practicalText.text = "Wrong placment!";
             StartCoroutine(delayPress());
         }
         else
@@ -442,7 +444,7 @@ public class BoxGame : MonoBehaviour
             if (boxNumbers.Count != ballNumbers.Count)
             {
                 failSound.Play();
-                practicalText.text = "Worong placment!";
+                practicalText.text = "Wrong placment!";
                 StartCoroutine(delayPress());
                 return;
             }
@@ -451,7 +453,7 @@ public class BoxGame : MonoBehaviour
                 if (!boxNumbers.Contains("BoxArr" + ballNumbers[i]))
                 {
                     failSound.Play();
-                    practicalText.text = "Worong placment!";
+                    practicalText.text = "Wrong placment!";
                     StartCoroutine(delayPress());
                     return;
                 }

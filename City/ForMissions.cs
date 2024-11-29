@@ -18,6 +18,7 @@ public class ForMission : MonoBehaviour
     public GameObject player;
     public GameObject forNPC;
     public GameObject missionCompleteCanvas;
+    public GameObject camera;
 
     public static bool startFromQuestions = false, startFromAfterQuestions = false;
     //int currentSubText, currentSubMission;
@@ -144,7 +145,7 @@ public class ForMission : MonoBehaviour
     void soccerGame()
     {
         canvasMission.SetActive(false);
-        
+        camera.GetComponent<Camera>().fieldOfView = 21;
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
         PauseMenu.canPause = true;

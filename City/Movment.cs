@@ -236,9 +236,9 @@ public class Movement : MonoBehaviour
         {
             arrow.transform.position = Vector3.MoveTowards(arrow.transform.position,
             GameObject.Find("Player").transform.position + new Vector3(
-            playerCamera.transform.forward.x * 5,
+            playerCamera.transform.forward.x * 2,
             math.sin(playerCamera.transform.forward.y) * 5 + 0.7f - addingToArrow,
-            playerCamera.transform.forward.z * 5), arrowSpeed * Time.deltaTime);
+            playerCamera.transform.forward.z * 2), arrowSpeed * Time.deltaTime);
             arrow.transform.LookAt(mission.transform);
         }
 
