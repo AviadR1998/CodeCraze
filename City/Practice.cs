@@ -30,7 +30,7 @@ public class Practice : MonoBehaviour
     {
         if (other.tag == "Player" && canAsk)
         {
-            retCanvas = questionObj.GetComponent<CreateQuestionsCanvas>().CreateQCanvas(taskName + "CSV.csv");
+            retCanvas = questionObj.GetComponent<CreateQuestionsCanvas>().CreateQCanvas(taskName + "CSV.csv", taskName);
             Cursor.lockState = CursorLockMode.Confined;
             activeCanvas = Cursor.visible = true;
             PauseMenu.canPause = canAsk = player.GetComponent<Movement>().enabled = false;

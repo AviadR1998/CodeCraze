@@ -1,11 +1,13 @@
 using System.Collections;
 using System.Collections.Generic;
 using Unity.VisualScripting;
+using TMPro;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 using UnityEngine.Networking;
 using System;
+using System.Reflection;
 
 
 public class MainMenu : MonoBehaviour
@@ -21,6 +23,8 @@ public class MainMenu : MonoBehaviour
     public GameObject leaderBoardPage;
     public GameObject chooseTopicsPanel;
     public GameObject[] topicToggleList;
+    public GameObject ipChangeEmpty;
+    public TMP_InputField ipChangeInput;
 
     string[] topicList;
     public static string topicListSaved;
@@ -83,7 +87,7 @@ public class MainMenu : MonoBehaviour
             yield return request.SendWebRequest();
             if (request.isNetworkError || request.isHttpError)
             {
-                
+
             }
             else
             {
@@ -154,7 +158,7 @@ public class MainMenu : MonoBehaviour
             }
         }
     }
-    
+
     public void clickCheckBox(int index)
     {
         topicToggleBoolList[index] = !topicToggleBoolList[index];
@@ -205,7 +209,7 @@ public class MainMenu : MonoBehaviour
         AdminMission.loadAll = AdminMission.geminiActivate = false;
         activateRace = true;
         topicListSaved = "";
-        for (int i = 0; i < topicToggleBoolList.Length; i++) 
+        for (int i = 0; i < topicToggleBoolList.Length; i++)
         {
             if (topicToggleBoolList[i])
             {
@@ -234,5 +238,19 @@ public class MainMenu : MonoBehaviour
         yield return new WaitForSeconds(3f);
         canvas.transform.GetComponent<Image>().sprite = Resources.Load("FirstMenu", typeof(Sprite)) as Sprite;
         firstMenu.SetActive(true);
+    }
+
+    public void saveIP()
+    {
+        serverIp = ipChangeInput.text;
+        print(serverIp);
+    }
+
+    void Update()
+    {
+        if (Input.GetKeyDown(KeyCode.Tab))
+        {
+            ipChangeEmpty.SetActive(!ipChangeInput.IsActive());
+        }
     }
 }
