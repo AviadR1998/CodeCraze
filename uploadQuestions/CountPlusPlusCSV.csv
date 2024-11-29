@@ -1,0 +1,6 @@
+1$,2$,3$,4$,5$,5$,.
+What does `count++` do in programming?$,Increases the value of `count` by 1.$,Decreases the value of `count` by 1.$,Sets `count` to 0.$,Multiplies `count` by 2.$,1$,The `++` operator increments the value of the variable by 1.
+If `count = 5`, what will be the value of `count` after `count++`?$,4$,5$,6$,10$,3$,The `++` operator adds 1 to the current value of `count`, so `5 + 1 = 6`.
+If `count = 0`, what happens after you use `count++` twice?$,`count` becomes 1.$,`count` becomes 2.$,`count` stays 0.$,`count` becomes 0.$,2$,The first `count++` increases `count` to 1, and the second `count++` increases it to 2.
+What is the starting value of `count` if after `count++` the value is 10?$,8$,9$,10$,11$,2$,If `count` becomes 10 after `count++`, the original value was `10 - 1 = 9`.
+If `count = 3`, how many times must you use `count++` to make `count = 7`?$,2 times$,3 times$,4 times$,5 times$,3$,You need to add 1 four times: `3 + 1 + 1 + 1 + 1 = 7`.

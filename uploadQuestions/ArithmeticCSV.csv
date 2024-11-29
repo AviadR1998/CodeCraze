@@ -1,0 +1,9 @@
+1$,2$,3$,4$,5$,5$,.
+Given that int a = 5 and int b = 3,~ What is their sum?$,8$,13$,15$,Error$,1$,The `+` operator adds the two numbers, so `5 + 3` equals `8`.
+Given that int a = 10 and int b = 4,~ what is the value of a - b?$,14$,6$,4$,Error$,2$,The `-` operator subtracts the second number from the first, so `10 - 4` equals `6`.
+If int a = 2 and int b = 5,~ what is the value of a * b?$,25$,10$,7$,Error$,2$,The `*` operator multiplies the two numbers, so `2 * 5` equals `10`.
+If int a = 20 and int b = 4,~ what is the value of a / b?$,5$,4$,20$,Error$,1$,The `/` operator divides the first number by the second, so `20 / 4` equals `5`.
+If int a = 15 and int b = 4,~ what is the value of a % b?$,3$,4$,11$,Error$,1$,The `%` operator returns the remainder of the division, so `15 % 4` equals `3`.
+int result = 12 - (3 + 2);~ What is the value of result?$,10$,9$,7$,Error$,3$,Parentheses are calculated first, so `3 + 2 = 5`, and then `12 - 5 = 7`.
+int result = 8 + (6 * 2);~ What is the value of result?$,28$,20$,24$,Error$,2$,According to the order of operations (PEMDAS/BODMAS), the multiplication is calculated first, so `6 * 2 = 12`, and then `8 + 12 = 20`.
+int result = (20 / 4) + (10 % 3);~ What is the value of result?$,6$,5.5$,6.5$,Error$,1$,Division is calculated first (`20 / 4 = 5`), then the remainder (`10 % 3 = 1`), and finally the addition (`5 + 1 = 6`).
