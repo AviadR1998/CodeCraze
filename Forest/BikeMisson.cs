@@ -73,7 +73,7 @@ public class BikeMission : MonoBehaviour
 
     public void ButtonBikeClick()
     {
-        Firstcanvas.SetActive(false);
+        //Firstcanvas.SetActive(false);
         Cursor.lockState = CursorLockMode.Confined;
         Cursor.visible = true;
         canvas.SetActive(true);
@@ -278,7 +278,7 @@ public class BikeMission : MonoBehaviour
             isTaskCompletedOnce = true;
             if (taskManager != null)
             {
-                taskManager.ActivateNextTask();
+                StartCoroutine(ActivateNextTaskWithDelay());
             }
             else
             {
@@ -310,5 +310,10 @@ public class BikeMission : MonoBehaviour
         yield return new WaitForSeconds(4);
         transform.position = new Vector3(37.59f, 4.62f, 46.37f);
         transform.rotation = Quaternion.Euler(0, 35.581f, 0);
+    }
+    private IEnumerator ActivateNextTaskWithDelay()
+    {
+        yield return new WaitForSeconds(5);
+        taskManager.ActivateNextTask();
     }
 }

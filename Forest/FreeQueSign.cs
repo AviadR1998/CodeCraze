@@ -25,7 +25,7 @@ public class FreeQueSign : MonoBehaviour
             CreateQuestionsCanvas createQuestionsCanvas = GetComponent<CreateQuestionsCanvas>();
             if (createQuestionsCanvas != null)
             {
-                qcanvas = createQuestionsCanvas.CreateQCanvas("InputOutputCSV.csv");
+                qcanvas = createQuestionsCanvas.CreateQCanvas("InputOutputCSV.csv" , "Input Output");
             }
             Cursor.lockState = CursorLockMode.Confined;
             Cursor.visible = true;

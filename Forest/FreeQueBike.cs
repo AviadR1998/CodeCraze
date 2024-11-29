@@ -26,7 +26,7 @@ public class FreeQueBike : MonoBehaviour
             CreateQuestionsCanvas createQuestionsCanvas = GetComponent<CreateQuestionsCanvas>();
             if (createQuestionsCanvas != null)
             {
-                qcanvas = createQuestionsCanvas.CreateQCanvas("ArithmeticCSV.csv");
+                qcanvas = createQuestionsCanvas.CreateQCanvas("ArithmeticCSV.csv", "Arithmetic Operations");
             }
             Cursor.lockState = CursorLockMode.Confined;
             Cursor.visible = true;

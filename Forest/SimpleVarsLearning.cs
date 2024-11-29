@@ -181,7 +181,7 @@ public class SimpleVarsLearning : MonoBehaviour
 
             if (taskManager != null)
             {
-                taskManager.ActivateNextTask();
+                StartCoroutine(ActivateNextTaskWithDelay());
             }
             else
             {
@@ -203,5 +203,10 @@ public class SimpleVarsLearning : MonoBehaviour
         finishMission.SetActive(true);
         //Update state.
         PauseMenu.updateSave("Forest", "Fish", 0);
+    }
+    private IEnumerator ActivateNextTaskWithDelay()
+    {
+        yield return new WaitForSeconds(5);
+        taskManager.ActivateNextTask();
     }
 }

@@ -115,7 +115,7 @@ public class UpdateSignText : MonoBehaviour
 
             if (taskManager != null)
             {
-                taskManager.ActivateNextTask();
+                StartCoroutine(ActivateNextTaskWithDelay());
             }
             else
             {
@@ -138,5 +138,10 @@ public class UpdateSignText : MonoBehaviour
         //Update state for saving the game.
         PauseMenu.updateSave("Forest", "Coffee", 0);
         StartCoroutine(BacktoPosition());
+    }
+    private IEnumerator ActivateNextTaskWithDelay()
+    {
+        yield return new WaitForSeconds(5);
+        taskManager.ActivateNextTask();
     }
 }
