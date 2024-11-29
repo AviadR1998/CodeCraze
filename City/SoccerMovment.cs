@@ -360,6 +360,7 @@ public class SoccerMovment : MonoBehaviour
         Movement.mission = nextMission;
         missionCompleteCanvas.SetActive(true);
         ball.GetComponent<SoccerMovment>().enabled = false;
+        camera.GetComponent<Camera>().fieldOfView = 60;
     }
 
     void loseOK()

@@ -5,6 +5,7 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 using UnityEngine.Networking;
+using System;
 
 
 public class MainMenu : MonoBehaviour
@@ -17,8 +18,9 @@ public class MainMenu : MonoBehaviour
     public GameObject registerPage;
     public GameObject practicePage;
     public GameObject freePlayPage;
+    public GameObject leaderBoardPage;
     public GameObject chooseTopicsPanel;
-    public UnityEngine.UI.Toggle[] topicToggleList;
+    public GameObject[] topicToggleList;
 
     string[] topicList;
     public static string topicListSaved;
@@ -139,6 +141,7 @@ public class MainMenu : MonoBehaviour
 
     public void practice()
     {
+        canvas.transform.GetComponent<Image>().sprite = Resources.Load("Race", typeof(Sprite)) as Sprite;
         if (Login.world == "Free")
         {
             mainMenu.SetActive(false);
@@ -146,7 +149,8 @@ public class MainMenu : MonoBehaviour
             topicToggleBoolList = new bool[topicToggleList.Length];
             for (int i = 0; i < topicToggleList.Length; i++)
             {
-                topicToggleBoolList[i] = topicToggleList[i].isOn = false;
+                topicToggleBoolList[i] = false;
+                topicToggleList[i].transform.GetComponent<Image>().color = new Color(0, 0, 0, 0);
             }
         }
     }
@@ -154,10 +158,20 @@ public class MainMenu : MonoBehaviour
     public void clickCheckBox(int index)
     {
         topicToggleBoolList[index] = !topicToggleBoolList[index];
+        if (topicToggleBoolList[index])
+        {
+            topicToggleList[index].transform.GetComponent<Image>().color = new Color(0, 0, 0, 255);
+        }
+        else
+        {
+            topicToggleList[index].transform.GetComponent<Image>().color = new Color(0, 0, 0, 0);
+        }
+
     }
 
     public void backFromPractice()
     {
+        canvas.transform.GetComponent<Image>().sprite = Resources.Load("MainMenu", typeof(Sprite)) as Sprite;
         practicePage.SetActive(false);
         mainMenu.SetActive(true);
     }
@@ -167,6 +181,20 @@ public class MainMenu : MonoBehaviour
         canvas.transform.GetComponent<Image>().sprite = Resources.Load("MainMenu", typeof(Sprite)) as Sprite;
         freePlayPage.SetActive(false);
         mainMenu.SetActive(true);
+    }
+
+    public void leaderBoardUpload()
+    {
+        canvas.transform.GetComponent<Image>().sprite = Resources.Load("LeaderBoard", typeof(Sprite)) as Sprite;
+        chooseTopicsPanel.SetActive(false);
+        leaderBoardPage.SetActive(true);
+    }
+
+    public void backFromLeaderBoard()
+    {
+        canvas.transform.GetComponent<Image>().sprite = Resources.Load("Race", typeof(Sprite)) as Sprite;
+        leaderBoardPage.SetActive(false);
+        chooseTopicsPanel.SetActive(true);
     }
 
     public void searchRooms()
@@ -194,11 +222,6 @@ public class MainMenu : MonoBehaviour
         topicListSaved = topicListSaved.Remove(topicListSaved.Length - 2, 1);
         chooseTopicsPanel.SetActive(false);
         SceneManager.LoadSceneAsync(4);
-    }
-
-    public void restart()
-    {
-
     }
 
     public void Quit()

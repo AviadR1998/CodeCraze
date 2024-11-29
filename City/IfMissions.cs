@@ -53,14 +53,10 @@ public class IfMissions : MonoBehaviour
         List<TextPartition> list = new List<TextPartition>();
         list.Add(new TextPartition("Hi, do you like the city? I hope you were treated well here. Now we are going to learn a new command: 'if'.", ""));
         list.Add(new TextPartition("The if statement allows you to control the flow of your program based on whether a certain condition is true or false.", "public static void main(String[] args) {\n\tif (condition) {\n\t\tbody1\n\t} else {\n\t\tbody2\n\t}\n}"));
-        list.Add(new TextPartition("Let disnamtle it - condition: This is a Boolean expression that evaluates to either true or false.\nbody1: code to be executed if the condition is true.\nbody2: code to be executed if the condition is false (optional)", "public static void main(String[] args) {\n\tif (condition) {\n\t\tbody1\n\t} else {\n\t\tbody2\n\t}\n}"));
+        list.Add(new TextPartition("Let dismantle it - condition: This is a Boolean expression that evaluates to either true or false.\nbody1: code to be executed if the condition is true.\nbody2: code to be executed if the condition is false (optional)", "public static void main(String[] args) {\n\tif (condition) {\n\t\tbody1\n\t} else {\n\t\tbody2\n\t}\n}"));
         list.Add(new TextPartition("Note that you don't have to use the else statement; the if statement will then look like this:", "public static void main(String[] args) {\n\tif (condition) {\n\t\tbody1\n\t}\n}"));
         list.Add(new TextPartition("Let's look at an example from our world.", ""));
         texts.Add(list);
-
-        /*list = new List<TextPartition>();
-        list.Add(new TextPartition("Now we will see a car tring to pass a traffic light.", ""));
-        texts.Add(list);*/
 
         list = new List<TextPartition>();
         list.Add(new TextPartition("We see here that the orange car needs to stop if the traffic light is red; otherwise, the car can pass. If I were to write pseudocode for this, it would look something like this (note that some commands here are not official commands).", "public static void main(String[] args) {\n\tif (light == \"red\") {\n\t\tstopcar();\n\t} else {\n\t\tpass();\n\t}\n}"));
@@ -99,6 +95,7 @@ public class IfMissions : MonoBehaviour
     void cutSceneCar()
     {
         //canvasMission.SetActive(false);
+        camera.GetComponent<Camera>().fieldOfView = 21;
         AdminMission.currentSubMission++;
         okButton.SetActive(false);
         talkingText.text = "Now we will see a car tring to pass a traffic light.";
@@ -241,6 +238,7 @@ public class IfMissions : MonoBehaviour
         }
         if (xLine)
         {
+            camera.GetComponent<Camera>().fieldOfView = 60;
             stopLine.SetActive(false);
             car.SetActive(false);
             grayCar.transform.position = new Vector3(-903.06f, 10.85f, 282.99f);
