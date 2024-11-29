@@ -5,7 +5,6 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.Networking;
 using Newtonsoft.Json;
-
 using Newtonsoft.Json;
 using Unity.VisualScripting;
 
@@ -78,6 +77,8 @@ public class AdminMission : MonoBehaviour
     public static Stack<string> answers;
     public static Stack<string> rightAnswers;
 
+    const int MAX_QUESTION_LENGTH = 300, MIN_LENGTH = 10, MAX_ANSWERS_LENGTH = 300, MAX_QUESTION_NUMBER = 10, TOKKEN_NUMBER = 800;
+
     public void ok()
     {
         currentSubText++;
@@ -135,14 +136,14 @@ public class AdminMission : MonoBehaviour
         List<int> indexesStars = splitByStr(response, "**");
         for (int i = 1; i < indexesStars.Count - 1; i += 3)
         {
-            if (indexesStars[i + 1] - indexesStars[i] - 3 > 300 || indexesStars[i + 1] - indexesStars[i] - 3 < 10)
+            if (indexesStars[i + 1] - indexesStars[i] - 3 > MAX_QUESTION_LENGTH || indexesStars[i + 1] - indexesStars[i] - 3 < MIN_LENGTH)
             {
                 i += 5;
                 continue;
             }
             questions.Push(removeWhiteLetters(response.Substring(indexesStars[i] + 3, indexesStars[i + 1] - indexesStars[i] - 3)));
             i += 2;
-            if (indexesStars[i + 1] - indexesStars[i] - 2 > 220 || indexesStars[i + 1] - indexesStars[i] - 2 < 10)
+            if (indexesStars[i + 1] - indexesStars[i] - 2 > MAX_ANSWERS_LENGTH || indexesStars[i + 1] - indexesStars[i] - 2 < MIN_LENGTH)
             {
                 questions.Pop();
                 i += 3;
@@ -188,8 +189,8 @@ public class AdminMission : MonoBehaviour
             splitResponse(JsonUtility.FromJson<GiminiJSON>(www.text).candidates[0].content.parts[0].text);
         }
         geminiActivate = false;
-        questioNumberText.text = "questions: " + (questions.Count > 10 ? 10 : questions.Count) + "/10";
-        loadAll = questions.Count >= 10;
+        questioNumberText.text = "questions: " + (questions.Count > MAX_QUESTION_NUMBER ? MAX_QUESTION_NUMBER : questions.Count) + "/10";
+        loadAll = questions.Count >= MAX_QUESTION_NUMBER;
         MainMenu.activateRace = !loadAll;
     }
 
@@ -208,7 +209,7 @@ public class AdminMission : MonoBehaviour
                 new { role = "system", content = "You are an assistant helping to create educational questions for a Free Play mode in a Unity programming game for children. The game is designed to teach Java programming concepts." },
                 new { role = "user", content = "give me 10 new different easy multiple-choice programing question(max length 200 notes) in java that related to " + MainMenu.topicListSaved + " with 4 different answers(max length 70 notes) that exactly 1 answer from the 4 you gave is correct and give me the answer. please write me your response in the next format(the format is most important!!!): **question**:... **answers(dont help here or gave the answer)**: 1).... 2).... 3).... 4).... **the answer is**: **1/2/3/4(dont forget double asterisks and only 1 answer from the 4 is correct)** i don't want explanation. please keep your all response in the format i mentioned it is very importent. don't add any double or more asterisks except the places i told you it is imporatant!!!!." }
             },
-            max_tokens = 800
+            max_tokens = TOKKEN_NUMBER
         };
 
         //string json = JsonUtility.ToJson(jsonData);
@@ -237,14 +238,14 @@ public class AdminMission : MonoBehaviour
             Debug.LogError("Response: " + request.downloadHandler.text);
         }
         geminiActivate = false;
-        questioNumberText.text = "questions: " + (questions.Count > 10 ? 10 : questions.Count) + "/10";
-        loadAll = questions.Count >= 10;
+        questioNumberText.text = "questions: " + (questions.Count > MAX_QUESTION_NUMBER ? MAX_QUESTION_NUMBER : questions.Count) + "/10";
+        loadAll = questions.Count >= MAX_QUESTION_NUMBER;
         MainMenu.activateRace = !loadAll;
     }
 
     void Update()
     {
-        if (MainMenu.activateRace && questions.Count < 10 && !geminiActivate && !loadAll)
+        if (MainMenu.activateRace && questions.Count < MAX_QUESTION_NUMBER && !geminiActivate && !loadAll)
         {
             geminiActivate = true;
             StartCoroutine(callGemini());

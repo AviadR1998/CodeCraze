@@ -19,6 +19,7 @@ public class IfMissions : MonoBehaviour
     public GameObject stopLine;
     public GameObject canvasMission;
     public GameObject talkingPanel;
+    public GameObject practicalPanel;
     public GameObject okButton;
     public GameObject arrow;
     public GameObject practiceNPC;
@@ -34,6 +35,7 @@ public class IfMissions : MonoBehaviour
     public delegate void EndFunc();
     List<EndFunc> funcs;
     List<List<TextPartition>> texts;
+    public AudioSource finishSound;
 
     public static bool xLine, startFromQuestions = false;
     bool talk, stop, startCutS, hotColdBool, findAll;
@@ -41,6 +43,7 @@ public class IfMissions : MonoBehaviour
     public static int currentFindObj;
     Vector3 startPoint = new Vector3(-19.54f, 1.46f, -13.42f) + new Vector3(-901.14f, 11.69f, 297.78f), carPosision, cameraPos; //(-19.54f, 4.46f, -11.92f)
 
+    const int CAMERA_FAR = 21, ROTATION_Y = 90, DOWN_OBJ = 12;
     // Start is called before the first frame update
     void Start()
     {
@@ -95,14 +98,14 @@ public class IfMissions : MonoBehaviour
     void cutSceneCar()
     {
         //canvasMission.SetActive(false);
-        camera.GetComponent<Camera>().fieldOfView = 21;
+        camera.GetComponent<Camera>().fieldOfView = CAMERA_FAR;
         AdminMission.currentSubMission++;
         okButton.SetActive(false);
         talkingText.text = "Now we will see a car tring to pass a traffic light.";
         startCutS = true;
         player.transform.rotation = Quaternion.Euler(0, 0, 0);
         camera.transform.position = startPoint;// + player.transform.position;
-        camera.transform.rotation = Quaternion.Euler(0, 90, 0);
+        camera.transform.rotation = Quaternion.Euler(0, ROTATION_Y, 0);
         grayCar.SetActive(false);
         blackCar.SetActive(false);
         blueCar.SetActive(false);
@@ -133,7 +136,7 @@ public class IfMissions : MonoBehaviour
         if (other.tag == "Player" && !talk)
         {
             //other.transform.LookAt(npc.transform);
-            //some explanations
+            arrow.SetActive(false);
             Cursor.lockState = CursorLockMode.Confined;
             Cursor.visible = true;
             PauseMenu.canPause = false;
@@ -161,13 +164,15 @@ public class IfMissions : MonoBehaviour
         //
         arrow.SetActive(false);
         findObj[0].SetActive(true);
-        findObj[0].transform.position -= new Vector3(0, 12, 0);
+        findObj[0].transform.position -= new Vector3(0, DOWN_OBJ, 0);
         hotColdCanvas.SetActive(true);
         hotColdBool = true;
     }
 
     void questions()
     {
+        finishSound.Play();
+        practicalPanel.SetActive(true);
         missionCompleteCanvas.SetActive(true);
         canvasMission.SetActive(false);
         talkingPanel.SetActive(false);
@@ -186,6 +191,7 @@ public class IfMissions : MonoBehaviour
     {
         if (texts[AdminMission.currentSubMission].Count == AdminMission.currentSubText)
         {
+            arrow.SetActive(true);
             funcs[AdminMission.currentSubMission]();
             AdminMission.endOk = true;
         }
@@ -208,6 +214,7 @@ public class IfMissions : MonoBehaviour
                 {
                     hotColdCanvas.SetActive(false);
                     canvasMission.SetActive(true);
+                    practicalPanel.SetActive(false);
                     okButton.SetActive(false);
                     talkingText.text = "You finish!!! now go back and return the objects you find";
                     practicalText.text = "";

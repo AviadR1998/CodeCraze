@@ -33,6 +33,7 @@ public class MainMenu : MonoBehaviour
 
     private bool[] topicToggleBoolList;
 
+    const int FULL_COLOR = 255, FOREST_INDEX = 1, CITY_INDEX = 2, ISLAND_INDEX = 3, RACE_INDEX = 4, DELAY_LOGO = 3;
     // Start is called before the first frame update
     void Start()
     {
@@ -122,16 +123,16 @@ public class MainMenu : MonoBehaviour
         {
             if (Login.world == "Forest")
             {
-                SceneManager.LoadSceneAsync(1);
+                SceneManager.LoadSceneAsync(FOREST_INDEX);
             }
             if (Login.world == "City")
             {
                 Movement.loadOnce = true;
-                SceneManager.LoadSceneAsync(2);
+                SceneManager.LoadSceneAsync(CITY_INDEX);
             }
             if (Login.world == "Island")
             {
-                SceneManager.LoadSceneAsync(3);
+                SceneManager.LoadSceneAsync(ISLAND_INDEX);
             }
         }
 
@@ -164,7 +165,7 @@ public class MainMenu : MonoBehaviour
         topicToggleBoolList[index] = !topicToggleBoolList[index];
         if (topicToggleBoolList[index])
         {
-            topicToggleList[index].transform.GetComponent<Image>().color = new Color(0, 0, 0, 255);
+            topicToggleList[index].transform.GetComponent<Image>().color = new Color(0, 0, 0, FULL_COLOR);
         }
         else
         {
@@ -225,7 +226,7 @@ public class MainMenu : MonoBehaviour
         }
         topicListSaved = topicListSaved.Remove(topicListSaved.Length - 2, 1);
         chooseTopicsPanel.SetActive(false);
-        SceneManager.LoadSceneAsync(4);
+        SceneManager.LoadSceneAsync(RACE_INDEX);
     }
 
     public void Quit()
@@ -235,7 +236,7 @@ public class MainMenu : MonoBehaviour
 
     private IEnumerator delayLogo()
     {
-        yield return new WaitForSeconds(3f);
+        yield return new WaitForSeconds(DELAY_LOGO);
         canvas.transform.GetComponent<Image>().sprite = Resources.Load("FirstMenu", typeof(Sprite)) as Sprite;
         firstMenu.SetActive(true);
     }

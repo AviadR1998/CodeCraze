@@ -23,7 +23,8 @@ public class SoccerQuestion : MonoBehaviour
     public AudioSource failSound;
 
     string currentRightAnswer, currentAnswerPressed;
-    
+
+    const int TIME = 25;
 
     // Start is called before the first frame update
     void Start()
@@ -56,7 +57,7 @@ public class SoccerQuestion : MonoBehaviour
             optionsStatic[i] = options[i] + "";
         }
         curentRightAnswerStatic = correctAnswer;
-        timeStatic = 25;
+        timeStatic = TIME;
     }
 
     public void optionPressed(TMP_Text option)
@@ -92,7 +93,7 @@ public class SoccerQuestion : MonoBehaviour
             }
             timeText.color = Color.white;
             explanationText.text = "";
-            timeStatic = 25;
+            timeStatic = TIME;
             soccerQuestionCanvas.SetActive(false);
         }
         else

@@ -16,6 +16,9 @@ public class MoveCars : MonoBehaviour
     private int nextPosition;
     private bool canDrive, collideLine, collidePlayer, collideCar, siren;
 
+    const int ROTATE = 10;
+    const float DELAY = 0.28f, DELAY_SIREN = 1.5f;
+
     private void OnTriggerEnter(Collider other)
     {
         if (other.tag.ToString() == "IfStopLine" && obj.tag.ToString() == "OrangeCar")
@@ -40,9 +43,6 @@ public class MoveCars : MonoBehaviour
         }
         if (collidePlayer && !collideLine)
         {
-            /*Movement.canMove = false;
-            GameObject.Find("ArrowAll").transform.position = GameObject.Find("Player").transform.position = new Vector3(-866.33f, 13.015f, 94.84f);
-            Movement.canMove = true;*/
             Movement.home = true;
             canDrive = !collideCar;
         }
@@ -50,7 +50,7 @@ public class MoveCars : MonoBehaviour
 
     private IEnumerator delayDrive() 
     { 
-        yield return new WaitForSeconds(0.28f);
+        yield return new WaitForSeconds(DELAY);
         canDrive = true;
     }
 
@@ -87,9 +87,6 @@ public class MoveCars : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        //nextPosition = 0;
-        //canDrive = true;
-        //collideCar = collideLine = collidePlayer = false;
     }
 
     void changeSiren()
@@ -107,7 +104,7 @@ public class MoveCars : MonoBehaviour
         obj.transform.LookAt(points[0].transform);
         if (obj.tag == "PoliceCar")
         {
-            InvokeRepeating("changeSiren", 1f, 1.5f);
+            InvokeRepeating("changeSiren", 1f, DELAY_SIREN);
         }
     }
 
@@ -118,7 +115,7 @@ public class MoveCars : MonoBehaviour
         {
             for (int i = 0; i < wheels.Length && !PauseMenu.isPaused; i++)
             {
-                wheels[i].transform.Rotate(10, 0, 0);
+                wheels[i].transform.Rotate(ROTATE, 0, 0);
             }
             actualPoints = obj.transform.position;
             obj.transform.position = Vector3.MoveTowards(actualPoints, points[nextPosition].transform.position, speed * Time.deltaTime);

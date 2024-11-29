@@ -19,11 +19,14 @@ public class ForMission : MonoBehaviour
     public GameObject forNPC;
     public GameObject missionCompleteCanvas;
     public GameObject camera;
+    public GameObject arrow;
+    public AudioSource finishSound;
 
     public static bool startFromQuestions = false, startFromAfterQuestions = false;
-    //int currentSubText, currentSubMission;
     List<List<TextPartition>> texts;
     List<EndFunc> funcs;
+
+    const int CAMERA_FAR = 21, QUESTION_INDEX = 2, SOCCER_INDEX = 4;
     // Start is called before the first frame update
     void Start()
     {
@@ -83,6 +86,7 @@ public class ForMission : MonoBehaviour
     {
         if (texts[AdminMission.currentSubMission].Count == AdminMission.currentSubText)
         {
+            arrow.SetActive(true);
             AdminMission.canTalk = false;
             Cursor.lockState = CursorLockMode.Locked;
             Cursor.visible = false;
@@ -96,13 +100,9 @@ public class ForMission : MonoBehaviour
                 Movement.mission = redButton;
             }
             AdminMission.currentSubMission++;
-            if (AdminMission.currentSubMission == 2)
+            if (AdminMission.currentSubMission == QUESTION_INDEX || AdminMission.currentSubMission == SOCCER_INDEX)
             {
-                funcs[2]();
-            }
-            if (AdminMission.currentSubMission == 4)
-            {
-                funcs[4]();
+                funcs[AdminMission.currentSubMission]();
             }
         }
     }
@@ -115,6 +115,7 @@ public class ForMission : MonoBehaviour
 
     void questions()
     {
+        finishSound.Play();
         redButton.SetActive(false);
         missionCompleteCanvas.SetActive(true);
         canvasMission.SetActive(false);
@@ -131,6 +132,7 @@ public class ForMission : MonoBehaviour
 
     void part1()
     {
+        arrow.SetActive(false);
         AdminMission.canTalk = false;
         AdminMission.currentSubText = 0;
         Cursor.lockState = CursorLockMode.Confined;
@@ -145,7 +147,7 @@ public class ForMission : MonoBehaviour
     void soccerGame()
     {
         canvasMission.SetActive(false);
-        camera.GetComponent<Camera>().fieldOfView = 21;
+        camera.GetComponent<Camera>().fieldOfView = CAMERA_FAR;
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
         PauseMenu.canPause = true;
@@ -183,14 +185,14 @@ public class ForMission : MonoBehaviour
         {
             startFromQuestions = false;
             AdminMission.canTalk = false;
-            AdminMission.currentSubMission = 2;
+            AdminMission.currentSubMission = QUESTION_INDEX;
             questions();
         }
         if (startFromAfterQuestions)
         {
             startFromAfterQuestions = false;
             AdminMission.canTalk = true;
-            AdminMission.currentSubMission = 3;
+            AdminMission.currentSubMission = SOCCER_INDEX - 1;
         }
     }
 }

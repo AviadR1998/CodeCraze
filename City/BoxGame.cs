@@ -44,6 +44,9 @@ public class BoxGame : MonoBehaviour
     List<int> ballNumbers;
     bool canPress, firstTouch, arrayState, levelFirst, level3Start;
     string resultLevel3;
+
+    const int DELAY_END = 3, ID1 = 1, ID2 = 2, ID3 = 3, BOX_LEN = 7, BALL_NUMBER = 3, CAMERA_FAR = 21, CAMERA_CLOSE = 60, JUMP = 19, ROTATION = 17, LETTER_JUMP = 3, MIN_LETTER = 3, MAX_LETTER = 8;
+    const float DELAY = 1.5f, BALL_SIZE = 0.5f, BALL_POS_X1 = -1073.52f, BALL_POS_X2 = -1065.36f, BALL_POS_X3 = -1069.36f, BALL_POS_Y = 9.834f, BALL_POS_Z1 = 353.66f, BALL_POS_Z2 = 357.66f, CAMERA_POS_X1 = 0.1645798f, CAMERA_POS_Y1 = 0.0239689f, CAMERA_POS_Z1 = 0.01668368f, CAMERA_POS_X2 = -1069.866f, CAMERA_POS_Y2 = 22.4789f, CAMERA_POS_Z2 = 312.5044f, DOWN_LETTER = 6.35f;
     // Start is called before the first frame update
     void Start()
     {
@@ -92,14 +95,14 @@ public class BoxGame : MonoBehaviour
 
     private IEnumerator delayPress()
     {
-        yield return new WaitForSeconds(1.5f);
+        yield return new WaitForSeconds(DELAY);
         funcs[level]();
         canPress = true;
     }
 
     private IEnumerator delayPressLevel4()
     {
-        yield return new WaitForSeconds(1.5f);
+        yield return new WaitForSeconds(DELAY);
         funcs[level]();
         canPress = true;
         checkboxButton.interactable = true;
@@ -107,7 +110,7 @@ public class BoxGame : MonoBehaviour
 
     private IEnumerator delayMission()
     {
-        yield return new WaitForSeconds(2.5f);
+        yield return new WaitForSeconds(DELAY + 1);
         if (++level < funcs.Count)
         {
             levelFirst = true;
@@ -118,7 +121,7 @@ public class BoxGame : MonoBehaviour
 
     private IEnumerator delayEnd()
     {
-        yield return new WaitForSeconds(3);
+        yield return new WaitForSeconds(DELAY_END);
         cheboxCanvas.SetActive(false);
         missionCompleteCanvas.SetActive(true);
     }
@@ -130,7 +133,7 @@ public class BoxGame : MonoBehaviour
         ball.GetComponent<SphereCollider>().isTrigger = true;
         ball.tag = "BallBox";
         ball.transform.position = new Vector3(x, y, z);
-        ball.transform.localScale = new Vector3(0.5f, 0.5f, 0.5f); ;
+        ball.transform.localScale = new Vector3(BALL_SIZE, BALL_SIZE, BALL_SIZE); ;
         return ball;
     }
 
@@ -140,13 +143,13 @@ public class BoxGame : MonoBehaviour
         boxNumbers = new List<string>();
         ballNumbers = new List<int>();
         orderText.text = "press 'E' button to catch/drop the ball";
-        balls.Add(createBall(1, -1073.52f, 9.834f, 353.66f));
-        balls.Add(createBall(2, -1065.36f, 9.834f, 353.66f));
-        ballNumbers.Add(Random.Range(0, 7));
-        ballNumbers.Add(Random.Range(0, 7));
+        balls.Add(createBall(ID1, BALL_POS_X1, BALL_POS_Y, BALL_POS_Z1));
+        balls.Add(createBall(ID2, BALL_POS_X2, BALL_POS_Y, BALL_POS_Z1));
+        ballNumbers.Add(Random.Range(0, BOX_LEN));
+        ballNumbers.Add(Random.Range(0, BOX_LEN));
         while (ballNumbers[0] == ballNumbers[1])
         {
-            ballNumbers[1] = Random.Range(0, 7);
+            ballNumbers[1] = Random.Range(0, BOX_LEN);
         }
         practicalText.text = "insert the balls into box number [" + ballNumbers[0] + "]\nand box number [" + ballNumbers[1] + "]\nWhen you finish go back to gradma and press on 'F'";
     }
@@ -154,15 +157,15 @@ public class BoxGame : MonoBehaviour
     void randomNumber()
     {
         ballNumbers = new List<int>();
-        ballNumbers.Add(Random.Range(0, 7));
+        ballNumbers.Add(Random.Range(0, BOX_LEN));
         for (int i = 0; i < 2; i++)
         {
-            int rnd = Random.Range(0, 7);
+            int rnd = Random.Range(0, BOX_LEN);
             for (int j = 0; j < ballNumbers.Count; j++)
             {
                 if (rnd == ballNumbers[j])
                 {
-                    rnd = Random.Range(0, 7);
+                    rnd = Random.Range(0, BOX_LEN);
                     j = -1;
                 }
             }
@@ -175,9 +178,9 @@ public class BoxGame : MonoBehaviour
         balls = new List<GameObject>();
         boxNumbers = new List<string>();
         orderText.text = "press 'E' button to catch/drop the ball";
-        balls.Add(createBall(1, -1073.52f, 9.834f, 353.66f));
-        balls.Add(createBall(2, -1065.36f, 9.834f, 353.66f));
-        balls.Add(createBall(3, -1069.36f, 9.834f, 357.66f));
+        balls.Add(createBall(ID1, BALL_POS_X1, BALL_POS_Y, BALL_POS_Z1));
+        balls.Add(createBall(ID2, BALL_POS_X2, BALL_POS_Y, BALL_POS_Z1));
+        balls.Add(createBall(ID3, BALL_POS_X3, BALL_POS_Y, BALL_POS_Z2));
         randomNumber();
         practicalText.text = "insert the balls into box number [" + ballNumbers[0] + "]\nand box number [" + ballNumbers[1] + "]\nand box number [" + ballNumbers[2] + "]\nWhen you finish go back to gradma and press on 'F'";
     }
@@ -186,7 +189,7 @@ public class BoxGame : MonoBehaviour
     {
         if (levelFirst)
         {
-            for (int i = 0; i < 7; i++)
+            for (int i = 0; i < BOX_LEN; i++)
             {
                 GameObject.Find("boxNumber" + i).SetActive(false);
             }
@@ -197,7 +200,7 @@ public class BoxGame : MonoBehaviour
 
     public void clickCheckBox(GameObject chBox)
     {
-        checkBoxArr[chBox.name[8] - '0'] = !checkBoxArr[chBox.name[8] - '0'];
+        checkBoxArr[chBox.name[BOX_LEN + 1] - '0'] = !checkBoxArr[chBox.name[BOX_LEN + 1] - '0'];
     }
 
     public void checkButton()
@@ -207,7 +210,7 @@ public class BoxGame : MonoBehaviour
         for (int i = 0; i < checkBoxArr.Length; i++)
         {
             bool wrongCheck = checkBoxArr[i];
-            for (int j = 0; j < 3; j++)
+            for (int j = 0; j < BALL_NUMBER; j++)
             {
                 if (checkBoxArr[i] && i == ballNumbers[j])
                 {
@@ -218,19 +221,18 @@ public class BoxGame : MonoBehaviour
             }
             if (wrongCheck)
             {
-                cnt = 4;
+                cnt = BALL_NUMBER + 1;
             }
         }
-        if (cnt == 3)
+        if (cnt == BALL_NUMBER)
         {
-            camera.GetComponent<Camera>().fieldOfView = 60;
+            camera.GetComponent<Camera>().fieldOfView = CAMERA_CLOSE;
             soccesSound.Play();
             checkboxText.text = "correct! you finished all the tasks here Good luck!!!";
-            player.transform.position += new Vector3(0, 1, 19);
+            player.transform.position += new Vector3(0, 1, JUMP);
             arrow.SetActive(true);
             arrow.transform.position = player.transform.position;
-            //arrow.transform.position += new Vector3(0, 0, 15);
-            camera.transform.position = new Vector3(0.1645798f, 0.0239689f, 0.01668368f) + player.transform.position;
+            camera.transform.position = new Vector3(CAMERA_POS_X1, CAMERA_POS_Y1, CAMERA_POS_Z1) + player.transform.position;
             player.GetComponent<CharacterController>().enabled = true;
             player.GetComponent<Movement>().enabled = true;
             StartCoroutine(delayEnd());
@@ -264,20 +266,19 @@ public class BoxGame : MonoBehaviour
         player.GetComponent<Movement>().enabled = false;
         if (levelFirst)
         {
-            camera.GetComponent<Camera>().fieldOfView = 21;
-            player.transform.position += new Vector3(0, 0, -19);
-            //arrow.transform.position += new Vector3(0, 0, -15);
+            camera.GetComponent<Camera>().fieldOfView = CAMERA_FAR;
+            player.transform.position += new Vector3(0, 0, -JUMP);
             levelFirst = false;
         }
-        camera.transform.position = new Vector3(-1069.866f, 22.4789f, 312.5044f);
-        camera.transform.rotation = Quaternion.Euler(17, 0, 0);
+        camera.transform.position = new Vector3(CAMERA_POS_X2, CAMERA_POS_Y2, CAMERA_POS_Z2);
+        camera.transform.rotation = Quaternion.Euler(ROTATION, 0, 0);
         //
         orderCanvas.SetActive(false);
         cheboxCanvas.SetActive(true);
         checkboxText.text = "In which indexes the balls are?\nplease check the right boxes";
         balls = new List<GameObject>();
         randomNumber();
-        for (int i = 1; i < 4; i++)
+        for (int i = 1; i < BALL_NUMBER + 1; i++)
         {
             Vector3 box = GameObject.Find("BoxArr" + ballNumbers[i - 1]).transform.position;
             balls.Add(createBall(i, box.x, box.y, box.z));
@@ -289,7 +290,6 @@ public class BoxGame : MonoBehaviour
     {
         if (texts[AdminMission.currentSubMission].Count == AdminMission.currentSubText)
         {
-            //funcs[AdminMission.currentSubMission]();
             AdminMission.endOk = true;
             AdminMission.currentSubMission++;
             explanationsCanvas.SetActive(false);
@@ -305,7 +305,7 @@ public class BoxGame : MonoBehaviour
     void level3()
     {
         level3Start = true;
-        int size = Random.Range(3, 8);
+        int size = Random.Range(MIN_LETTER, MAX_LETTER);
         int[] capacity = {0, 0, 0, 0};
         resultLevel3 = "";
         LettersList = new List<GameObject>();
@@ -313,7 +313,7 @@ public class BoxGame : MonoBehaviour
         for (int i = 0; i < size; i++)
         {
             int rnd = Random.Range(0, capacity.Length);
-            if (capacity[rnd] == 3)
+            if (capacity[rnd] == MIN_LETTER)
             {
                 i--;
                 continue;
@@ -326,12 +326,12 @@ public class BoxGame : MonoBehaviour
         {
             for(int j = 0; j < capacity[i]; j++)
             {
-                LettersList.Add(lettersObj[i * 3 + j]);
-                originalLetterPlace.Add(new Vector3(lettersObj[i * 3 + j].transform.position.x, lettersObj[i * 3 + j].transform.position.y, lettersObj[i * 3 + j].transform.position.z));
-                lettersObj[i * 3 + j].transform.position -= new Vector3(0, 6.35f, 0);
-                for (int k = 0; k < lettersObj[i * 3 + j].transform.childCount; k++)
+                LettersList.Add(lettersObj[i * LETTER_JUMP + j]);
+                originalLetterPlace.Add(new Vector3(lettersObj[i * LETTER_JUMP + j].transform.position.x, lettersObj[i * LETTER_JUMP + j].transform.position.y, lettersObj[i * LETTER_JUMP + j].transform.position.z));
+                lettersObj[i * LETTER_JUMP + j].transform.position -= new Vector3(0, DOWN_LETTER, 0);
+                for (int k = 0; k < lettersObj[i * LETTER_JUMP + j].transform.childCount; k++)
                 {
-                    lettersObj[i * 3 + j].transform.GetChild(k).GetComponent<MeshRenderer>().enabled = true;
+                    lettersObj[i * LETTER_JUMP + j].transform.GetChild(k).GetComponent<MeshRenderer>().enabled = true;
                 }
             }
         }
@@ -363,8 +363,8 @@ public class BoxGame : MonoBehaviour
             {
                 checkBoxArr[i] = toggles[i].isOn = false;
             }
-            checkBoxArr = new bool[7] { false, false, false, false, false, false, false };
-            boxLetters = new char[7] { '\0', '\0', '\0', '\0', '\0', '\0', '\0' };
+            checkBoxArr = new bool[BOX_LEN] { false, false, false, false, false, false, false };
+            boxLetters = new char[BOX_LEN] { '\0', '\0', '\0', '\0', '\0', '\0', '\0' };
             levelFirst = arrayState = firstTouch = canPress = true;
             level3Start = false;
             level = 0;
@@ -402,7 +402,7 @@ public class BoxGame : MonoBehaviour
                 findMistake = true;
             }
         }
-        for (int i = resultLevel3.Length; i < 7; i++)
+        for (int i = resultLevel3.Length; i < BOX_LEN; i++)
         {
             if (boxLetters[i] != 0)
             {
@@ -411,7 +411,7 @@ public class BoxGame : MonoBehaviour
         }
         if (findMistake)
         {
-            for (int i = 0; i < 7; i++)
+            for (int i = 0; i < BOX_LEN; i++)
             {
                 boxLetters[i] = '\0';
             }
