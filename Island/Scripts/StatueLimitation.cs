@@ -5,7 +5,7 @@ public class StatueLimitation : MonoBehaviour
     public GameObject player;
     public Transform playerRespawnPoint;
     public static bool shouldLimit = false;
-    public float waterLevel = -1;
+    public float waterLevel = -3;
     private SoundEffects[] soundEffects;
     private bool madeRespawn = false;
     // Start is called before the first frame update
@@ -21,7 +21,7 @@ public class StatueLimitation : MonoBehaviour
         {
             soundEffects[1].PlaySoundClip();
             madeRespawn = true;
-            Invoke("respawnPlayer", 2f);
+            Invoke("respawnPlayer", 1.5f);
         }
     }
 

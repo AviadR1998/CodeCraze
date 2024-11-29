@@ -2,15 +2,24 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Audio;
 using TMPro;
+using UnityEngine.Networking;
+using System.Collections;
+using UnityEngine.UI;
 
 public class SettingsMenu : MonoBehaviour
 {
-
+    public GameObject outsideMenu;
+    public GameObject settingsCanvas;
+    public GameObject firstMenuPanel;
+    public GameObject mainMenuPanel;
+    public GameObject resetButton;
+    public GameObject deleteButton;
     public AudioMixer audioMixer;
     public TMP_Dropdown resolutionDrop;
     private Resolution[] resolutions;
     private List<Resolution> goodRatioResolutions;
 
+    public static bool activateButtons;
 
     private void Start()
     {
@@ -44,6 +53,71 @@ public class SettingsMenu : MonoBehaviour
         resolutionDrop.RefreshShownValue();
 
     }
+    private IEnumerator sendDeleteRequest()
+    {
+        UnityWebRequest request = UnityWebRequest.Delete("http://" + MainMenu.serverIp + ":5000/api/Users/Delete");
+        request.SetRequestHeader("authorization", "Bearer " + Login.token);
+        yield return request.SendWebRequest();
+        if (request.result == UnityWebRequest.Result.Success)
+        {
+            Debug.Log("User deleted successfully!");
+        }
+        else
+        {
+            Debug.LogError($"Error deleting user: {request.error}");
+        }
+    }
+
+    IEnumerator resetUserRequest()
+    {
+        WWWForm form = new WWWForm();
+        using (UnityWebRequest request = UnityWebRequest.Post("http://" + MainMenu.serverIp + ":5000/api/Users/Reset", form))
+        {
+            request.SetRequestHeader("authorization", "Bearer " + Login.token);
+            yield return request.SendWebRequest();
+            if (request.isNetworkError || request.isHttpError)
+            {
+
+            }
+            else
+            {
+            }
+        }
+    }
+
+    void OnEnable()
+    {
+        outsideMenu.SetActive(false);
+        resetButton.SetActive(activateButtons);
+        deleteButton.SetActive(activateButtons);
+    }
+
+    public void backToOutMenu()
+    {
+        outsideMenu.SetActive(true);
+        settingsCanvas.SetActive(false);
+    }
+
+    public void resetUser()
+    {
+        Login.world = "Forest";
+        Login.task = "Swing";
+        Login.state = 0;
+        StartCoroutine(resetUserRequest());
+    }
+
+    public void deleteUser()
+    {
+        Login.world = "Forest";
+        Login.task = "Swing";
+        Login.state = 0;
+        outsideMenu.SetActive(true);
+        mainMenuPanel.SetActive(false);
+        firstMenuPanel.SetActive(true);
+        outsideMenu.transform.GetComponent<Image>().sprite = Resources.Load("FirstMenu", typeof(Sprite)) as Sprite;
+        StartCoroutine(sendDeleteRequest());
+    }
+
     public void SetVolume(float volume)
     {
         print(volume);

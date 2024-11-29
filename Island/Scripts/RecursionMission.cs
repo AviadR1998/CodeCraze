@@ -13,7 +13,7 @@ public class RecursionMission : MonoBehaviour
     public float playerRespawnHeight = -1f;
     private int dragonPears = 5, dragonPearsCollected = 0, beforeMissionNextCounter = 0, numOfClicksToStartMission = 13;
     private int afterMissionNextCounter = 0, numOfClicksToFinishMission = 3;
-    private bool collectAll = false, backToDragon = false;
+    private bool collectAll = false, backToDragon = false, inMission = false;
 
     // Start is called before the first frame update
     void Start()
@@ -39,49 +39,56 @@ public class RecursionMission : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (player.transform.position.y < playerRespawnHeight)
+        if (inMission)
         {
-            player.transform.position = playerRespawnPoint.transform.position;
-        }
-
-        if (dragonPears == dragonPearsCollected)
-        {
-            foreach (GameObject pear in pears)
+            if (player.transform.position.y < playerRespawnHeight)
             {
-                pear.SetActive(true);
-            }
-            dragonPearsCollected++;
-            collectAll = true;
-        }
-
-        if (beforeMissionNextCounter == numOfClicksToStartMission)
-        {
-            Invoke("CallToResumeCamera", 3f);
-            beforeMissionNextCounter = 0;
-            TurnOnMissionMusic();
-        }
-        if (afterMissionNextCounter == numOfClicksToFinishMission)
-        {
-            Invoke("CallToResumeCamera", 1f);
-            afterMissionNextCounter = 0;
-            TurnOffMissionMusic();
-            if (missionComplete != null)
-            {
-                SoundEffects soundEffects = missionComplete.GetComponent<SoundEffects>();
-                soundEffects.PlaySoundClip();
-                missionComplete.gameObject.SetActive(true);
-            }
-            if (!GameFlow.finishAllMissions)
-            {
-                gameObject.SetActive(false);
-            }
-            else
-            {
-                arrow.SetActive(true);
+                player.transform.position = playerRespawnPoint.transform.position;
             }
 
-            StartRecursionMission.startMission = false;
+            if (dragonPears == dragonPearsCollected)
+            {
+                foreach (GameObject pear in pears)
+                {
+                    pear.SetActive(true);
+                }
+                dragonPearsCollected++;
+                collectAll = true;
+            }
+
+            if (beforeMissionNextCounter == numOfClicksToStartMission)
+            {
+                Invoke("CallToResumeCamera", 3f);
+                beforeMissionNextCounter = 0;
+                TurnOnMissionMusic();
+            }
+            if (afterMissionNextCounter == numOfClicksToFinishMission)
+            {
+                Invoke("CallToResumeCamera", 1f);
+                afterMissionNextCounter = 0;
+                TurnOffMissionMusic();
+                PauseMenu.updateSave("Island", "Recursion", 1);
+                inMission = false;
+                if (missionComplete != null && !GameFlow.finishAllMissions)
+                {
+                    SoundEffects soundEffects = missionComplete.GetComponent<SoundEffects>();
+                    soundEffects.PlaySoundClip();
+                    missionComplete.gameObject.SetActive(true);
+                    GameFlow.stateInMission = 1;
+                }
+                if (!GameFlow.finishAllMissions)
+                {
+                    gameObject.SetActive(false);
+                }
+                else
+                {
+                    arrow.SetActive(true);
+                }
+
+                StartRecursionMission.startMission = false;
+            }
         }
+
 
     }
 
@@ -176,6 +183,7 @@ public class RecursionMission : MonoBehaviour
 
     public void StartMission()
     {
+        inMission = true;
         Invoke("ActivateFirstCanvas", 1f);
         GetComponent<MoveCamera>().InitStartMission();
         dragonPearsCollected = 0;

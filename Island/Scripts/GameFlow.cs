@@ -4,12 +4,24 @@ using UnityEngine;
 public class GameFlow : MonoBehaviour
 {
     public GameObject functionObject, classObject, recursionObject;
-    public static int mission = 0;
+    public Canvas congratulations;
+    public static int mission = 2;
     public static int stateInMission = 1;
-    public static bool finishAllMissions = true;
-    // Start is called before the first frame update
+    public static bool finishAllMissions = false;
+
+
     void Start()
     {
+        print(Login.world + " " + Login.task + " " + Login.state);
+        mission = GetMissionIndex();
+        stateInMission = Login.state;
+        print("Mission: " + mission);
+        if (Login.world == "Free")
+        {
+            finishAllMissions = true;
+            FinishAll();
+            return;
+        }
         if (mission == 0)
         {
             StartFunctionMission();
@@ -17,6 +29,7 @@ public class GameFlow : MonoBehaviour
         else if (mission == 1)
         {
             StartClassMission();
+            print("Start class Mission");
         }
         else if (mission == 2)
         {
@@ -25,15 +38,21 @@ public class GameFlow : MonoBehaviour
 
     }
 
-    // Update is called once per frame
-    void Update()
+    private int GetMissionIndex()
     {
-        // if (functionObject.activeInHierarchy == false)
-        // {
-        //     StartFunctionMission();
-        // }
-
+        switch (Login.task)
+        {
+            case "Functions":
+                return 0;
+            case "Classes":
+                return 1;
+            case "Recursion":
+                return 2;
+            default:
+                return 0;
+        }
     }
+
 
     private void StartFunctionMission()
     {
@@ -63,7 +82,10 @@ public class GameFlow : MonoBehaviour
 
     private void FinishAll()
     {
+        functionObject.SetActive(true);
+        functionObject.GetComponent<FunctionMissionCoin>().InitMission();
         classObject.SetActive(true);
+        recursionObject.SetActive(true);
     }
 
     public void FinishedAMission()
@@ -73,15 +95,24 @@ public class GameFlow : MonoBehaviour
 
         if (mission == 1)
         {
+            PauseMenu.updateSave("Island", "Functions", 0);
             StartClassMission();
         }
         else if (mission == 2)
         {
+            PauseMenu.updateSave("Island", "Functions", 0);
             StartRecursionMission();
         }
         else
         {
-            finishAllMissions = true;
+            if (!finishAllMissions)
+            {
+                finishAllMissions = true;
+                GetComponent<SoundEffects>().PlaySoundClip();
+                congratulations.gameObject.SetActive(true);
+            }
+            PauseMenu.updateSave("Free", "Functions", 0);
+            mission = 0;
         }
     }
 

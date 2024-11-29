@@ -8,7 +8,7 @@ public class ChangeCameraFocus : MonoBehaviour
     public GameObject[] objectsToDeactivate = null, objectsToActivate = null;
     public Canvas dangerArea;
     public static bool isSailing = false, goingBack = false;
-    public bool workOnSail = false, moveToStatue = false, justWhenBack = false;
+    public bool workOnSail = false, justWhenBack = false;
     private float rotationSpeed = 5f;  // Rotation speed for smooth rotation
     private bool shouldLookAtTarget = false;  // Flag to control if the player should look at the target
 
@@ -84,10 +84,6 @@ public class ChangeCameraFocus : MonoBehaviour
             if (dangerArea != null)
             {
                 dangerArea.gameObject.SetActive(true);
-            }
-            if (moveToStatue)
-            {
-                StatueLimitation.shouldLimit = true;
             }
         }
 

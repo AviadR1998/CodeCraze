@@ -142,10 +142,11 @@ public class FunctionMissionCoin : MonoBehaviour
         TurnOnOrOffAllChildren(OutsideMatches, false);
         TurnOnOrOffAllChildren(TurnOffTorchesParent, false);
 
+        GameFlow.stateInMission = 1;
         if (!GameFlow.finishAllMissions)
         {
             gameObject.SetActive(false);
-            GameFlow.mission = 1;
+            PauseMenu.updateSave("Island", "Functions", 1);
             return;
         }
 
