@@ -12,8 +12,13 @@ public class FireMission : MonoBehaviour
     public TMP_InputField inputField1;
     public TMP_InputField inputField2;
     public TMP_InputField inputField3;
+    public TMP_InputField inputField4;
+    public TMP_InputField inputField5;
+    public TMP_InputField inputField6;
+    public GameObject firstCanvas;
     public AudioClip correctClip;
     public AudioClip WrongClip;
+    public AudioClip magClip;
     private AudioSource audioSource;
     public AudioSource fireAudio;
     public float stopAfterSeconds = 15f;
@@ -74,7 +79,6 @@ public class FireMission : MonoBehaviour
         canvas.SetActive(false);
         Cursor.lockState = CursorLockMode.Confined;
         Cursor.visible = true;
-        canvasGame.SetActive(true);
     }
 
     public void ButtonInfoClickGame()
@@ -116,6 +120,39 @@ public class FireMission : MonoBehaviour
         }
     }
 
+    public void ButtonMagic()
+    {
+        string answer4 = inputField4.text.ToUpper();
+        string answer5 = inputField5.text.ToUpper();
+        string answer6 = inputField6.text.ToUpper();
+        bool isCorrect4 = (answer4 == "OR");
+        bool isCorrect5 = (answer5 == "NOT");
+        bool isCorrect6 = (answer6 == "AND");
+        //Player correct.
+        if (answer4 == "OR" && answer5 == "NOT" && answer6 == "AND")
+        {
+            //Correct sound.
+            audioSource.clip = magClip;
+            audioSource.Play();
+            SetInputFieldColor(inputField1, Color.white);
+            SetInputFieldColor(inputField2, Color.white);
+            SetInputFieldColor(inputField3, Color.white);
+            canvasGame.SetActive(true);
+            firstCanvas.SetActive(false);
+        }
+        else
+        //Player didn't answer the right answer.
+        {
+            audioSource.clip = WrongClip;
+            audioSource.Play();
+            //Mark the wrong fields in red color.
+            SetInputFieldColor(inputField4, isCorrect4 ? Color.white : Color.red);
+            SetInputFieldColor(inputField5, isCorrect5 ? Color.white : Color.red);
+            SetInputFieldColor(inputField6, isCorrect6 ? Color.white : Color.red);
+        }
+    }
+    
+
     void StopFireAudio()
     {
         fireAudio.Stop();
@@ -147,7 +184,7 @@ public class FireMission : MonoBehaviour
             isTaskCompletedOnce = true;
             if (taskManager != null)
             {
-                taskManager.ActivateNextTask();
+                StartCoroutine(ActivateNextTaskWithDelay());
             }
             else
             {
@@ -182,5 +219,10 @@ public class FireMission : MonoBehaviour
         CastleBox.SetActive(true);
         CompleteTask();
         arrow.SetActive(true);
+    }
+    private IEnumerator ActivateNextTaskWithDelay()
+    {
+        yield return new WaitForSeconds(5);
+        taskManager.ActivateNextTask();
     }
 }

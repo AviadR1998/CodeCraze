@@ -65,7 +65,7 @@ public class fishCount : MonoBehaviour
             Cursor.lockState = CursorLockMode.None;
             Cursor.visible = true;
 
-            explainWorlds.text = "Meet Count!😊 Count is a special number that loves to keep track of things.\n Imagine Count starts at 0. So, we say: count = 0;\n " +
+            explainWorlds.text = "Meet Count!\n" + "Count is a special number that loves to keep track of things.\n Imagine Count starts at 0. So, we say: count = 0;\n " +
             "This means Count is holding the number 0 right now.\n Every time we write count++, Count gets one more.\n It's like giving Count an extra toy to hold! ";
 
             explainCode.text = "int main() {\n \tint fish = 1;  // Starting with 1 fish in the lake.\n \tfish++;  // Now fish is 2 so we have two fish in the lake..\n \tfish++; // Now fish is 3 so we have three fish in the lake..\n \treturn 0;.\n";
@@ -81,6 +81,8 @@ public class fishCount : MonoBehaviour
     }
     public void ButtonInfoClick()
     {
+        Cursor.lockState = CursorLockMode.Locked;
+        Cursor.visible = false;
         canvas.SetActive(false);
         flag = true;
         animationCode.text = "Press + and look at the fish in the lake.\nEvery time you hear the sound of water, you'll see a new fish in the river";
@@ -135,7 +137,7 @@ public class fishCount : MonoBehaviour
             isTaskCompletedOnce = true;
             if (taskManager != null)
             {
-                taskManager.ActivateNextTask();
+                StartCoroutine(ActivateNextTaskWithDelay());
             }
             else
             {
@@ -169,5 +171,10 @@ public class fishCount : MonoBehaviour
         PauseMenu.updateSave("Forest", "Bike", 0);
         //Wait 5 seconds and let the player do the mission again if he want to.
         StartCoroutine(WaitBeforeDeactivatingTask());
+    }
+    private IEnumerator ActivateNextTaskWithDelay()
+    {
+        yield return new WaitForSeconds(5);
+        taskManager.ActivateNextTask();
     }
 }

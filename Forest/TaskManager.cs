@@ -117,7 +117,7 @@ public class TaskManager : MonoBehaviour
     private IEnumerator ShowEndCanvasWithDelay()
     {
         //Wait 6 seconds until show canvas.
-        yield return new WaitForSeconds(6);
+        yield return new WaitForSeconds(3.2f);
         if (finishAudioSource != null && audioSource != null)
         {
             audioSource.PlayOneShot(finishAudioSource);

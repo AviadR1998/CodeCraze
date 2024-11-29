@@ -26,7 +26,7 @@ public class FreeQueBox : MonoBehaviour
             CreateQuestionsCanvas createQuestionsCanvas = GetComponent<CreateQuestionsCanvas>();
             if (createQuestionsCanvas != null)
             {
-                qcanvas = createQuestionsCanvas.CreateQCanvas("VarCSV.csv");
+                qcanvas = createQuestionsCanvas.CreateQCanvas("VarCSV.csv", "Vars Type");
             }
             Cursor.lockState = CursorLockMode.Confined;
             Cursor.visible = true;

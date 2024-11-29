@@ -58,12 +58,24 @@ public class learnIntCoffee : MonoBehaviour
 
             arrow.SetActive(false);
             canvas.SetActive(true);
-            Cursor.lockState = CursorLockMode.None;
+            Cursor.lockState = CursorLockMode.Confined;
             Cursor.visible = true;
 
-            explainWorlds.text = "Let's Make Coffee Cups with int!😊\n" + "Hey there, young programmer! Today, we're going to learn how to use something called an integer or int in our game to make coffee cups appear at the café.\n\n" + "What is an int?\n" + "An int is a special type of number in programming that doesn't have any decimal points. It means whole numbers like 1, 2, 3, -4 (also negative numbers as u can see) and so on.\n\n" +
-            "And in a programming way, we would write it as: int coffeeCups = 3; which means i have 3 coffee cups. " +
-            "Why Use an int?\n" + "In our game, we want to decide how many coffee cups to show at the café. Since we can only have whole coffee cups (not half a cup!), an int is perfect for this job.\n";
+            explainWorlds.text = "Let’s Make Coffee Cups with int! \n" +
+    "Hey there, young programmer! We’ve already learned what an `int` is, " +
+    "but now it’s time to dive a little deeper and see how we can use it in a fun way in our game.\n" +
+    "Today, we’re going to use an `int` to make coffee cups appear at the café!\n\n" +
+
+    "What is an int?\n" +
+    "An `int` is a special type of number in programming that doesn’t have any decimal points. " +
+    "It means whole numbers, like:\n" +
+    "- `1`, `2`, `3`, or even negative numbers like `-4`.\n" +
+    "In programming, we’d write it like this:\n" +
+    "int coffeeCups = 3; // This means I have 3 coffee cups.\n\n" +
+
+    "Why Use an int?\n" +
+    "In our game, we want to decide how many coffee cups to show at the café. " +
+    "Since we can only have whole coffee cups (not half a cup or 2.5 cups), an `int` is the perfect tool for this job.\n";
         }
     }
 
@@ -98,8 +110,8 @@ public class learnIntCoffee : MonoBehaviour
         StartCoroutine(WaitBeforeDeactivatingTask());
         inputUser.text = "";
         canvasCoffee.SetActive(false);
-        Cursor.lockState = CursorLockMode.Confined;
-        Cursor.visible = true;
+        Cursor.lockState = CursorLockMode.Locked;
+        Cursor.visible = false;
         arrow.SetActive(true);
         CompleteTask();
     }
@@ -177,12 +189,17 @@ public class learnIntCoffee : MonoBehaviour
 
             if (taskManager != null)
             {
-                taskManager.ActivateNextTask();
+                StartCoroutine(ActivateNextTaskWithDelay());
             }
             else
             {
                 Debug.LogError("TaskManager is not assigned in the Inspector!");
             }
         }
+    }
+    private IEnumerator ActivateNextTaskWithDelay()
+    {
+        yield return new WaitForSeconds(5);
+        taskManager.ActivateNextTask();
     }
 }

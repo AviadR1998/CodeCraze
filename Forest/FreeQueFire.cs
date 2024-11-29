@@ -26,7 +26,7 @@ public class FreeQueFire : MonoBehaviour
             CreateQuestionsCanvas createQuestionsCanvas = GetComponent<CreateQuestionsCanvas>();
             if (createQuestionsCanvas != null)
             {
-                qcanvas = createQuestionsCanvas.CreateQCanvas("LogicalCSV.csv");
+                qcanvas = createQuestionsCanvas.CreateQCanvas("LogicalCSV.csv" , "Logical Operations");
             }
             Cursor.lockState = CursorLockMode.Confined;
             Cursor.visible = true;

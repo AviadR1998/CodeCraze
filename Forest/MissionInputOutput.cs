@@ -22,6 +22,7 @@ public class MissionInputOutput : MonoBehaviour
     private bool isTaskCompletedOnce = false;
     public GameObject finishMission;
     public AudioSource BackgroundMusic;
+    public GameObject canvasE;
 
     void Start()
     {
@@ -48,7 +49,6 @@ public class MissionInputOutput : MonoBehaviour
             FindObjectOfType<FirstPersonController>().cameraCanMove = false;
             FindObjectOfType<FirstPersonController>().playerCanMove = false;
             FindObjectOfType<FirstPersonController>().enableHeadBob = false;
-
             arrow.SetActive(false);
             canvas.SetActive(true);
             Cursor.lockState = CursorLockMode.Confined;
@@ -72,7 +72,7 @@ public class MissionInputOutput : MonoBehaviour
             inputField.text = "";
             //Move swing.
             swingScript.StartCarousel(numberOfRotations);
-            canvas.SetActive(false);
+            canvasE.SetActive(false);
             //Wait until swing finish to move.
             yield return new WaitUntil(() => !swingScript.isCarouselRunning);
 
@@ -128,12 +128,17 @@ public class MissionInputOutput : MonoBehaviour
 
             if (taskManager != null)
             {
-                taskManager.ActivateNextTask();
+                StartCoroutine(ActivateNextTaskWithDelay());
             }
             else
             {
                 Debug.LogError("TaskManager is not assigned in the Inspector!");
             }
         }
+    }
+    private IEnumerator ActivateNextTaskWithDelay()
+    {
+        yield return new WaitForSeconds(5);
+        taskManager.ActivateNextTask();
     }
 }

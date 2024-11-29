@@ -25,7 +25,7 @@ public class FreeQueFish : MonoBehaviour
             CreateQuestionsCanvas createQuestionsCanvas = GetComponent<CreateQuestionsCanvas>();
             if (createQuestionsCanvas != null)
             {
-                qcanvas = createQuestionsCanvas.CreateQCanvas("CountPlusPlusCSV.csv");
+                qcanvas = createQuestionsCanvas.CreateQCanvas("CountPlusPlusCSV.csv", "Count ++");
             }
             Cursor.lockState = CursorLockMode.Confined;
             Cursor.visible = true;
