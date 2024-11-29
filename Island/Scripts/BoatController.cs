@@ -12,7 +12,7 @@ public class BoatController : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-        if (other.CompareTag("Player") && GameFlow.mission >= missionIndex)
+        if (other.CompareTag("Player") && (GameFlow.mission >= missionIndex || GameFlow.finishAllMissions))
         { // Ensure only the player triggers this
             isPlayerInTrigger = true;
             getOnBoatCanvas.gameObject.SetActive(true);

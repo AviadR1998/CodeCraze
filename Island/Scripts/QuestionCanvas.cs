@@ -10,20 +10,22 @@ public class QuestionCanvas : MonoBehaviour
     public GameObject qCanvas, explainBtn;
     public Button[] buttons;
     public Button question, saveBtn;
-    public TextMeshProUGUI responsePanel;
+    public TextMeshProUGUI responsePanel, titleTxt;
     private int choosenOption, correctAns, numOfClicksOnSave = 0, currentQuestion = -1, numOfQ = 0;
     private string currentExplain;
     private List<Question> questions;
     private ColorBlock resetColor;
 
 
-    public void StartAsking(string csvPath)
+    public void StartAsking(string csvPath, string title)
     {
         makeQuestions(csvPath);
         resetColor = buttons[0].colors;
         Cursor.visible = true;
         Cursor.lockState = CursorLockMode.None;
+        titleTxt.text = title;
     }
+
 
     public class Question
     {

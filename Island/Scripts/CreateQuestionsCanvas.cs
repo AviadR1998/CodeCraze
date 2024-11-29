@@ -3,14 +3,10 @@ using UnityEngine;
 public class CreateQuestionsCanvas : MonoBehaviour
 {
     public Canvas QCanvas;
+    public bool useCameraScript = false;
     private Canvas ClonedCanvas;
-    void Start()
-    {
-        //CreateQCanvas("Assets\\Island\\data\\q_recursion.csv");
 
-    }
-
-    public Canvas CreateQCanvas(string csvPath)
+    public Canvas CreateQCanvas(string csvPath, string title = "Questions")
     {
         ClonedCanvas = Instantiate(QCanvas);
 
@@ -18,13 +14,17 @@ public class CreateQuestionsCanvas : MonoBehaviour
         {
             print("Q_canvas Active!");
             ClonedCanvas.gameObject.SetActive(true);
-            ClonedCanvas.GetComponent<QuestionCanvas>().StartAsking(csvPath);
+            ClonedCanvas.GetComponent<QuestionCanvas>().StartAsking(csvPath, title);
 
-            Transform CameraControl = transform.parent.Find("CameraControlScript");
-            if (CameraControl != null)
+            if (useCameraScript)
             {
-                CameraControl.GetComponent<CanvasCameraControl>().AddCanvas(ClonedCanvas);
+                Transform CameraControl = transform.parent.Find("CameraControlScript");
+                if (CameraControl != null)
+                {
+                    CameraControl.GetComponent<CanvasCameraControl>().AddCanvas(ClonedCanvas);
+                }
             }
+
         }
         return ClonedCanvas;
     }

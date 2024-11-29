@@ -4,7 +4,7 @@ public class BoatLocationController : MonoBehaviour
 {
     public GameObject sailBoat, cameraScript, fakeBoat;
     public Transform newBoatPosition, player, newPlayerPosition;
-    public bool workOnlyOnWayBack = false, statueBoat = false;
+    public bool workOnlyOnWayBack = false, statueBoat = false, moveToStatue = false;
     public static bool goingBack = false;
 
     private void OnTriggerEnter(Collider other)
@@ -50,6 +50,18 @@ public class BoatLocationController : MonoBehaviour
             goingBack = !goingBack;
             ChangeCameraFocus.isSailing = false;
 
+        }
+
+        if (moveToStatue)
+        {
+            if (goingBack)
+            {
+                StatueLimitation.shouldLimit = false;
+            }
+            else
+            {
+                StatueLimitation.shouldLimit = true;
+            }
         }
     }
 

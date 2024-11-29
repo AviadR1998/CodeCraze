@@ -15,7 +15,6 @@ public class ClassMission : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        //Invoke("initStartMission", 4f);
         nextBtn.onClick.AddListener(ClickedNextInDogsCanvas);
         freeCameraBtn.onClick.AddListener(FreeCamera);
         Button[] buttons = finishMissionCanvas.GetComponentsInChildren<Button>();
@@ -88,6 +87,9 @@ public class ClassMission : MonoBehaviour
             {
                 arrow.SetActive(true);
             }
+
+            GameFlow.stateInMission = 1;
+            PauseMenu.updateSave("Island", "Classes", 1);
         }
     }
 
