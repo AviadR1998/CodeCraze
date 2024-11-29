@@ -43,6 +43,8 @@ public class RoomsMenu : MonoBehaviour
     private string p2Name = "";
     private bool meHost, obsBool = false, joinBool = false, disJoinBool = false, removeRoomBool = false;
 
+    const int ROOM_SLOTS = 6, QUESTION_NUMBER = 10, POSITION_X = -675, POSITION_Y_HOST = 11, POSITION_Z_JOIN = 362;
+    const float POSITION_Z_HOST = 368.5f, POSITION_Y_JOIN = 11.2f;
     // Start is called before the first frame update
     void Start()
     {
@@ -94,12 +96,11 @@ public class RoomsMenu : MonoBehaviour
         {
             SceneManager.LoadSceneAsync(0);
         }
-        //remove room if exsist
     }
 
     void play(float x, float y, float z)
     {
-        if (AdminMission.questions.Count < 10)
+        if (AdminMission.questions.Count < QUESTION_NUMBER)
         {
             errorText.text = "Please wait a few seconds for loading the questions.";
             return;
@@ -117,12 +118,12 @@ public class RoomsMenu : MonoBehaviour
 
     public void playSolo()
     {
-        if (AdminMission.questions.Count < 10)
+        if (AdminMission.questions.Count < QUESTION_NUMBER)
         {
             errorText.text = "Please wait a few seconds for loading the questions.";
             return;
         }
-        play(-675, 11f, 368.5f);
+        play(POSITION_X, POSITION_Y_HOST, POSITION_Z_HOST);
         raceCar.GetComponent<RaceCar>().enabled = true;
     }
 
@@ -226,7 +227,7 @@ public class RoomsMenu : MonoBehaviour
 
     public void createRoom()
     {
-        if (AdminMission.questions.Count < 10)
+        if (AdminMission.questions.Count < QUESTION_NUMBER)
         {
             errorText.text = "Please wait a few seconds for loading the questions.";
             return;
@@ -239,7 +240,7 @@ public class RoomsMenu : MonoBehaviour
 
     void updateRooms()
     {
-        for (int i = 0; i < 6; i++)
+        for (int i = 0; i < ROOM_SLOTS; i++)
         {
             if (i < rooms.Count)
             {
@@ -262,8 +263,8 @@ public class RoomsMenu : MonoBehaviour
     {
         if (page > 0)
         {
-            page -= 6;
-            for (int i = 0; i < 6; i++)
+            page -= ROOM_SLOTS;
+            for (int i = 0; i < ROOM_SLOTS; i++)
             {
                 GameObject.Find("Room-" + (i + 1)).GetComponentInChildren<TMP_Text>().text = rooms[page + i];
             }
@@ -272,9 +273,9 @@ public class RoomsMenu : MonoBehaviour
 
     public void next()
     {
-        if (page + 6 < response.Length)
+        if (page + ROOM_SLOTS < response.Length)
         {
-            page += 6;
+            page += ROOM_SLOTS;
             updateRooms();
         }
     }
@@ -304,7 +305,7 @@ public class RoomsMenu : MonoBehaviour
         GameObject.Find("EndRaceMenu").SetActive(false);
         GameObject.Find("RaceDetails").SetActive(false);
         GameObject.Find("Main Camera").transform.position -= new Vector3(0, 2f, 0);
-        player.transform.position = new Vector3(-675, 11f, 368.5f);
+        player.transform.position = new Vector3(POSITION_X, POSITION_Y_HOST, POSITION_Z_HOST);
         raceField.SetActive(false);
         player.GetComponent<CharacterController>().enabled = true;
         player.GetComponent<RaceMovment>().enabled = false;
@@ -314,7 +315,7 @@ public class RoomsMenu : MonoBehaviour
 
     public void enterRoom(TMP_Text button)
     {
-        if (AdminMission.questions.Count < 10)
+        if (AdminMission.questions.Count < QUESTION_NUMBER)
         {
             errorText.text = "Please wait a few seconds for loading the questions.";
             return;
@@ -344,13 +345,13 @@ public class RoomsMenu : MonoBehaviour
         multiplayerStart = true;
         if (meHost)
         {
-            play(-675, 11f, 368.5f);
-            raceCar.transform.position = new Vector3(-675, 11.2f, 362f);
+            play(POSITION_X, POSITION_Y_HOST, POSITION_Z_HOST);
+            raceCar.transform.position = new Vector3(POSITION_X, POSITION_Y_JOIN, POSITION_Z_JOIN);
         }
         else
         {
-            play(-675, 11.2f, 362f);
-            raceCar.transform.position = new Vector3(-675, 11f, 368.5f);
+            play(POSITION_X, 11.2f, 362f);
+            raceCar.transform.position = new Vector3(POSITION_X, POSITION_Y_HOST, POSITION_Z_HOST);
         }
         meHost = false;
     }
@@ -363,8 +364,8 @@ public class RoomsMenu : MonoBehaviour
             obsBool = false;
             if (!meHost)
             {
-                play(-675, 11.2f, 362f);
-                raceCar.transform.position = new Vector3(-675, 11f, 368.5f);
+                play(POSITION_X, POSITION_Y_JOIN, POSITION_Z_JOIN);
+                raceCar.transform.position = new Vector3(POSITION_X, POSITION_Y_HOST, POSITION_Z_HOST);
             }
         }
         if (joinBool)

@@ -7,6 +7,8 @@ public class EndWorldScript : MonoBehaviour
 {
     public GameObject finalScreenCanvas;
     public static bool activated = false;
+
+    const int ISLAND_ID = 3;
     // Start is called before the first frame update
     void Start()
     {
@@ -21,7 +23,7 @@ public class EndWorldScript : MonoBehaviour
     public void okButton()
     {
         PauseMenu.updateSave("Island", "Functions", 0);
-        SceneManager.LoadSceneAsync(3);
+        SceneManager.LoadSceneAsync(ISLAND_ID);
         finalScreenCanvas.SetActive(false);
         Cursor.lockState = CursorLockMode.Locked;
         activated = Cursor.visible = false;

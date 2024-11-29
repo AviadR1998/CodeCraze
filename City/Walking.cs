@@ -12,11 +12,13 @@ public class Walking : MonoBehaviour
     private Vector3 actualPoints;
     private int nextPosition;
 
+    const int SPEED = 5;
+
     // Start is called before the first frame update
     void Start()
     {
         nextPosition = 0;
-        speed = 5;
+        speed = SPEED;
     }
 
     // Update is called once per frame

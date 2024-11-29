@@ -31,9 +31,11 @@ public class WhileMissions : MonoBehaviour
     public TMP_Text talkingText;
     public TMP_Text practicalText;
     public AudioSource honk;
+    public AudioSource finishSound;
     public static bool canTalk, endOk, startFromQuestions = false;
     public GameObject practiceNPC;
     public GameObject forNPC;
+    public GameObject arrow;
 
     List<EndFunc> funcs;
     public static EndFunc okFunc;
@@ -86,6 +88,7 @@ public class WhileMissions : MonoBehaviour
 
     void questions()
     {
+        finishSound.Play();
         missionCompleteCanvas.SetActive(true);
         canvasMission.SetActive(false);
         talkingPanel.SetActive(false);
@@ -132,6 +135,7 @@ public class WhileMissions : MonoBehaviour
         }
         if (canTalk && other.tag == "Player")
         {
+            arrow.SetActive(false);
             AdminMission.currentSubText = 0;
             Cursor.lockState = CursorLockMode.Confined;
             Cursor.visible = true;
@@ -154,6 +158,7 @@ public class WhileMissions : MonoBehaviour
         }
         if (texts[AdminMission.currentSubMission].Count == AdminMission.currentSubText)
         {
+            arrow.SetActive(true);
             funcs[AdminMission.currentSubMission]();
             AdminMission.endOk = true;
         }

@@ -14,6 +14,8 @@ public class GateScript : MonoBehaviour
     public AudioSource honk;
     public AudioSource soccesSound;
 
+    const int SPEED = 5, ENGLE = 240, REPEAT = 2;
+
     void angryDriver()
     {
         honk.Play();
@@ -30,7 +32,7 @@ public class GateScript : MonoBehaviour
     void OnEnable()
     {
         helpMessage.text = "The driver: Help!";
-        InvokeRepeating("angryDriver", 0f, 2f);
+        InvokeRepeating("angryDriver", 0f, REPEAT);
     }
 
     private void OnTriggerStay(Collider other)
@@ -41,8 +43,8 @@ public class GateScript : MonoBehaviour
             orderText.text = "press 'R' button to open the gate!";
             if (Input.GetKeyDown("r"))
             {
-                Quaternion target = Quaternion.Euler(240, 0, 0);
-                gate.transform.rotation = Quaternion.Slerp(transform.rotation, target, 5f);
+                Quaternion target = Quaternion.Euler(ENGLE, 0, 0);
+                gate.transform.rotation = Quaternion.Slerp(transform.rotation, target, SPEED);
                 Movement.mission = GameObject.Find("WhileNPC");
                 CancelInvoke("angryDriver");
                 helpMessage.text = "The driver: Thanks!!!";

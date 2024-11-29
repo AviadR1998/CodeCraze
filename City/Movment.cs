@@ -26,6 +26,7 @@ public class Movement : MonoBehaviour
     public AudioSource backgrounMusic;
 
     public static bool raceOn;
+    public GameObject welcomeCanvas;
     public GameObject player;
     public GameObject roomsMenu;
     public GameObject arrow;
@@ -47,9 +48,9 @@ public class Movement : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+
         missionInProgress = "";
-        //mission = GameObject.Find("IfNPC");//"RaceNPC"
-        //mission = player;
+        welcomeCanvas.SetActive(true);
         characterController = GetComponent<CharacterController>();
         Cursor.lockState = CursorLockMode.Locked;
         hoverLetter = hoverBall = Cursor.visible = false;

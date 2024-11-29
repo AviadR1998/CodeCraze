@@ -16,6 +16,8 @@ public class PauseMenu : MonoBehaviour
     static public bool isPaused, canPause;
     public static bool activated = false;
 
+    bool visCursor;
+    CursorLockMode lockMode;
     // Start is called before the first frame update
     public void Start()
     {
@@ -36,8 +38,9 @@ public class PauseMenu : MonoBehaviour
     public void resume()
     {
         pausePanel.SetActive(false);
-        Cursor.lockState = CursorLockMode.Locked;
-        isPaused = Cursor.visible = false;
+        Cursor.lockState = lockMode;
+        Cursor.visible = visCursor;
+        isPaused = false;
         Time.timeScale = 1.0f;
     }
 
@@ -122,6 +125,8 @@ public class PauseMenu : MonoBehaviour
             }
             else
             {
+                visCursor = Cursor.visible;
+                lockMode = Cursor.lockState;
                 Time.timeScale = 0;
                 Cursor.lockState = CursorLockMode.Confined;
                 isPaused = Cursor.visible = true;

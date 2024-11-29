@@ -53,9 +53,6 @@ public class Login : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        /*world = "City";
-        task = "Array";
-        state = 1;*/
     }
 
     void OnEnable()

@@ -33,6 +33,7 @@ public class SoccerMovment : MonoBehaviour
     public AudioSource failSound;
     public AudioSource cheerSound;
     public AudioSource booingSound;
+    public AudioSource finishSound;
     List<questionFunc> funcs;
 
     string explanation;
@@ -40,6 +41,9 @@ public class SoccerMovment : MonoBehaviour
     int score, rnd, correctAnswer;
     float rndf;
     bool kick, endGame, firstFrame;
+
+    const int UPPER_LIMIT_ANSWER = 20, DOWN_LIMIT_ANSWER = 10, SCORE = 10, TARGET_SCORE = 3, CAMERA_FAR = 21, CAMERA_NEAR = 60, ROTATE = 13;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -118,7 +122,7 @@ public class SoccerMovment : MonoBehaviour
             sum += i;
         }
         correctAnswer = sum;
-        List<int> answers = createAnswers(sum, 20, 10);
+        List<int> answers = createAnswers(sum, UPPER_LIMIT_ANSWER, DOWN_LIMIT_ANSWER);
         string questionText = "What is the output?";
         explanation = "The answer is " + sum + " because if you add all the numbers from 1 to " + range + " you will get " + sum + ".";
         questionSoccerCanvas.SetActive(true);
@@ -134,7 +138,7 @@ public class SoccerMovment : MonoBehaviour
             sum *= i;
         }
         correctAnswer = sum;
-        List<int> answers = createAnswers(sum, 20, 10);
+        List<int> answers = createAnswers(sum, UPPER_LIMIT_ANSWER, DOWN_LIMIT_ANSWER);
         string questionText = "What is the output?";
         explanation = "The answer is " + sum + " because if you multiply all the numbers from 1 to " + range + " you will get " + sum + ".";
         questionSoccerCanvas.SetActive(true);
@@ -148,7 +152,7 @@ public class SoccerMovment : MonoBehaviour
         string questionCode = "for (int i = 0; i " + opr + " _; i++) {\n\tSystem.out.println(i);\n}";
         string questionText = "complete the for so that it runs " + range + " times.";
         explanation = "The answer is " + (range - option) + " because the operator was " + opr + " and the for need to run " + range + " times.";
-        List<int> answers = createAnswers(range - option, 20, 10);
+        List<int> answers = createAnswers(range - option, UPPER_LIMIT_ANSWER, DOWN_LIMIT_ANSWER);
         correctAnswer = range - option;
         questionSoccerCanvas.SetActive(true);
         SoccerQuestion.initiateQuestion(questionCode, questionText, explanation, answers, (range - option) + "");
@@ -161,7 +165,7 @@ public class SoccerMovment : MonoBehaviour
         string questionCode = "for (int i = 0; i < " + range + "; i++) {\n\tif (i == " + brFor + ") {\n\t\tbreak;\n\t}\n\tSystem.out.println(i);\n}";
         string questionText = "how many times the for will run?";
         explanation = "the for will run " + brFor + " times because when the for reach to that number the for will break.";
-        List<int> answers = createAnswers(brFor, 20, 10);
+        List<int> answers = createAnswers(brFor, UPPER_LIMIT_ANSWER, DOWN_LIMIT_ANSWER);
         correctAnswer = brFor;
         questionSoccerCanvas.SetActive(true);
         SoccerQuestion.initiateQuestion(questionCode, questionText, explanation, answers, brFor + "");
@@ -174,7 +178,7 @@ public class SoccerMovment : MonoBehaviour
         string questionCode = "for (int i = 0; i < " + range + "; i++) {\n\tif (i == " + conFor + ") {\n\t\tcontinue;\n\t}\n\tSystem.out.println(i);\n}";
         string questionText = "which number will not be printed?";
         explanation = "the for will not print the number " + conFor + " because when the for reach to that number the for will skip to next number.";
-        List<int> answers = createAnswers(conFor, 20, range - conFor);
+        List<int> answers = createAnswers(conFor, UPPER_LIMIT_ANSWER, range - conFor);
         correctAnswer = conFor;
         questionSoccerCanvas.SetActive(true);
         SoccerQuestion.initiateQuestion(questionCode, questionText, explanation, answers, conFor + "");
@@ -191,7 +195,7 @@ public class SoccerMovment : MonoBehaviour
         string questionText = "What is the output?";
         string questionCode = "int sum = 0;\nfor (int i = 0; i < " + range + "; i += " + incF + ") {\n\tsum += " + addF + ";\n\tsum *= 2;\n}\nSystem.out.println(sum);";
         explanation = "The for runs " + ((range / incF) + (range % incF)) + " times and in each iteration the sum increase by " + addF + " and multiply by 2.";
-        List<int> answers = createAnswers(sum, 20, 10);
+        List<int> answers = createAnswers(sum, UPPER_LIMIT_ANSWER, DOWN_LIMIT_ANSWER);
         correctAnswer = sum;
         questionSoccerCanvas.SetActive(true);
         SoccerQuestion.initiateQuestion(questionCode, questionText, explanation, answers, sum + "");
@@ -203,7 +207,7 @@ public class SoccerMovment : MonoBehaviour
         string questionText = "How many times the for will run?";
         string questionCode = "for (int i = 0; i < " + range + "; i++) {\n\tSystem.out.println(i);\n}";
         explanation = "The for run " + range + " times because when the \'i\' equal to that number the for is finished.";
-        List<int> answers = createAnswers(range, 20, 10);
+        List<int> answers = createAnswers(range, UPPER_LIMIT_ANSWER, DOWN_LIMIT_ANSWER);
         correctAnswer = range;
         questionSoccerCanvas.SetActive(true);
         SoccerQuestion.initiateQuestion(questionCode, questionText, explanation, answers, range + "");
@@ -224,7 +228,7 @@ public class SoccerMovment : MonoBehaviour
             player.transform.LookAt(pointGame[0].transform);
             arrow.transform.LookAt(pointGame[0].transform);
             firstFrame = false;
-            funcs[Random.Range(0, 7)]();
+            funcs[Random.Range(0, funcs.Count)]();
         }
         if (SoccerQuestion.timeStatic == 0 && !SoccerQuestion.questionAnswered)
         {
@@ -310,7 +314,7 @@ public class SoccerMovment : MonoBehaviour
                     }
                 }
             }
-            transform.Rotate(0, 13, 13);
+            transform.Rotate(0, ROTATE, ROTATE);
             ball.transform.position = Vector3.MoveTowards(ball.transform.position, pointGame[0].transform.position - new Vector3(4, 1.5f, 0), Time.deltaTime * 10);
         }
         arrow.transform.LookAt(pointGame[0].transform);
@@ -334,14 +338,9 @@ public class SoccerMovment : MonoBehaviour
         }
         if (kick)
         {
-            transform.Rotate(0, 13, 13);
+            transform.Rotate(0, ROTATE, ROTATE);
             ball.transform.position = Vector3.MoveTowards(ball.transform.position, new Vector3(player.transform.position.x + 4, player.transform.position.y, rndf), Time.deltaTime * 15);
         }
-        /*else
-        {
-            transform.Rotate(0, 0, 0);
-            ball.transform.position = ballPos[1].transform.position + new Vector3(0, 1.3f, -0.1f);
-        }*/
     }
 
     void winOk()
@@ -358,9 +357,10 @@ public class SoccerMovment : MonoBehaviour
         Movement.missionInProgress = "";
         nextMission.SetActive(true);
         Movement.mission = nextMission;
+        finishSound.Play();
         missionCompleteCanvas.SetActive(true);
         ball.GetComponent<SoccerMovment>().enabled = false;
-        camera.GetComponent<Camera>().fieldOfView = 60;
+        camera.GetComponent<Camera>().fieldOfView = CAMERA_NEAR;
     }
 
     void loseOK()
@@ -370,7 +370,7 @@ public class SoccerMovment : MonoBehaviour
         canvasMission.SetActive(false);
         CancelInvoke("reduceSecond");
         InvokeRepeating("reduceSecond", 1f, 1f);
-        funcs[Random.Range(0, 7)]();
+        funcs[Random.Range(0, funcs.Count)]();
     }
 
     void reduceSecond()
@@ -398,10 +398,10 @@ public class SoccerMovment : MonoBehaviour
                 booingSound.Play();
             }
             score += addScore;
-            scoreText.text = score / 10 + " - " + score % 10;
+            scoreText.text = score / SCORE + " - " + score % SCORE;
             kick = false;
         }
-        if ((turn && score % 10 == 3) || (!turn && score / 10 == 3))
+        if ((turn && score % SCORE == TARGET_SCORE) || (!turn && score / SCORE == TARGET_SCORE))
         {
             endGame = true;
             canvasSoccer.SetActive(false);
@@ -411,7 +411,7 @@ public class SoccerMovment : MonoBehaviour
             Cursor.visible = true;
             if (turn)
             {
-                talkingText.text = "Conrgulations!! you Win!!! you can pass now to the next lesson.";
+                talkingText.text = "Congratulations!! you Win!!! you can pass now to the next lesson.";
                 Movement.npcMissionCounter++;
                 practicalText.text = "";
                 AdminMission.okFunc = winOk;
@@ -430,7 +430,7 @@ public class SoccerMovment : MonoBehaviour
             canvasSoccer.SetActive(false);
             CancelInvoke("reduceSecond");
             InvokeRepeating("reduceSecond", 1f, 1f);
-            funcs[Random.Range(0, 7)]();
+            funcs[Random.Range(0, funcs.Count)]();
         }
     }
 
@@ -444,7 +444,7 @@ public class SoccerMovment : MonoBehaviour
             }
             else
             {
-                triggerHit(other, 10);
+                triggerHit(other, SCORE);
             }
             turn = !turn;
         }

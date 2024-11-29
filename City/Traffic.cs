@@ -14,6 +14,8 @@ public class Traffic : MonoBehaviour
     private Material glowingRed;
     private Material glowingGreen;
 
+    const float DELAY_TIME = 3.5f, START_TIME = 1.75f;
+
     void swapLight(GameObject red, GameObject green, int state)
     {
         if (state == 1)
@@ -103,8 +105,8 @@ public class Traffic : MonoBehaviour
     {
         trafficRound = 0;
         colorState = 1;
-        InvokeRepeating("changeLight", 1f, 3.5f);
-        InvokeRepeating("changeLight", 1.75f, 3.5f);
+        InvokeRepeating("changeLight", 1f, DELAY_TIME);
+        InvokeRepeating("changeLight", START_TIME, DELAY_TIME);
 
         normalRed = Resources.Load("Red", typeof(Material)) as Material;
         normalGreen = Resources.Load("Green", typeof(Material)) as Material;

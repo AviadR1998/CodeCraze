@@ -9,6 +9,10 @@ public class FinishLine : MonoBehaviour
     public static string winner;
     public GameObject endRaceMenu;
     private bool isWin;
+
+    const int ADD_SCORE = 10;
+    const float DELAY = 0.5f;
+
     // Start is called before the first frame update
     void OnEnable()
     {
@@ -17,7 +21,7 @@ public class FinishLine : MonoBehaviour
 
     private IEnumerator delayPress()
     {
-        yield return new WaitForSeconds(0.5f);
+        yield return new WaitForSeconds(DELAY);
         CancelInvoke("sndLocation");
         RaceMovment.cancelFinish = true;
     }
@@ -25,7 +29,7 @@ public class FinishLine : MonoBehaviour
     IEnumerator addScore()
     {
         WWWForm form = new WWWForm();
-        form.AddField("score", 10);
+        form.AddField("score", ADD_SCORE);
         using (UnityWebRequest request = UnityWebRequest.Post("http://" + MainMenu.serverIp + ":5000/api/Users/AddScore", form))
         {
             request.SetRequestHeader("authorization", "Bearer " + Login.token);

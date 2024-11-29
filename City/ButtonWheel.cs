@@ -17,6 +17,10 @@ public class ButtonWheel : MonoBehaviour
     public static int rolling;
     bool canRoll;
     float currentTime, targetTime;
+
+    const int ROLLING_NUMBER = 8, TARGET_TIME = 15, ROTATE = 4;
+    const float DELAY = 0.5f;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -31,13 +35,13 @@ public class ButtonWheel : MonoBehaviour
 
     private IEnumerator delayPress()
     {
-        yield return new WaitForSeconds(0.5f);
+        yield return new WaitForSeconds(DELAY);
         canRoll = true;
     }
 
     private void OnTriggerStay(Collider other)
     {
-        if (other.tag == "Player" && rolling < 8)
+        if (other.tag == "Player" && rolling < ROLLING_NUMBER)
         {
             orderCanvas.SetActive(true);
             orderPanel.SetActive(true);
@@ -47,9 +51,8 @@ public class ButtonWheel : MonoBehaviour
             {
                 canRoll = false;
                 StartCoroutine(delayPress());
-                targetTime += 15;
+                targetTime += TARGET_TIME;
                 ++rolling;
-                //Wheel.transform.rotation = Quaternion.Euler(0, 0, 60 * ++rolling);
             }
         }
     }
@@ -65,16 +68,15 @@ public class ButtonWheel : MonoBehaviour
         if (currentTime < targetTime)
         {
             currentTime++;
-            Wheel.transform.Rotate(0, 0, 4);
+            Wheel.transform.Rotate(0, 0, ROTATE);
         }
         else
         {
-            if (rolling == 8)
+            if (rolling == ROLLING_NUMBER)
             {
                 soccesSound.Play();
                 orderCanvas.SetActive(false);
                 Movement.mission = child;
-                //AdminMission.endOk = redButton.GetComponent<ButtonWheel>().enabled = false;
                 AdminMission.canTalk = true;
             }
         }
