@@ -1,5 +1,8 @@
 using UnityEngine;
 
+
+
+//This script instantiate a clone of the questions canvas and start the questions
 public class CreateQuestionsCanvas : MonoBehaviour
 {
     public Canvas QCanvas;
@@ -29,9 +32,4 @@ public class CreateQuestionsCanvas : MonoBehaviour
         return ClonedCanvas;
     }
 
-    // Update is called once per frame
-    void Update()
-    {
-
-    }
 }

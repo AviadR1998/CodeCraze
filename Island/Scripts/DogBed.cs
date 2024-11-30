@@ -2,6 +2,8 @@ using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 
+
+//This script manage the bed of a dog, create a dog when press 'e' 
 public class DogBed : MonoBehaviour
 {
     public TMP_InputField nameInput;
@@ -14,6 +16,8 @@ public class DogBed : MonoBehaviour
     private DogSpawner dogSpawner;
     private GameObject dog;
     private bool dogCreated = false;
+    private uint breathingAnim = 0, wigglingAmim = 1, slowWalkAnim = 2, fastWalkAnim = 3, runningAnim = 4,
+                eatingAnim = 5, barkingAnim = 6, sittingAnim = 7;
 
     private bool isPlayerInTrigger = false;
     private string selectedColor;
@@ -95,31 +99,31 @@ public class DogBed : MonoBehaviour
         switch (animation)
         {
             case "breathing":
-                val = 0;
+                val = breathingAnim;
                 break;
             case "Wiggling Tail":
-                val = 1;
+                val = wigglingAmim;
                 break;
             case "Slow Walk":
-                val = 2;
+                val = slowWalkAnim;
                 break;
             case "Fast Walk":
-                val = 3;
+                val = fastWalkAnim;
                 break;
             case "Running":
-                val = 4;
+                val = runningAnim;
                 break;
             case "Eating":
-                val = 5;
+                val = eatingAnim;
                 break;
             case "Barking":
-                val = 6;
+                val = barkingAnim;
                 break;
             case "Sitting":
-                val = 7;
+                val = sittingAnim;
                 break;
             default:
-                val = 0;
+                val = breathingAnim;
                 break;
         }
 

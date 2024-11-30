@@ -1,5 +1,7 @@
 using UnityEngine;
 
+
+//this script automaticaly turn off object after specific time
 public class TurnOffAuto : MonoBehaviour
 {
     public float turnOffAfter = 2f;

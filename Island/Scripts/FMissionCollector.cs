@@ -1,7 +1,8 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
+
+
+//This script manage the collection of an object for the funciton mission
 public class FMissionCollector : MonoBehaviour
 {
     public GameObject coin;

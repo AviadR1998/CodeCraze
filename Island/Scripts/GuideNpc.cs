@@ -1,9 +1,9 @@
-using System.Data.Common;
-using System.Xml.Serialization;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
+
+//This script manage the whole guide logics
 public class GuideNpc : MonoBehaviour
 {
     public GameObject obj, player, qScriptObj, gameFlowControler;
@@ -25,9 +25,11 @@ public class GuideNpc : MonoBehaviour
     string completeCMission = "Excellent work on the Classes and Objects mission! Let’s solidify your"
                                 + " learning with some questions.";
     string completeRMission = "Amazing job completing the Recursion mission! Let’s test your understanding with some questions.";
-    string fPath = "Assets\\Island\\data\\q_functions.csv";
-    string cPath = "Assets\\Island\\data\\q_classes.csv";
-    string rPath = "Assets\\Island\\data\\q_recursion.csv";
+    string fPath = "functionsCSV.csv";
+    string cPath = "classesCSV.csv";
+    string rPath = "recursionCSV.csv";
+    private int beforeQuestions = 0, functionMissionIndex = 0, classMissionIndex = 1, recursionMissionIndex = 2,
+                afterQuestions = 1;
 
     void Start()
     {
@@ -70,7 +72,6 @@ public class GuideNpc : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-        print(qCanvasOn);
         if (other.gameObject == player && !qCanvasOn && canAnswer)
         {
             isPlayerNearby = true;
@@ -79,9 +80,9 @@ public class GuideNpc : MonoBehaviour
 
             if (!GameFlow.finishAllMissions)
             {
-                if (GameFlow.mission == 0)
+                if (GameFlow.mission == functionMissionIndex)
                 {
-                    if (GameFlow.stateInMission == 0)
+                    if (GameFlow.stateInMission == beforeQuestions)
                     {
                         welcomeCanvas.gameObject.SetActive(true);
                     }
@@ -99,19 +100,19 @@ public class GuideNpc : MonoBehaviour
                 }
 
 
-                if (GameFlow.mission == 1)
+                if (GameFlow.mission == classMissionIndex)
                 {
                     boatIslandArrow.SetActive(true);
-                    if (GameFlow.stateInMission == 1)
+                    if (GameFlow.stateInMission == afterQuestions)
                     {
                         GetComponent<BlockPlayerCamera>().stopCamera();
                         toQuestionsBtn.gameObject.SetActive(true);
                     }
                 }
-                else if (GameFlow.mission == 2)
+                else if (GameFlow.mission == recursionMissionIndex)
                 {
                     boatStatueArrow.SetActive(true);
-                    if (GameFlow.stateInMission == 1)
+                    if (GameFlow.stateInMission == afterQuestions)
                     {
                         GetComponent<BlockPlayerCamera>().stopCamera();
                         toQuestionsBtn.gameObject.SetActive(true);
@@ -162,7 +163,7 @@ public class GuideNpc : MonoBehaviour
             switch (currMission)
             {
                 case 0:
-                    if (currStateInMission == 0)
+                    if (currStateInMission == beforeQuestions)
                     {
                         newGuideTxt = firstMissionString;
                     }
@@ -174,10 +175,11 @@ public class GuideNpc : MonoBehaviour
                     break;
 
                 case 1:
-                    if (currStateInMission == 0)
+                    if (currStateInMission == beforeQuestions)
                     {
-                        newGuideTxt = "To start the next mission, find a way to reach the second island."
-                                        + " There, you'll learn about Classes and Objects—the core of Java programming.";
+                        newGuideTxt = "To start the next mission, find a way to reach the second island." +
+                                    "\nOnce there, look for Salvador—he will teach you about Classes and " +
+                                    "Objects, the core of Java programming.";
                     }
                     else
                     {
@@ -187,7 +189,7 @@ public class GuideNpc : MonoBehaviour
                     break;
 
                 case 2:
-                    if (currStateInMission == 0)
+                    if (currStateInMission == beforeQuestions)
                     {
                         newGuideTxt = "Ready for your next adventure? Find a way to reach"
                                         + " the horse statue to begin the Recursion mission.";
@@ -230,11 +232,11 @@ public class GuideNpc : MonoBehaviour
 
     public void ChooseQuestions(int quesIndex)
     {
-        if (quesIndex == 0)
+        if (quesIndex == functionMissionIndex)
         {
             questionsPath = fPath;
         }
-        else if (quesIndex == 1)
+        else if (quesIndex == classMissionIndex)
         {
             questionsPath = cPath;
         }

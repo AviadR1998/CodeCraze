@@ -3,6 +3,8 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
+
+//This script manage the dog animations and values for the classes mission
 public class DogAnimationController : MonoBehaviour
 {
     private Animator animator;
@@ -16,14 +18,19 @@ public class DogAnimationController : MonoBehaviour
     public bool isSpawn = false;
     public GameObject bedObject = null;
     public static bool canBarkWhenClicked = true;
-    private string bedColor = "Yellow";
+    private string bedColor = "Yellow", configBtnName = "ConfigBtn";
     private bool isTriggered = false, toConfigure = false, editOpen = false;
+    public float startBarkIn = 1f, resetAnimIn = 5f;
     private Dog dog;
+    private char startOfBtnName = 'S';
+    private int startAnimVal = 0, endAnimVal = 7, barkIndex = 6;
 
     public class Dog
     {
         private string Name, Breed;
         private uint Age, FavoriteAnim;
+        private static string barkStr = " says: Woof!";
+        private static uint defaultAnim = 0, maxIndexAnim = 7;
 
         public Dog(string name, string breed, uint age, uint favoriteAnim)
         {
@@ -31,15 +38,15 @@ public class DogAnimationController : MonoBehaviour
             this.Breed = breed;
             this.Age = age;
             this.FavoriteAnim = favoriteAnim;
-            if (favoriteAnim > 7)
+            if (favoriteAnim > maxIndexAnim)
             {
-                FavoriteAnim = 0;
+                FavoriteAnim = defaultAnim;
             }
 
         }
         public string Bark()
         {
-            return Name + " says: Woof!";
+            return Name + barkStr;
         }
         public int GetAnim()
         {
@@ -77,11 +84,11 @@ public class DogAnimationController : MonoBehaviour
             foreach (Button btn in configureButtons)
             {
                 print(btn.name);
-                if (btn.name[0] == 'S')
+                if (btn.name[0] == startOfBtnName)
                 {
                     btn.onClick.AddListener(ConfigureClicked);
                 }
-                else if (btn.name == "ConfigBtn")
+                else if (btn.name == configBtnName)
                 {
                     btn.onClick.AddListener(SaveConiguration);
                 }
@@ -92,7 +99,7 @@ public class DogAnimationController : MonoBehaviour
 
     public void ChangeAnimation(int anim)
     {
-        if (anim >= 0 && anim <= 7)
+        if (anim >= startAnimVal && anim <= endAnimVal)
         {
             // Get the Animator component on this GameObject
             animator.SetInteger("AnimationID", anim);
@@ -151,7 +158,7 @@ public class DogAnimationController : MonoBehaviour
     private void startBarking()
     {
         int lastAnim = dog.GetAnim();
-        ChangeAnimation(6);
+        ChangeAnimation(barkIndex);
         string barkStr = dog.Bark();
         messageCanvas.gameObject.SetActive(true);
         FadeAway fadeAwayComponent = messageCanvas.gameObject.AddComponent<FadeAway>();
@@ -161,9 +168,9 @@ public class DogAnimationController : MonoBehaviour
         {
             textComponent.text = barkStr;
         }
-        Invoke("startPlayBark", 1f);
+        Invoke("startPlayBark", startBarkIn);
         this.favoriteAnim = (uint)lastAnim;
-        Invoke("resetAnim", 5f);
+        Invoke("resetAnim", resetAnimIn);
 
         if (!isSpawn)
         {

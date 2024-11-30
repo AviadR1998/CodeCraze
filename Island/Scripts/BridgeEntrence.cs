@@ -1,5 +1,6 @@
 using UnityEngine;
 
+//This script manage the entrence of the start bridge of the recursion mission
 public class BridgeEntrence : MonoBehaviour
 {
 

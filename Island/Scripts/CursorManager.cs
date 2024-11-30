@@ -1,11 +1,19 @@
 using UnityEngine;
 
+
+//This script manage the cursor visiablity
 public class CursorManager : MonoBehaviour
 {
     public Canvas[] canvasesToIgnore;
+    public GameObject pauseCanvasPanel;
 
     void Update()
     {
+
+        if (pauseCanvasPanel.activeInHierarchy)
+        {
+            return;
+        }
         // Find all canvases in the scene
         Canvas[] allCanvases = FindObjectsOfType<Canvas>();
 

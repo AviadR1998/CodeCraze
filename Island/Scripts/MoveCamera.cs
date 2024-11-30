@@ -1,6 +1,8 @@
 using UnityEngine;
 using UnityEngine.UI;
 
+
+//This script manage the camera movement of a mission and change its look at position possinly twice
 public class MoveCamera : MonoBehaviour
 {
     public Transform npc, startLocation, player, lookHere, lookHere2;
@@ -9,8 +11,14 @@ public class MoveCamera : MonoBehaviour
     public int numOfClicksToStartRotate1 = 1, numOfClicksToStartRotate2 = 1;
     public float rotationSpeed = 2f; // Adjust for smoother or faster rotation
     public float stopThreshold = 1f; // Threshold angle to stop rotating (in degrees)
+    public float startLockIn = 1f;
+    public int initNumOfClicks = 0;
+    public float extraYAxis = 0.5f;
     private bool isSmoosh1 = false, isSmoosh2 = false;
     private int numOfClicks1 = 0, numOfClicks2 = 0;
+
+
+
     // Start is called before the first frame update
     void Start()
     {
@@ -24,16 +32,15 @@ public class MoveCamera : MonoBehaviour
             nextBtn2.onClick.AddListener(startSmooshLookAt2);
         }
 
-        // Invoke("initStartMission", 3f);
 
     }
 
     public void InitStartMission()
     {
         GetComponent<BlockPlayerCamera>().stopCamera();
-        Invoke("lockCameraAndMovePlayer", 1f);
-        numOfClicks1 = 0;
-        numOfClicks2 = 0;
+        Invoke("lockCameraAndMovePlayer", startLockIn);
+        numOfClicks1 = initNumOfClicks;
+        numOfClicks2 = initNumOfClicks;
         isSmoosh1 = false;
         isSmoosh2 = false;
     }
@@ -42,8 +49,8 @@ public class MoveCamera : MonoBehaviour
     {
         player.transform.position = startLocation.position;
         player.transform.rotation = startLocation.rotation;
-        player.LookAt(new Vector3(npc.position.x, player.position.y + 0.5f, npc.position.z));
-        mainCamera.transform.LookAt(new Vector3(npc.position.x, player.position.y + 0.5f, npc.position.z));
+        player.LookAt(new Vector3(npc.position.x, player.position.y + extraYAxis, npc.position.z));
+        mainCamera.transform.LookAt(new Vector3(npc.position.x, player.position.y + extraYAxis, npc.position.z));
     }
 
     public void startSmooshLookAt()

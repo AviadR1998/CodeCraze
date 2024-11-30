@@ -1,5 +1,7 @@
 using UnityEngine;
 
+
+//This script manage single brown pole and bridge off the recursion mission
 public class PoleAndBridge : MonoBehaviour
 {
 

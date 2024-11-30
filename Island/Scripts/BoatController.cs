@@ -1,12 +1,13 @@
-using System.ComponentModel;
 using UnityEngine;
 
+
+//This script manage fake boat that let the player press e to sail
 public class BoatController : MonoBehaviour
 {
     public GameObject boat;
-    public Camera boatCamera;
-    public Canvas getOnBoatCanvas;
+    public Camera boatCamera, getOnBoatCanvas;
     public int missionIndex;
+    public bool ropeOnStatue = false;
 
     private bool isPlayerInTrigger = false;
 
@@ -23,6 +24,7 @@ public class BoatController : MonoBehaviour
     {
         if (other.CompareTag("Player"))
         {
+            print("Player Exit: " + name);
             isPlayerInTrigger = false;
             getOnBoatCanvas.gameObject.SetActive(false);
         }
@@ -32,12 +34,18 @@ public class BoatController : MonoBehaviour
     {
         if (isPlayerInTrigger && Input.GetKeyDown("e"))
         {
-
+            print(name);
             getOnBoatCanvas.gameObject.SetActive(false);
             ChangeCameraFocus.isSailing = true;
             boat.gameObject.SetActive(true);
             boatCamera.gameObject.SetActive(true);
             gameObject.SetActive(false);
+
+            if (ropeOnStatue)
+            {
+                StatueLimitation.shouldLimit = false;
+            }
+            isPlayerInTrigger = false;
         }
 
     }

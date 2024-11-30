@@ -1,8 +1,8 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
+
+//This script manage the collection of match and torch in the function mission
 public class MatchCollector : MonoBehaviour
 {
     public GameObject player; // Reference to the player GameObject
@@ -23,10 +23,7 @@ public class MatchCollector : MonoBehaviour
         noButton.onClick.AddListener(CloseCanvas);
     }
 
-    void Update()
-    {
-        // No need for input detection here since we are using buttons
-    }
+
 
     private void OnTriggerEnter(Collider other)
     {

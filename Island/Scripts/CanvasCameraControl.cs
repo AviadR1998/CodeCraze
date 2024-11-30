@@ -1,10 +1,11 @@
 using System.Collections.Generic;
-using System.Linq;
 using UnityEngine;
 
+
+
+//This script manage the camera while canvases are on or off
 public class CanvasCameraControl : MonoBehaviour
 {
-    //public Canvas[] canvases; // Array of all canvases to monitor
     public List<Canvas> canvases = new List<Canvas>();
     public MonoBehaviour cameraControlScript; // Reference to the camera control script
     private bool canMoveCamera = true; // Flag to manage camera movement state

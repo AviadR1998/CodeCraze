@@ -5,12 +5,16 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
+
+
+//This script manage a generic questions canvas with 4 options for an answer
 public class QuestionCanvas : MonoBehaviour
 {
     public GameObject qCanvas, explainBtn;
     public Button[] buttons;
     public Button question, saveBtn;
     public TextMeshProUGUI responsePanel, titleTxt;
+    public string falseColorHex = "#F23A3A", correctColorHex = "#44C662";
     private int choosenOption, correctAns, numOfClicksOnSave = 0, currentQuestion = -1, numOfQ = 0;
     private string currentExplain;
     private List<Question> questions;
@@ -51,13 +55,13 @@ public class QuestionCanvas : MonoBehaviour
         numOfClicksOnSave++;
         ColorBlock cb1 = buttons[0].colors;
         Color falseColor;
-        UnityEngine.ColorUtility.TryParseHtmlString("#F23A3A", out falseColor);
+        UnityEngine.ColorUtility.TryParseHtmlString(falseColorHex, out falseColor);
         cb1.normalColor = falseColor;
         cb1.disabledColor = falseColor;
 
         ColorBlock cb2 = buttons[0].colors;
         Color correctColor;
-        UnityEngine.ColorUtility.TryParseHtmlString("#44C662", out correctColor);
+        UnityEngine.ColorUtility.TryParseHtmlString(correctColorHex, out correctColor);
         cb2.normalColor = correctColor;
         cb2.disabledColor = correctColor;
 

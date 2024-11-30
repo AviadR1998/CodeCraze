@@ -1,65 +1,9 @@
-// using System.Collections;
-// using System.Collections.Generic;
-// using UnityEngine;
-// using UnityEngine.InputSystem;
-// using UnityEngine.Rendering;
-// public class RotateBoat : MonoBehaviour
-// {
-
-//     public Transform boatPosition;
-//     public float speed;
-//     private float rlSpeed = 0;
-//     // Remove the need for an external Transform and use the attached object's transform directly
-//     private void Update()
-//     {
-//         if (Keyboard.current.jKey.IsPressed())
-//         {
-//             // Rotate the boat object itself
-//             // transform.Rotate(0, 0, 10f);
-//             // print("E key pressed - Boat rotated");
-
-//             boatPosition.RotateAround(boatPosition.position, Vector3.up, speed);
-//             rlSpeed += speed;
-//             Debug.Log("Rotating Boat around Y-axis: " + boatPosition.eulerAngles);
-//         }
-
-//         else if (Keyboard.current.gKey.IsPressed())
-//         {
-//             // Rotate the boat object itself
-//             // transform.Rotate(0, 0, 10f);
-//             // print("E key pressed - Boat rotated");
-
-//             boatPosition.RotateAround(boatPosition.position, Vector3.down, speed);
-//             rlSpeed -= speed;
-//             Debug.Log("Rotating Boat around Y-axis: " + boatPosition.eulerAngles);
-//         }
-
-//         else if (Keyboard.current.yKey.IsPressed())
-//         {
-//             // Rotate the boat object itself
-//             // transform.Rotate(0, 0, 10f);
-//             // print("E key pressed - Boat rotated");
-
-//             boatPosition.position = new Vector3(boatPosition.position.x + rlSpeed, boatPosition.position.y, boatPosition.position.z - speed);
-//             Debug.Log("Rotating Boat around Y-axis: " + boatPosition.eulerAngles);
-//         }
-
-//         else if (Keyboard.current.hKey.IsPressed())
-//         {
-//             // Rotate the boat object itself
-//             // transform.Rotate(0, 0, 10f);
-//             // print("E key pressed - Boat rotated");
-
-//             boatPosition.position = new Vector3(boatPosition.position.x, boatPosition.position.y, boatPosition.position.z + speed);
-//             Debug.Log("Rotating Boat around Y-axis: " + boatPosition.eulerAngles);
-//         }
-//     }
-// }
-
-
 using UnityEngine;
 using UnityEngine.InputSystem;
 
+
+
+//This script controls a sailing boat, sails it and control the rotation
 public class RotateBoat : MonoBehaviour
 {
     public float acceleration = 0.1f;
@@ -215,15 +159,6 @@ public class RotateBoat : MonoBehaviour
             {
                 transform.position = new Vector3(transform.position.x, transform.position.y, upBarrier.position.z);
             }
-            // if (transform.position.z > 180)
-            // {
-            //     print(transform.position.z - 360);
-            // }
-            // else
-            // {
-            //     print(transform.position.z);
-            // }
-            // print(transform.position.z - 360);
         }
 
         Vector3 positionUpdate = transform.position;

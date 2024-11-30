@@ -1,5 +1,7 @@
 using UnityEngine;
 
+
+//This script controls the arrow floats and follow above an npc
 public class FollowGuide : MonoBehaviour
 {
     public GameObject npc;
