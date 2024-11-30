@@ -1,0 +1,16 @@
+question$,Op1$,Op2$,Op3$,Op4$,AnsNum$,exp
+What is recursion?$,A function that calls itself$,A loop$,A class$,A condition$,1$,Recursion means a function calls itself.
+Why is a base case important in recursion?$,To stop the recursion$,To make the code faster$,To create a loop$,To run forever$,1$,The base case stops the function from calling itself forever.
+What happens if there is no base case?$,The program works fine$,The program stops immediately$,The program runs forever$,The program crashes$,4$,Without a base case, the program crashes due to too many recursive calls.
+Which of these is an example of recursion?$,int factorial(int n) { if (n == 1) return 1; return n * factorial(n - 1); }$,int factorial(int n) { return n * n; }$,int factorial(int n) { while (n > 0) n--; }$,int factorial(int n) { return 1; }$,1$,The function calls itself using `factorial(n - 1).`
+What is a base case?$,A condition to stop recursion$,A condition to start a loop$,A variable in the function$,A print statement$,1$,The base case tells the function when to stop calling itself.
+What is recursion used for?$,Sorting numbers$,Repeating a task$,Solving problems that repeat in smaller steps$,Printing messages$,3$,Recursion is good for solving problems that repeat in smaller steps, like factorials.
+Which of these is true about recursion?$,It always uses a loop$,It always needs a base case$,It cannot use conditions$,It works without calling itself$,2$,A base case is needed to stop recursion.
+What is stack overflow in recursion?$,Too much memory is used$,Too many loops run$,Too many recursive calls happen$,Too many base cases exist$,3$,Stack overflow happens when the function calls itself too many times.
+Which is an example of a base case?$,if (n == 1) return 1;$,for (int i = 0; i < n; i++) {}$,return n * factorial(n - 1);$,System.out.println("Base case");$,1$,A base case is a condition like `if (n == 1)` to stop recursion.
+What is the correct way to calculate factorial recursively?$,int fact(int n) { if (n == 1) return 1; return n * fact(n - 1); }$,int fact(int n) { return n; }$,int fact(int n) { while (n > 0) n--; }$,int fact(int n) { return n * n; }$,1$,The correct function uses a base case and recursive calls to calculate the factorial.
+What is recursion often used for?$,Reading a file$,Repeating small steps$,Handling errors$,Printing messages$,2$,Recursion repeats small steps to solve problems like factorials or traversing a tree.
+What is the purpose of the stack in recursion?$,To store function calls$,To store files$,To create loops$,To print messages$,1$,The stack stores information about each function call.
+How do you stop infinite recursion?$,By using a loop$,By using a base case$,By printing a message$,By stopping the program manually$,2$,A base case stops the recursion.
+What is a simple example of recursion?$,A function printing numbers$,A function calling itself$,A function returning zero$,A function multiplying numbers$,2$,A function calling itself is the simplest example of recursion.
+Can all recursive problems be solved without recursion?$,Yes, by using loops$,No, recursion is required$,Only for small problems$,Only for arrays$,1$,Many recursive problems can also be solved using loops.
