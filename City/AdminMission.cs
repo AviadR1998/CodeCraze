@@ -201,8 +201,8 @@ public class AdminMission : MonoBehaviour
 
         var jsonData = new
         {
-            //model = "gpt-4",
-            model = "gpt-3.5-turbo",
+            model = "gpt-4",
+            //model = "gpt-3.5-turbo",
 
             messages = new[]
             {
@@ -233,9 +233,7 @@ public class AdminMission : MonoBehaviour
         }
         else
         {
-            Debug.LogError("ONE");
             Debug.LogError("Error: " + request.error);
-            Debug.LogError("Response: " + request.downloadHandler.text);
         }
         geminiActivate = false;
         questioNumberText.text = "questions: " + (questions.Count > MAX_QUESTION_NUMBER ? MAX_QUESTION_NUMBER : questions.Count) + "/10";
@@ -248,7 +246,7 @@ public class AdminMission : MonoBehaviour
         if (MainMenu.activateRace && questions.Count < MAX_QUESTION_NUMBER && !geminiActivate && !loadAll)
         {
             geminiActivate = true;
-            StartCoroutine(callGemini());
+            StartCoroutine(callGpt());
         }
     }
 

@@ -42,9 +42,11 @@ public class SoccerMovment : MonoBehaviour
     float rndf;
     bool kick, endGame, firstFrame;
 
-    const int UPPER_LIMIT_ANSWER = 20, DOWN_LIMIT_ANSWER = 10, SCORE = 10, TARGET_SCORE = 3, CAMERA_FAR = 21, CAMERA_NEAR = 60, ROTATE = 13;
-    const int SUM_LOW = 3, SUM_HIGH = 8, FACT_LOW = 2, FACT_HIGH = 5, COMPLETE_HIGH1 = 2, COMPLETE_LOW = 5, COMPLETE_HIGH2 = 16, SPEED = 5;
-    const float PLAYER_Y_CICK = 2.1f, INIT_ARROW_X = 6.2f, INIT_ARROW_Y = 0.6f, INIT_ARROW_Z = -0.3f, BACK_POINT = 0.2f;
+    const int UPPER_LIMIT_ANSWER = 20, DOWN_LIMIT_ANSWER = 10, SCORE = 10, TARGET_SCORE = 3, CAMERA_FAR = 21, CAMERA_NEAR = 60, ROTATE = 13, SPEED_BALL_BOY = 15, SPEED_BALL_PLAYER = 10;
+    const int SUM_LOW = 3, SUM_HIGH = 8, FACT_LOW = 2, FACT_HIGH = 5, COMPLETE_HIGH1 = 2, COMPLETE_LOW = 5, COMPLETE_HIGH2 = 16, SPEED = 5, CALC_MAX1 = 4, CALC_MIN1 = 2, CALC_MAX2 = 3, CALC_MIN2 = 1;
+    const int FIX_BALL_X = 4, CHANCE_SAVE = 4;
+    const float PLAYER_Y_CICK = 2.1f, INIT_ARROW_X = 6.2f, INIT_ARROW_Y = 0.6f, INIT_ARROW_Z = -0.3f, BACK_POINT = 0.2f, MAX_PLAYER_KEEPER = -12.6f, MIN_PLAYER_KEEPER = -22.4f, MAX_BOY_KEEPER = -13.3f, MIN_BOY_KEEPER = -21.7f;
+    const float FIX_BOY_Y = 2.1f, FIX_BALL_Y = 1.5f, BALL_START_Y = 1.31f, BALL_START_Z = -0.1f;
     // Start is called before the first frame update
     void Start()
     {
@@ -164,7 +166,7 @@ public class SoccerMovment : MonoBehaviour
         int range = Random.Range(COMPLETE_LOW, COMPLETE_HIGH2);
         int brFor = Random.Range(range / 2, range);
         string questionCode = "for (int i = 0; i < " + range + "; i++) {\n\tif (i == " + brFor + ") {\n\t\tbreak;\n\t}\n\tSystem.out.println(i);\n}";
-        string questionText = "how many times the for will run?";
+        string questionText = "how many times the for will print?";
         explanation = "the for will run " + brFor + " times because when the for reach to that number the for will break.";
         List<int> answers = createAnswers(brFor, UPPER_LIMIT_ANSWER, DOWN_LIMIT_ANSWER);
         correctAnswer = brFor;
@@ -187,7 +189,7 @@ public class SoccerMovment : MonoBehaviour
 
     void calculateFor()
     {
-        int range = Random.Range(2, 4), addF = Random.Range(2, 4), incF = Random.Range(1, 3), sum = 0;
+        int range = Random.Range(CALC_MIN1, CALC_MAX1), addF = Random.Range(CALC_MIN1, CALC_MAX1), incF = Random.Range(CALC_MIN2, CALC_MAX2), sum = 0;
         for (int i = 0; i < range; i += incF) 
         {
             sum += addF;
@@ -263,7 +265,7 @@ public class SoccerMovment : MonoBehaviour
                     canvasSoccer.SetActive(true);
                     ifInitiateTurn = false;
                     arrow.SetActive(false);
-                    initiateTurn(3, 2, 1, new Vector3(0, INIT_ARROW_Z, 0), new Vector3(0, 1.31f, -0.1f));
+                    initiateTurn(3, 2, 1, new Vector3(0, PLAYER_Y_CICK, 0), new Vector3(0, BALL_START_Y, BALL_START_Z));
                     kick = false;
                     Invoke("npcKick", 2);
                 }
@@ -276,19 +278,19 @@ public class SoccerMovment : MonoBehaviour
 
     void playerTurn()
     {
-        if (!kick && (Input.GetKey("right") || Input.GetKey("d")) && pointGame[0].transform.position.z < -12.6f)
+        if (!kick && (Input.GetKey("right") || Input.GetKey("d")) && pointGame[0].transform.position.z < MAX_PLAYER_KEEPER)
         {
             pointGame[0].transform.position += new Vector3(0, 0, BACK_POINT);
         }
-        if (!kick && (Input.GetKey("left") || Input.GetKey("a")) && pointGame[0].transform.position.z > -22.4f)
+        if (!kick && (Input.GetKey("left") || Input.GetKey("a")) && pointGame[0].transform.position.z > MIN_PLAYER_KEEPER)
         {
             pointGame[0].transform.position -= new Vector3(0, 0, BACK_POINT);
         }
         if (!kick && Input.GetKey("space"))
         {
             kick = true;
-            rnd = Random.Range(0, 4);
-            rndf = Random.Range(-21.7f, -13.3f);
+            rnd = Random.Range(0, CHANCE_SAVE);
+            rndf = Random.Range(MIN_BOY_KEEPER, MAX_BOY_KEEPER);
         }
         if (kick)
         {
@@ -298,25 +300,25 @@ public class SoccerMovment : MonoBehaviour
             }
             if (rnd == 2 || rnd == 1)
             {
-                if (pointGame[0].transform.position.z > -13.3f)
+                if (pointGame[0].transform.position.z > MAX_BOY_KEEPER)
                 {
-                    boy.transform.position = Vector3.MoveTowards(boy.transform.position, new Vector3(boy.transform.position.x, boy.transform.position.y, -13.3f), Time.deltaTime * SPEED);
+                    boy.transform.position = Vector3.MoveTowards(boy.transform.position, new Vector3(boy.transform.position.x, boy.transform.position.y, MAX_BOY_KEEPER), Time.deltaTime * SPEED);
                 }
                 else
                 {
-                    if (pointGame[0].transform.position.z < -21.7f)
+                    if (pointGame[0].transform.position.z < MIN_BOY_KEEPER)
                     {
-                        boy.transform.position = Vector3.MoveTowards(boy.transform.position, new Vector3(boy.transform.position.x, boy.transform.position.y, -21.7f), Time.deltaTime * SPEED);
+                        boy.transform.position = Vector3.MoveTowards(boy.transform.position, new Vector3(boy.transform.position.x, boy.transform.position.y, MIN_BOY_KEEPER), Time.deltaTime * SPEED);
                     }
                     else
                     {
                         float fixKeeperPosition = pointGame[0].transform.position.z - enemyKeeperPos.z;
-                        boy.transform.position = Vector3.MoveTowards(boy.transform.position, pointGame[0].transform.position - new Vector3(0, 2.1f, fixKeeperPosition / 5), Time.deltaTime * SPEED);
+                        boy.transform.position = Vector3.MoveTowards(boy.transform.position, pointGame[0].transform.position - new Vector3(0, FIX_BOY_Y, fixKeeperPosition / 5), Time.deltaTime * SPEED);
                     }
                 }
             }
             transform.Rotate(0, ROTATE, ROTATE);
-            ball.transform.position = Vector3.MoveTowards(ball.transform.position, pointGame[0].transform.position - new Vector3(4, 1.5f, 0), Time.deltaTime * 10);
+            ball.transform.position = Vector3.MoveTowards(ball.transform.position, pointGame[0].transform.position - new Vector3(FIX_BALL_X, FIX_BALL_Y, 0), Time.deltaTime * SPEED_BALL_PLAYER);
         }
         arrow.transform.LookAt(pointGame[0].transform);
     }
@@ -324,23 +326,23 @@ public class SoccerMovment : MonoBehaviour
     void npcKick()
     {
         kick = true;
-        rndf = Random.Range(-12.6f, -22.4f);
+        rndf = Random.Range(MAX_PLAYER_KEEPER, MIN_PLAYER_KEEPER);
     }
 
     void npcTurn()
     {
-        if ((Input.GetKey("right") || Input.GetKey("d")) && player.transform.position.z < -12.6f)
+        if ((Input.GetKey("right") || Input.GetKey("d")) && player.transform.position.z < MAX_PLAYER_KEEPER)
         {
             player.transform.position += new Vector3(0, 0, BACK_POINT);
         }
-        if ((Input.GetKey("left") || Input.GetKey("a")) && player.transform.position.z > -22.4f)
+        if ((Input.GetKey("left") || Input.GetKey("a")) && player.transform.position.z > MIN_PLAYER_KEEPER)
         {
             player.transform.position -= new Vector3(0, 0, BACK_POINT);
         }
         if (kick)
         {
             transform.Rotate(0, ROTATE, ROTATE);
-            ball.transform.position = Vector3.MoveTowards(ball.transform.position, new Vector3(player.transform.position.x + 4, player.transform.position.y, rndf), Time.deltaTime * 15);
+            ball.transform.position = Vector3.MoveTowards(ball.transform.position, new Vector3(player.transform.position.x + FIX_BALL_X, player.transform.position.y, rndf), Time.deltaTime * SPEED_BALL_BOY);
         }
     }
 

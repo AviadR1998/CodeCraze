@@ -85,6 +85,13 @@ public class RoomsMenu : MonoBehaviour
 
     public void close(bool close)
     {
+        if (close)
+        {
+            if (meHost)
+            {
+                StartCoroutine(DeleteRoom());
+            }
+        }
         waitingRoom.SetActive(false);
         roomsList.SetActive(true);
         roomsMenu.SetActive(false);
@@ -154,7 +161,10 @@ public class RoomsMenu : MonoBehaviour
             request.SetRequestHeader("authorization", "Bearer " + Login.token);
             yield return request.SendWebRequest();
             if (request.isNetworkError || request.isHttpError)
+            {
                 response = request.error;
+                print("error creating");
+            }
             else
             {
                 socket.Emit("username", Login.usernameConnected);
@@ -292,6 +302,7 @@ public class RoomsMenu : MonoBehaviour
         if (meHost)
         {
             StartCoroutine(DeleteRoom());
+            StartCoroutine(getAllRooms());
         }
         else
         {
@@ -392,6 +403,7 @@ public class RoomsMenu : MonoBehaviour
             opponent = "RedCar";
             waitingRoom.SetActive(false);
             roomsList.SetActive(true);
+            StartCoroutine(getAllRooms());
         }
     }
 }

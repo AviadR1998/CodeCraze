@@ -9562,8 +9562,12 @@ MonoBehaviour:
   mainMenuPanel: {fileID: 1761352712}
   resetButton: {fileID: 1551809827}
   deleteButton: {fileID: 1368544326}
+  fullScrOn: {fileID: 1851847300}
+  fullScrOff: {fileID: 1912935184}
   audioMixer: {fileID: 24100000, guid: 5fe0fe8f361582d43873ae0a28eb7072, type: 2}
+  mySlider: {fileID: 845035220}
   resolutionDrop: {fileID: 1580223373}
+  qualityDrop: {fileID: 990253084}
 --- !u!114 &867616268
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -22515,7 +22519,7 @@ AudioSource:
     type: 2}
   m_audioClip: {fileID: 8300000, guid: f44a5085a9820be4895caf226541df2d, type: 3}
   m_PlayOnAwake: 1
-  m_Volume: 1
+  m_Volume: 0.25
   m_Pitch: 1
   Loop: 1
   Mute: 0

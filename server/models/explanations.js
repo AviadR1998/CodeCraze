@@ -15,7 +15,6 @@ async function postExplanations(details) {
     } catch{
         return 401;
     } finally {
-        //client.close();
     }
 }
 
@@ -33,9 +32,7 @@ async function getExplanationsByTopic(topic, bearer, token) {
         return {questionList: res};
     } catch (err) {
         return 401;
-        //return res.status(401).send("Invalid Token");
     } finally {
-        //client.close();
     }
 }
 
