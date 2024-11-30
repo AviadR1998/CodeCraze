@@ -38,9 +38,7 @@ async function getUserInfo(bearer, token) {
         return res[0];
     } catch (err) {
         return 401;
-        //return res.status(401).send("Invalid Token");
     } finally {
-        //client.close();
     }
 }
 
@@ -48,7 +46,6 @@ async function delUser(bearer, token) {
     try {
         const data = functions.validateToken(bearer, token);
         if (data === null) {
-            console.log(bearer + " " + token);
             return 401;
         }
         const client = new MongoClient("mongodb://127.0.0.1:27017");
@@ -59,9 +56,7 @@ async function delUser(bearer, token) {
         return 200;
     } catch (err) {
         return 401;
-        //return res.status(401).send("Invalid Token");
     } finally {
-        //client.close();
     }
 }
 
@@ -69,7 +64,6 @@ async function updateScore(bearer, token, score) {
     try {
         const data = functions.validateToken(bearer, token);
         if (data === null) {
-            console.log(bearer + " " + token);
             return 401;
         }
         const client = new MongoClient("mongodb://127.0.0.1:27017");
@@ -80,9 +74,7 @@ async function updateScore(bearer, token, score) {
         return 200;
     } catch (err) {
         return 401;
-        //return res.status(401).send("Invalid Token");
     } finally {
-        //client.close();
     }
 }
 
@@ -90,7 +82,6 @@ async function getTopScore(bearer, token, score) {
     try {
         const data = functions.validateToken(bearer, token);
         if (data === null) {
-            console.log(bearer  + " " +   token);
             return 401;
         }
         const client = new MongoClient("mongodb://127.0.0.1:27017");
@@ -118,9 +109,7 @@ async function getTopScore(bearer, token, score) {
         });
     } catch (err) {
         return 401;
-        //return res.status(401).send("Invalid Token");
     } finally {
-        //client.close();
     }
 }
 
@@ -128,7 +117,6 @@ async function resetUserModels(bearer, token) {
     try {
         const data = functions.validateToken(bearer, token);
         if (data === null) {
-            console.log(bearer + " " + token);
             return 401;
         }
         const client = new MongoClient("mongodb://127.0.0.1:27017");
@@ -140,35 +128,26 @@ async function resetUserModels(bearer, token) {
         return 200;
     } catch (err) {
         return 401;
-        //return res.status(401).send("Invalid Token");
     } finally {
-        //client.close();
     }
 }
 
 async function saveState(bearer, token, details) {
-    console.log("in models");
     try {
         const data = functions.validateToken(bearer, token);
         if (data === null) {
-            console.log(bearer + " " + token);
             return 401;
         }
         const client = new MongoClient("mongodb://127.0.0.1:27017");
         client.connect();
         const db = client.db('CodeCraze');
         const users = db.collection('Users');
-        //await users.updateOne({ world: details.world }, { task: details.task }, { state: parseInt(details.state) });
-        console.log(details);
-        console.log(data.username);
         await users.updateOne({ username: data.username },
             { $set: { world: details.world, task: details.task, state: parseInt(details.state) } });
         return 200;
     } catch (err) {
         return 401;
-        //return res.status(401).send("Invalid Token");
     } finally {
-        //client.close();
     }
 }
 
@@ -176,7 +155,6 @@ async function getState(bearer, token) {
     try {
         const data = functions.validateToken(bearer, token);
         if (data === null) {
-            console.log(bearer + " " + token);
             return 401;
         }
         const client = new MongoClient("mongodb://127.0.0.1:27017");
@@ -191,9 +169,7 @@ async function getState(bearer, token) {
 
     } catch (err) {
         return 401;
-        //return res.status(401).send("Invalid Token");
     } finally {
-        //client.close();
     }
 }
 

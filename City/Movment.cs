@@ -44,12 +44,13 @@ public class Movement : MonoBehaviour
     Vector3[] cheatArr = new Vector3[3] {new Vector3(-1069.69f, 13.57452f, 340.8305f), new Vector3(-720, 14, 273), new Vector3(-951.55f, 15.18f, 306.67f)};
     Dictionary<string, int> topiToNumbers = new Dictionary<string, int> { { "If", 0 }, { "While", 1 }, { "For", 2 }, { "Array", 3 } };
 
+    const int DOWN_ARROW = 50, DELAY = 2, UP_FIND_OBJ = 12, CNT_OBJ = 3, BOX_LEN = 7, NPC_MAX = 3, ARROW_FACROR_Y = 5, CHEAT_TRANSFER = 3;
+    const float RUN_ARROW = 12.2f, WALK_ARROW = 6.2f, DELAY_PRESS = 0.5f, PLAYER_X = -866.33f, PLAYER_Y = 13.015f, PLAYER_Z = 94.84f, ARROW_ADD_Y = 0.7f, HOVER_Y = 9.834f, HOVER_ADD_Y = 0.2f, HOVER_ADD_BALL_Y = 0.4f, HOVER_DOWN_LETTER_Y = 0.3f;
     // Start is called before the first frame update
     void Start()
     {
 
         missionInProgress = "";
-        welcomeCanvas.SetActive(true);
         characterController = GetComponent<CharacterController>();
         Cursor.lockState = CursorLockMode.Locked;
         hoverLetter = hoverBall = Cursor.visible = false;
@@ -64,8 +65,9 @@ public class Movement : MonoBehaviour
         raceOn = false;
         if (Login.world != "City")
         {
-            addingToArrow = 50;
-            arrow.transform.position -= new Vector3(0, 50, 0);
+            welcomeCanvas.SetActive(true);
+            addingToArrow = DOWN_ARROW;
+            arrow.transform.position -= new Vector3(0, DOWN_ARROW, 0);
             for (int i = 0; i < npcs.Length; i++)
             {
                 npcs[i].SetActive(true);
@@ -82,6 +84,13 @@ public class Movement : MonoBehaviour
             if (Login.task != "If")
             {
                 npcs[0].SetActive(false);
+            }
+            else
+            {
+                if (Login.state == 0)
+                {
+                    welcomeCanvas.SetActive(true);
+                }
             }
             npcMissionCounter = topiToNumbers[Login.task];
             npcs[npcMissionCounter].SetActive(true);
@@ -115,7 +124,7 @@ public class Movement : MonoBehaviour
 
     private IEnumerator closeFindPanel()
     {
-        yield return new WaitForSeconds(2);
+        yield return new WaitForSeconds(DELAY);
         findPanel.SetActive(false);
     }
 
@@ -123,13 +132,13 @@ public class Movement : MonoBehaviour
     {
         if (other.tag == "FindObj")
         {
-            IfMissions.findObj[IfMissions.currentFindObj].transform.position += new Vector3(0, 12, 0);
+            IfMissions.findObj[IfMissions.currentFindObj].transform.position += new Vector3(0, UP_FIND_OBJ, 0);
             IfMissions.findObj[IfMissions.currentFindObj].SetActive(false);
             IfMissions.currentFindObj++;
-            if(IfMissions.currentFindObj < 3) 
+            if(IfMissions.currentFindObj < CNT_OBJ) 
             {
                 IfMissions.findObj[IfMissions.currentFindObj].SetActive(true);
-                IfMissions.findObj[IfMissions.currentFindObj].transform.position -= new Vector3(0, 12, 0);
+                IfMissions.findObj[IfMissions.currentFindObj].transform.position -= new Vector3(0, UP_FIND_OBJ, 0);
             }
             objFoundHotCold.text = IfMissions.currentFindObj + "/3";
             findPanel.SetActive(true);
@@ -148,7 +157,7 @@ public class Movement : MonoBehaviour
 
     private IEnumerator delayPress()
     {
-        yield return new WaitForSeconds(0.5f);
+        yield return new WaitForSeconds(DELAY_PRESS);
         canPress = true;
     }
 
@@ -189,7 +198,7 @@ public class Movement : MonoBehaviour
         }
         if (other.tag == "BoxArr" && canPress && Input.GetKeyDown("e") && hoverLetter)
         {
-            BoxGame.boxLetters[other.name[6] - '0'] = currentLetter;
+            BoxGame.boxLetters[other.name[BOX_LEN - 1] - '0'] = currentLetter;
             canPress = false;
             hoverLetter = false;
             ballBox.transform.position = other.transform.position;
@@ -218,7 +227,7 @@ public class Movement : MonoBehaviour
         {
             return;
         }
-        if (Login.world == "City" && Input.GetKeyDown(KeyCode.Tab) && npcMissionCounter < 3)
+        if (Login.world == "City" && Input.GetKeyDown(KeyCode.Tab) && npcMissionCounter < NPC_MAX)
         {
             Practice.canAsk = false;
             npcs[npcMissionCounter++].SetActive(false);
@@ -227,8 +236,8 @@ public class Movement : MonoBehaviour
         }
         if (home)
         {
-            player.transform.position = new Vector3(-866.33f, 13.015f, 94.84f);
-            arrow.transform.position = new Vector3(-866.33f, 13.015f - addingToArrow, 94.84f);
+            player.transform.position = new Vector3(PLAYER_X, PLAYER_Y, PLAYER_Z);
+            arrow.transform.position = new Vector3(PLAYER_X, PLAYER_Y - addingToArrow, PLAYER_Z);
             home = false;
             return;
         }
@@ -237,7 +246,7 @@ public class Movement : MonoBehaviour
             arrow.transform.position = Vector3.MoveTowards(arrow.transform.position,
             GameObject.Find("Player").transform.position + new Vector3(
             playerCamera.transform.forward.x * 2,
-            math.sin(playerCamera.transform.forward.y) * 5 + 0.7f - addingToArrow,
+            math.sin(playerCamera.transform.forward.y) * ARROW_FACROR_Y + ARROW_ADD_Y - addingToArrow,
             playerCamera.transform.forward.z * 2), arrowSpeed * Time.deltaTime);
             arrow.transform.LookAt(mission.transform);
         }
@@ -245,14 +254,14 @@ public class Movement : MonoBehaviour
         if (Input.GetKeyDown("z"))
         {
             player.GetComponent<CharacterController>().enabled = false;
-            cheatTransfer = (cheatTransfer + 1) % 3;
+            cheatTransfer = (cheatTransfer + 1) % CHEAT_TRANSFER;
             player.transform.position = cheatArr[cheatTransfer];
             player.GetComponent<CharacterController>().enabled = true;
         }
 
         if (canPress && Input.GetKeyDown("e") && (hoverBall || hoverLetter))
         {
-            ballBox.transform.position = new Vector3(player.transform.position.x, 9.834f + (hoverLetter ? 0.2f : 0), player.transform.position.z);
+            ballBox.transform.position = new Vector3(player.transform.position.x, HOVER_Y + (hoverLetter ? HOVER_ADD_Y : 0), player.transform.position.z);
             hoverLetter = canPress = hoverBall = false;
             StartCoroutine(delayPress());
         }
@@ -261,7 +270,7 @@ public class Movement : MonoBehaviour
         {
             ballBox.transform.position = GameObject.Find("Player").transform.position + new Vector3(
             playerCamera.transform.forward.x * 1,
-            math.sin(playerCamera.transform.forward.y) * 0 - 0.4f,
+            math.sin(playerCamera.transform.forward.y) * 0 - HOVER_ADD_BALL_Y,
             playerCamera.transform.forward.z * 1);
         }
 
@@ -269,7 +278,7 @@ public class Movement : MonoBehaviour
         {
             ballBox.transform.position = GameObject.Find("Player").transform.position + new Vector3(
             playerCamera.transform.forward.x * 2,
-            math.sin(playerCamera.transform.forward.y) * 0 - 0.3f,
+            math.sin(playerCamera.transform.forward.y) * 0 - HOVER_DOWN_LETTER_Y,
             playerCamera.transform.forward.z * 2);
         }
 
@@ -281,10 +290,10 @@ public class Movement : MonoBehaviour
         bool isRunning = Input.GetKey(KeyCode.LeftShift);
         if (isRunning)
         {
-            arrowSpeed = 12.2f;
+            arrowSpeed = RUN_ARROW;
         } else
         {
-            arrowSpeed = 6.2f;
+            arrowSpeed = WALK_ARROW;
         }
         float curSpeedX = canMove ? (isRunning ? runSpeed : walkSpeed) * Input.GetAxis("Vertical") : 0;
         float curSpeedY = canMove ? (isRunning ? runSpeed : walkSpeed) * Input.GetAxis("Horizontal") : 0;

@@ -5,8 +5,7 @@ import tokensRouter from './routes/tokens.js';
 import questionsRouter from './routes/questions.js';
 import roomsRouter from './routes/rooms.js';
 import explanationsRouter from './routes/explanations.js';
-import { roomsList, getKey, roomsListTopics } from "./controllers/rooms.js";
-//import { handleClientMsg } from './sockets/socket.js'
+import { roomsList, roomsListTopics } from "./models/rooms.js";
 import cors from 'cors';
 const app = express();
 
@@ -15,9 +14,6 @@ const server = http.createServer(app);
 import { Server } from "socket.io";
 
 var socketArr = new Map();
-/*const io = new Server(server, {
-    cors: { origin: "http://10.0.0.9:3000" }
-});*/
 const io = new Server(3000);
 
 export const myIo = io;
@@ -25,8 +21,6 @@ export const arrSoc = socketArr;
 io.on('connection', (socket) => {
     socket.on('username', (username) => {
         socketArr.set(username, socket);
-        console.log(socketArr.size);
-        //console.log(username);
     })
     socket.on('disconnect', (username) => {
         if (roomsList.has(username)) {
@@ -40,20 +34,9 @@ io.on('connection', (socket) => {
 
     socket.on('cord', (username, x, y, z, speed) => {
         socketArr.get(username).emit('cord', x, y, z, speed);
-        //getKey(socketArr, username).emit('cord', x, y, z, speed);
-        /*if (roomsList.has(username)) {
-            getKey(socketArr, username).emit('cord', x, y, z);
-        } else {
-            getKey(socketArr, username).emit('cord', x, y, z);
-        }*/
     });
 
     socket.on('finish', (username) => {
-        /*if (roomsList.has(username)) {
-            getKey(socketArr, roomsList.get(username)).emit('finish', username);
-        } else {
-            getKey(socketArr, getKey(roomsList, username)).emit('finish', username);
-        }*/
         roomsList.delete(username);
         roomsListTopics.delete(username);
     });
@@ -74,14 +57,10 @@ app.use('/api/Tokens', tokensRouter);
 app.use('/api/Questions', questionsRouter);
 app.use('/api/Rooms', roomsRouter);
 app.use('/api/Explanations', explanationsRouter);
-
-// Catch-all middleware for undefined API routes
 app.use((req, res, next) => {
     console.log(`Unhandled route: ${req.method} ${req.originalUrl}`);
     res.status(404).json({ error: "Not Found" });
 });
 
-// Serve static files (should come last)
 app.use(express.static('public'));
-
 app.listen(5000);

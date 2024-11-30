@@ -15,7 +15,7 @@ public class Traffic : MonoBehaviour
     private Material glowingGreen;
 
     const float DELAY_TIME = 3.5f, START_TIME = 1.75f;
-
+    const int STATE_TRFFIC = 4;
     void swapLight(GameObject red, GameObject green, int state)
     {
         if (state == 1)
@@ -95,7 +95,7 @@ public class Traffic : MonoBehaviour
         }
         if (colorState == -1)
         {
-            trafficRound = (trafficRound + 1) % 4;
+            trafficRound = (trafficRound + 1) % STATE_TRFFIC;
         }
         colorState *= -1;
     }
