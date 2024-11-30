@@ -4,7 +4,6 @@ using System.Xml.Serialization;
 using TMPro;
 using UnityEditor;
 using UnityEngine;
-using static UnityEngine.Rendering.HighDefinition.CameraSettings;
 
 public class IfMissions : MonoBehaviour
 {
@@ -31,7 +30,7 @@ public class IfMissions : MonoBehaviour
     public GameObject[] findObjU;
     public static GameObject[] findObj;
     public GameObject hotColdCanvas;
-    public UnityEngine.UI.Image hotColdImg;//for the emojis
+    public UnityEngine.UI.Image hotColdImg;
     public delegate void EndFunc();
     List<EndFunc> funcs;
     List<List<TextPartition>> texts;
@@ -43,7 +42,10 @@ public class IfMissions : MonoBehaviour
     public static int currentFindObj;
     Vector3 startPoint = new Vector3(-19.54f, 1.46f, -13.42f) + new Vector3(-901.14f, 11.69f, 297.78f), carPosision, cameraPos; //(-19.54f, 4.46f, -11.92f)
 
-    const int CAMERA_FAR = 21, ROTATION_Y = 90, DOWN_OBJ = 12;
+    const int CAMERA_CLOSE = 60, CAMERA_FAR = 21, ROTATION_Y = 90, DOWN_OBJ = 12, SPEED = 20, DISTANCE = 33;
+    const float CAMERA_ANGLE_X = -4.5f, CAMERA_ANGLE_Y1 = 91.5f, CAMERA_ANGLE_Y2 = 90;
+    const float GRAY_X = -903.06f, CAR_Y = 10.85f, GRAY_Z = 282.99f, BLACK_X = -917.03f, BLACK_Z = 150.3f, BLUE_X = -765.32f, BLUE_Z = 143.84f;
+    const float PLAYER_X = -901.3398f, PLAYER_Y = 11.69172f, PLAYER_Z = 297.0288f, CAMERA_X = 0.2895798f, CAMERA_Y = 0.1069689f, CAMERA_Z = 0.02268368f;
     // Start is called before the first frame update
     void Start()
     {
@@ -97,7 +99,6 @@ public class IfMissions : MonoBehaviour
 
     void cutSceneCar()
     {
-        //canvasMission.SetActive(false);
         camera.GetComponent<Camera>().fieldOfView = CAMERA_FAR;
         AdminMission.currentSubMission++;
         okButton.SetActive(false);
@@ -241,23 +242,23 @@ public class IfMissions : MonoBehaviour
         }
         if (!stop && startCutS)
         {
-            camera.transform.position = Vector3.MoveTowards(camera.transform.position, startPoint + new Vector3(33, 0, 0), 20 * Time.deltaTime);
+            camera.transform.position = Vector3.MoveTowards(camera.transform.position, startPoint + new Vector3(DISTANCE, 0, 0), SPEED * Time.deltaTime);
         }
         if (xLine)
         {
-            camera.GetComponent<Camera>().fieldOfView = 60;
+            camera.GetComponent<Camera>().fieldOfView = CAMERA_CLOSE;
             stopLine.SetActive(false);
             car.SetActive(false);
-            grayCar.transform.position = new Vector3(-903.06f, 10.85f, 282.99f);
-            blackCar.transform.position = new Vector3(-917.03f, 10.85f, 150.3f);
-            blueCar.transform.position = new Vector3(-765.32f, 10.85f, 143.84f);
+            grayCar.transform.position = new Vector3(GRAY_X, CAR_Y, GRAY_Z);
+            blackCar.transform.position = new Vector3(BLACK_X, CAR_Y, BLACK_Z);
+            blueCar.transform.position = new Vector3(BLUE_X, CAR_Y, BLUE_Z);
             grayCar.SetActive(true);
             blackCar.SetActive(true);
             blueCar.SetActive(true);
-            player.transform.position = new Vector3(-901.3398f, 11.69172f, 297.0288f);
-            camera.transform.position = new Vector3(0.2895798f, 0.1069689f, 0.02268368f) + player.transform.position; //0.1645798f, 0.0239689f, 0.01668368f
-            player.transform.rotation = Quaternion.Euler(0, 91.5f, 0);
-            camera.transform.rotation = Quaternion.Euler(-4.5f, 90, 0);
+            player.transform.position = new Vector3(PLAYER_X, PLAYER_Y, PLAYER_Z);
+            camera.transform.position = new Vector3(CAMERA_X, CAMERA_Y, CAMERA_Z) + player.transform.position;
+            player.transform.rotation = Quaternion.Euler(0, CAMERA_ANGLE_Y1, 0);
+            camera.transform.rotation = Quaternion.Euler(CAMERA_ANGLE_X, CAMERA_ANGLE_Y2, 0);
             AdminMission.currentSubText = 0;
             okButton.SetActive(true);
             talkingText.text = texts[AdminMission.currentSubMission][0].talking;

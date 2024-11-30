@@ -16,21 +16,23 @@ public class RaceCar : MonoBehaviour
     private int sideNearest;
     private bool finish, canDrive;
 
+    const int SPEED_Z = 6, BASE_SPEED = 10, ADD_SPEED = 10, DEC_SPEED = 5, CHANCE_CORRECT = 3, DELAY = 4, REPEAT = 10, START_REPEAT = 13, MIN_SIDE = 362;
+    const float CAR_X = -675, CAR_Y = 11.2f, CAR_Z = 362f, MAX_SIDE = 368.5f;
     void answerQuestion()
     {
-        int rnd = Random.Range(0, 3);
+        int rnd = Random.Range(0, CHANCE_CORRECT);
         if (rnd == 0)
         {
-            if (speed > 10)
+            if (speed > BASE_SPEED)
             {
-                speed -= 5;
+                speed -= DEC_SPEED;
                 return;
             }
             return;
         } 
         else
         {
-            speed += 10;
+            speed += ADD_SPEED;
         }
     }
 
@@ -75,20 +77,20 @@ public class RaceCar : MonoBehaviour
         newNearest();
         if (sideNearest == 1)
         {
-            driveAxisZ = -6;
+            driveAxisZ = -SPEED_Z;
         }
         else
         {
             if (sideNearest == -1)
             {
-                driveAxisZ = 6;
+                driveAxisZ = SPEED_Z;
             }
         }
     }
 
     private IEnumerator delayDrive()
     {
-        yield return new WaitForSeconds(4f);
+        yield return new WaitForSeconds(DELAY);
         tryAvoidNext();
         canDrive = true;
     }
@@ -101,11 +103,11 @@ public class RaceCar : MonoBehaviour
 
     void OnEnable()
     {
-        InvokeRepeating("answerQuestion", 13f, 10f);
-        raceCar.transform.position = new Vector3(-675, 11.2f, 362f);
+        InvokeRepeating("answerQuestion", START_REPEAT, REPEAT);
+        raceCar.transform.position = new Vector3(CAR_X, CAR_Y, CAR_Z);
 
         canDrive = finish = false;
-        speed = 10f;
+        speed = BASE_SPEED;
         driveAxisZ = 0;
         
         StartCoroutine(delayDrive());
@@ -116,9 +118,9 @@ public class RaceCar : MonoBehaviour
     {
         if (raceCar.tag.ToString() != other.tag.ToString())
         {
-            if (other.tag.ToString() == "Obstacle" && speed > 10)
+            if (other.tag.ToString() == "Obstacle" && speed > BASE_SPEED)
             {
-                speed -= 5;
+                speed -= DEC_SPEED;
             }
             if (other.tag.ToString() == "Finish")
             {
@@ -135,7 +137,7 @@ public class RaceCar : MonoBehaviour
         {
             raceCar.transform.position += new Vector3(speed * Time.deltaTime, 0, driveAxisZ * Time.deltaTime);
 
-            if ((raceCar.transform.position.z > 368.5 && driveAxisZ > 0) || (raceCar.transform.position.z < 362 && driveAxisZ < 0))
+            if ((raceCar.transform.position.z > MAX_SIDE && driveAxisZ > 0) || (raceCar.transform.position.z < MIN_SIDE && driveAxisZ < 0))
             {
                 driveAxisZ = 0;
             }

@@ -45,7 +45,7 @@ public class BoxGame : MonoBehaviour
     bool canPress, firstTouch, arrayState, levelFirst, level3Start;
     string resultLevel3;
 
-    const int DELAY_END = 3, ID1 = 1, ID2 = 2, ID3 = 3, BOX_LEN = 7, BALL_NUMBER = 3, CAMERA_FAR = 21, CAMERA_CLOSE = 60, JUMP = 19, ROTATION = 17, LETTER_JUMP = 3, MIN_LETTER = 3, MAX_LETTER = 8;
+    const int DELAY_END = 3, ID1 = 1, ID2 = 2, ID3 = 3, BOX_LEN = 7, BALL_NUMBER = 3, CAMERA_FAR = 21, CAMERA_CLOSE = 60, JUMP = 21, ROTATION = 17, LETTER_JUMP = 3, MIN_LETTER = 3, MAX_LETTER = 8;
     const float DELAY = 1.5f, BALL_SIZE = 0.5f, BALL_POS_X1 = -1073.52f, BALL_POS_X2 = -1065.36f, BALL_POS_X3 = -1069.36f, BALL_POS_Y = 9.834f, BALL_POS_Z1 = 353.66f, BALL_POS_Z2 = 357.66f, CAMERA_POS_X1 = 0.1645798f, CAMERA_POS_Y1 = 0.0239689f, CAMERA_POS_Z1 = 0.01668368f, CAMERA_POS_X2 = -1069.866f, CAMERA_POS_Y2 = 22.4789f, CAMERA_POS_Z2 = 312.5044f, DOWN_LETTER = 6.35f;
     // Start is called before the first frame update
     void Start()
