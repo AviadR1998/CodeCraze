@@ -217,7 +217,10 @@ public class FireMission : MonoBehaviour
         finishMission.GetComponent<SoundEffects>().PlaySoundClip();
         finishMission.SetActive(true);
         //Updae state.
-        PauseMenu.updateSave("Forest", "Finish", 0);
+        if (TaskManager.currentTaskIndex <= 6)
+        {
+            PauseMenu.updateSave("Forest", "Finish", 0);
+        }
         CastleBox.SetActive(true);
         CompleteTask();
         arrow.SetActive(true);

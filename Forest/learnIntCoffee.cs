@@ -96,8 +96,10 @@ public class learnIntCoffee : MonoBehaviour
         finishMission.GetComponent<SoundEffects>().PlaySoundClip();
         finishMission.SetActive(true);
         //Save state.
-        PauseMenu.updateSave("Forest", "Box", 0);
-
+        if (TaskManager.currentTaskIndex <= 2)
+        {
+            PauseMenu.updateSave("Forest", "Box", 0);
+        }
         //PLAYER get back to the original place.
         FindObjectOfType<FirstPersonController>().transform.position = originalPlayerPosition;
         FindObjectOfType<FirstPersonController>().transform.rotation = originalPlayerRotation;

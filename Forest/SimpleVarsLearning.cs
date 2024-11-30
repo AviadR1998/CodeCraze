@@ -206,7 +206,10 @@ public class SimpleVarsLearning : MonoBehaviour
         finishMission.GetComponent<SoundEffects>().PlaySoundClip();
         finishMission.SetActive(true);
         //Update state.
-        PauseMenu.updateSave("Forest", "Fish", 0);
+        if (TaskManager.currentTaskIndex <= 3)
+        {
+            PauseMenu.updateSave("Forest", "Fish", 0);
+        }
     }
     private IEnumerator ActivateNextTaskWithDelay()
     {

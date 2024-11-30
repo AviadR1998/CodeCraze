@@ -310,7 +310,10 @@ public class BikeMission : MonoBehaviour
         CompleteTask();
         StartCoroutine(ResetBikePositionWithDelay());
         //Update state for saving the game.
-        PauseMenu.updateSave("Forest", "Fire", 0);
+        if (TaskManager.currentTaskIndex <= 5)
+        {
+            PauseMenu.updateSave("Forest", "Fire", 0);
+        }
     }
 
     private IEnumerator ResetBikePositionWithDelay()
@@ -319,6 +322,8 @@ public class BikeMission : MonoBehaviour
         yield return new WaitForSeconds(minutes);
         isTaskActive = false;
         arrow.SetActive(true);
+        transform.position = new Vector3(37.59f, 4.62f, 46.37f);
+        transform.rotation = Quaternion.Euler(0, 35.581f, 0);
     }
     private IEnumerator ActivateNextTaskWithDelay()
     {
