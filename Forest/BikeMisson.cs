@@ -37,7 +37,8 @@ public class BikeMission : MonoBehaviour
     public AudioSource BackgroundMusic;
     public GameObject bikeCamera;
     public AudioSource bikeAudioSource;
-
+    private const int minutes = 60;
+    private const int fiveSeconds = 5;
 
     void Start()
     {
@@ -236,14 +237,12 @@ public class BikeMission : MonoBehaviour
                 if (questionCounter >= totalQuestions - 1)
                 {
                     StartCoroutine(HandleQuestionsAndCompleteTask());
-                    StartCoroutine(WaitBeforeDeactivatingTask());
                     canvas.SetActive(false);
                     isMoving = false;
                     if (bikeAudioSource != null)
                     {
                         bikeAudioSource.Stop();
                     }
-                    StartCoroutine(ResetBikePositionWithDelay());
                     return;
                 }
                 //Player didn't finish all the queations.
@@ -277,13 +276,6 @@ public class BikeMission : MonoBehaviour
         MoveTowardsNextPoint();
     }
 
-    private IEnumerator WaitBeforeDeactivatingTask()
-    {
-        //Wait 5 seconds and let the player do the task again if he want to.
-        yield return new WaitForSeconds(5);
-        isTaskActive = false;
-    }
-
     public void CompleteTask()
     {
         NotSimultTasks.someMission = false;
@@ -311,26 +303,26 @@ public class BikeMission : MonoBehaviour
         //Finish all practice qustions.
         yield return new WaitUntil(() => !FreeQueBike.keepWhile);
         bikeCamera.SetActive(false);
-        arrow.SetActive(true);
         //Finish mission sound + canvas.
         finishMission.GetComponent<SoundEffects>().PlaySoundClip();
         finishMission.SetActive(true);
         //Send player to next mission.
         CompleteTask();
+        StartCoroutine(ResetBikePositionWithDelay());
         //Update state for saving the game.
         PauseMenu.updateSave("Forest", "Fire", 0);
     }
 
     private IEnumerator ResetBikePositionWithDelay()
     {
-        //Wait 4 seconds and return bike to iniate position.
-        yield return new WaitForSeconds(4);
-        transform.position = new Vector3(37.59f, 4.62f, 46.37f);
-        transform.rotation = Quaternion.Euler(0, 35.581f, 0);
+        //Wait 10 seconds and return bike to iniate position.
+        yield return new WaitForSeconds(minutes);
+        isTaskActive = false;
+        arrow.SetActive(true);
     }
     private IEnumerator ActivateNextTaskWithDelay()
     {
-        yield return new WaitForSeconds(5);
+        yield return new WaitForSeconds(fiveSeconds);
         taskManager.ActivateNextTask();
     }
 }

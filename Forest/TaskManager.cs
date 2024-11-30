@@ -14,9 +14,11 @@ public class TaskManager : MonoBehaviour
     public GameObject endAllCanvas;
     private AudioSource audioSource;
     public AudioClip finishAudioSource;
-    private const int sixSeconds = 6;
+    private const int sixSeconds = 7;
     private const int tenSeconds = 10;
     private const float threeSeconds = 3.2f;
+
+    public GameObject welcomeCanvas;
 
     void Update()
     {
@@ -38,6 +40,7 @@ public class TaskManager : MonoBehaviour
         switch (taskIndex)
         {
             case 0: // Task 1 - Swing in the park
+                welcomeCanvas.SetActive(true);
                 ActivateArrowAndObject(taskIndex);
                 ShowCanvasWithMessage("Task 1: Head to the park and find the pink arrow near the swing!");
                 break;
@@ -119,7 +122,7 @@ public class TaskManager : MonoBehaviour
 
     private IEnumerator ShowEndCanvasWithDelay()
     {
-        yield return new WaitForSeconds(threeSeconds);
+        yield return new WaitForSeconds(2);
         if (finishAudioSource != null && audioSource != null)
         {
             audioSource.PlayOneShot(finishAudioSource);
