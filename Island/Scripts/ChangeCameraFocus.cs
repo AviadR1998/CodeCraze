@@ -1,5 +1,8 @@
 using UnityEngine;
 
+
+
+//This script respawn the player and change its camera focus and lock its camera
 public class ChangeCameraFocus : MonoBehaviour
 {
     public Transform player;        // The player object
@@ -9,6 +12,7 @@ public class ChangeCameraFocus : MonoBehaviour
     public Canvas dangerArea;
     public static bool isSailing = false, goingBack = false;
     public bool workOnSail = false, justWhenBack = false;
+    public float tooCloseToTarget = 0.1f, enoughRotationToTarget = 1f;
     private float rotationSpeed = 5f;  // Rotation speed for smooth rotation
     private bool shouldLookAtTarget = false;  // Flag to control if the player should look at the target
 
@@ -42,7 +46,7 @@ public class ChangeCameraFocus : MonoBehaviour
         Vector3 directionToTarget = focusTarget.position - player.position;
         directionToTarget.y = 0; // Keep rotation on the y-axis
 
-        if (directionToTarget.magnitude < 0.1f)
+        if (directionToTarget.magnitude < tooCloseToTarget)
         {
             Debug.LogWarning("Target and player are too close; skipping rotation.");
             return;
@@ -55,7 +59,7 @@ public class ChangeCameraFocus : MonoBehaviour
         player.rotation = Quaternion.Slerp(player.rotation, targetRotation, rotationSpeed * Time.deltaTime);
 
         // Check if rotation is close enough to target
-        if (Quaternion.Angle(player.rotation, targetRotation) < 1f)
+        if (Quaternion.Angle(player.rotation, targetRotation) < enoughRotationToTarget)
         {
             shouldLookAtTarget = false; // Unlock rotation
         }
@@ -66,7 +70,6 @@ public class ChangeCameraFocus : MonoBehaviour
     {
         if ((!isSailing || (workOnSail && (!justWhenBack || goingBack))) && !StatueLimitation.shouldLimit)
         {
-            print("Change camera");
             if (workOnSail)
             {
                 isSailing = false;

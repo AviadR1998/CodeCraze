@@ -2,6 +2,8 @@ using System;
 using TMPro;
 using UnityEngine;
 
+
+//This script manage a text of a canvas to be changed by a given array of strings and next btn
 public class MissionCanvas : MonoBehaviour
 {
 

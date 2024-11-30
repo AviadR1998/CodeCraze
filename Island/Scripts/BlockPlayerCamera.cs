@@ -1,7 +1,6 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
+//This script manage the player camera
 public class BlockPlayerCamera : MonoBehaviour
 {
     public MonoBehaviour playerControlScript;

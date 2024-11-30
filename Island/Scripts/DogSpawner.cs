@@ -1,13 +1,14 @@
-using System.Data;
 using UnityEngine;
 
+
+
+//this script instatiate a new dog by specific values
 public class DogSpawner : MonoBehaviour
 {
-    //public GameObject dogPrefab;  // Assign the dog prefab in the Inspector
-    //public Transform spawnPoint;  // The position where the dog should spawn
-    //public float spawnDelay = 2f; // Delay before spawning (optional)
 
     public GameObject ClassMissionManager;
+    public uint maxAnimVal = 7, minAnimVal = 0;
+    private float dogSize = 2f;
     private ClassMission classMission = null;
 
     void Start()
@@ -17,13 +18,13 @@ public class DogSpawner : MonoBehaviour
 
     public GameObject SpawnDog(GameObject dogPrefab, Transform spawnPoint, uint animationNum, uint dogAge, string dogName, string bedColor, GameObject bed)
     {
-        if (animationNum > 7)
+        if (animationNum > maxAnimVal)
         {
-            animationNum = 0;
+            animationNum = minAnimVal;
         }
         // Instantiate the dog at the spawn position and with default rotation
         GameObject newDog = Instantiate(dogPrefab, spawnPoint.position, spawnPoint.rotation);
-        newDog.GetComponent<BoxCollider>().size = new Vector3(2f, 2f, 2f);
+        newDog.GetComponent<BoxCollider>().size = new Vector3(dogSize, dogSize, dogSize);
 
         DogAnimationController dac = newDog.GetComponent<DogAnimationController>();
         dac.dogName = dogName;
@@ -32,10 +33,6 @@ public class DogSpawner : MonoBehaviour
         dac.favoriteAnim = animationNum;
         dac.SetBedColor(bedColor);
         dac.bedObject = bed;
-        //dac.ChangeAnimation((int)animationNum);
-
-        // Optionally set other properties, such as position, animation, or components
-        //newDog.GetComponent<Animator>().SetInteger("AnimationID", (int)animationNum);  // Start with an animation (e.g., idle)
 
         if (classMission)
         {

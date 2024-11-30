@@ -1,7 +1,7 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
+
+//This script controls the sailing audio
 public class SailAudio : MonoBehaviour
 {
     private bool playing = false;

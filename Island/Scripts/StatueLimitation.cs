@@ -1,11 +1,13 @@
 using UnityEngine;
 
+
+//This script manage respawn a player when jump off statue
 public class StatueLimitation : MonoBehaviour
 {
     public GameObject player;
     public Transform playerRespawnPoint;
     public static bool shouldLimit = false;
-    public float waterLevel = -3;
+    public float waterLevel = -3, respawnAfter = 1.5f;
     private SoundEffects[] soundEffects;
     private bool madeRespawn = false;
     // Start is called before the first frame update
@@ -21,7 +23,7 @@ public class StatueLimitation : MonoBehaviour
         {
             soundEffects[1].PlaySoundClip();
             madeRespawn = true;
-            Invoke("respawnPlayer", 1.5f);
+            Invoke("respawnPlayer", respawnAfter);
         }
     }
 

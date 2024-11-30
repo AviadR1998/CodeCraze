@@ -1,5 +1,7 @@
 using UnityEngine;
 
+
+//This script manage a camera that follows a sailing boat
 public class BoatCameraFollow : MonoBehaviour
 {
     public Transform boat;      // Assign the boat's transform in the Inspector
@@ -17,6 +19,7 @@ public class BoatCameraFollow : MonoBehaviour
     public float lookAtSpeed = 2.0f; // Speed at which camera looks at the lookAtObj
     public float lookAtThreshold = 0.1f; // Threshold when to switch to free-look mode
     private bool isLookingAtTarget = true; // Track if the camera is still looking at the target
+    private float cameraYMaxRotate = 30f, lookOnZAxis = 0;
 
     // Store the camera's final rotation when transitioning to free-look mode
     private Quaternion finalLookAtRotation;
@@ -44,10 +47,10 @@ public class BoatCameraFollow : MonoBehaviour
             rotationY -= Input.GetAxis("Mouse Y") * lookSpeedY; // Vertical mouse movement
 
             // Clamp the vertical rotation to prevent flipping the camera upside down
-            rotationY = Mathf.Clamp(rotationY, -30f, 30f);
+            rotationY = Mathf.Clamp(rotationY, -cameraYMaxRotate, cameraYMaxRotate);
 
             // Update the camera's rotation based on mouse input and the stored final rotation
-            transform.rotation = finalLookAtRotation * Quaternion.Euler(rotationY, rotationX, 0);
+            transform.rotation = finalLookAtRotation * Quaternion.Euler(rotationY, rotationX, lookOnZAxis);
         }
     }
 
@@ -69,24 +72,3 @@ public class BoatCameraFollow : MonoBehaviour
     }
 }
 
-
-// using UnityEngine;
-
-// public class BoatCameraFollow : MonoBehaviour
-// {
-//     public Transform boat;          // Assign the boat’s Transform in the Inspector
-//     public Vector3 offset = new Vector3(0, 5, -10);  // Adjust to control initial camera position
-//     public float followSpeed = 5f;
-
-//     void LateUpdate()
-//     {
-//         if (boat == null) return;   // Safety check if boat is not set
-
-//         // Calculate target position based on boat's orientation and offset
-//         Vector3 targetPosition = boat.position + boat.TransformDirection(offset);
-//         transform.position = Vector3.Lerp(transform.position, targetPosition, followSpeed * Time.deltaTime);
-
-//         // Look at the boat from the current position
-//         transform.LookAt(boat.position + Vector3.up * 2f);  // Adjust look height as needed
-//     }
-// }

@@ -1,7 +1,7 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
+
+//This script play a sound
 public class SoundEffects : MonoBehaviour
 {
     public AudioSource audioSource;

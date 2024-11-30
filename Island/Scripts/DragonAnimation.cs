@@ -1,7 +1,7 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
+
+//This script controls the animation of the dragon of recursion mission
 public class DragonAnomation : MonoBehaviour
 {
     private Animator animator;
@@ -22,7 +22,6 @@ public class DragonAnomation : MonoBehaviour
     {
         // Trigger the animation by name
         animator.Play(animationName);
-        //print("Animation Name: " + animationName);
     }
 
 }

@@ -6,20 +6,20 @@ using UnityEngine.Networking;
 using System.Collections;
 using UnityEngine.UI;
 
+
+//This script manage the setting menu
 public class SettingsMenu : MonoBehaviour
 {
-    public GameObject outsideMenu;
-    public GameObject settingsCanvas;
-    public GameObject firstMenuPanel;
-    public GameObject mainMenuPanel;
-    public GameObject resetButton;
-    public GameObject deleteButton;
+    public GameObject outsideMenu, settingsCanvas, firstMenuPanel, mainMenuPanel, resetButton, deleteButton;
+    public Button fullScrOn, fullScrOff;
     public AudioMixer audioMixer;
-    public TMP_Dropdown resolutionDrop;
+    public Slider mySlider;
+    public TMP_Dropdown resolutionDrop, qualityDrop;
     private Resolution[] resolutions;
     private List<Resolution> goodRatioResolutions;
-
-    public static bool activateButtons;
+    public static bool activateButtons, isFullScreen = true;
+    public static float globalVolume = 0;
+    public static int globalQuality = 0;
 
     private void Start()
     {
@@ -38,7 +38,8 @@ public class SettingsMenu : MonoBehaviour
                 resOptions.Add(resolution.width + " x " + resolution.height);
                 goodRatioResolutions.Add(resolution);
 
-                if (resolution.width == 1920f && resolution.height == 1080f)
+                if (resolution.width == Screen.currentResolution.width &&
+                     resolution.height == Screen.currentResolution.height)
                 {
                     currResIndex = resCounter;
                 }
@@ -51,6 +52,16 @@ public class SettingsMenu : MonoBehaviour
 
         resolutionDrop.value = currResIndex;
         resolutionDrop.RefreshShownValue();
+
+
+
+        mySlider.value = globalVolume;
+        if (!isFullScreen)
+        {
+            fullScrOn.gameObject.SetActive(false);
+            fullScrOff.gameObject.SetActive(true);
+        }
+        qualityDrop.value = globalQuality;
 
     }
     private IEnumerator sendDeleteRequest()
@@ -120,17 +131,19 @@ public class SettingsMenu : MonoBehaviour
 
     public void SetVolume(float volume)
     {
-        print(volume);
+        globalVolume = volume;
         audioMixer.SetFloat("volume", volume);
     }
 
     public void SetQuality(int quality)
     {
+        globalQuality = quality;
         QualitySettings.SetQualityLevel(quality);
     }
 
     public void SetFullScreen(bool isFull)
     {
+        isFullScreen = isFull;
         Screen.fullScreen = isFull;
     }
 

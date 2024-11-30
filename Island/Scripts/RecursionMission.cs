@@ -9,10 +9,10 @@ public class RecursionMission : MonoBehaviour
     public Button beforeMissionNextBtn, afterMissionNextBtn;
     public Canvas firstMissionCanvas, afterMissionCompleteCanvas, missionComplete;
     public GameObject BackgroundAudio, RecursionTree, arrow;
-    public GameObject[] PearsToActivate, PearsToDeactivate;
-    public float playerRespawnHeight = -1f;
+    public GameObject[] PearsToActivate, PearsToDeactivate, CheatPears;
+    public float playerRespawnHeight = -1f, activateCanvasIn = 1f;
     private int dragonPears = 5, dragonPearsCollected = 0, beforeMissionNextCounter = 0, numOfClicksToStartMission = 13;
-    private int afterMissionNextCounter = 0, numOfClicksToFinishMission = 3;
+    private int afterMissionNextCounter = 0, numOfClicksToFinishMission = 3, initVals = 0;
     private bool collectAll = false, backToDragon = false, inMission = false;
 
     // Start is called before the first frame update
@@ -59,16 +59,17 @@ public class RecursionMission : MonoBehaviour
             if (beforeMissionNextCounter == numOfClicksToStartMission)
             {
                 Invoke("CallToResumeCamera", 3f);
-                beforeMissionNextCounter = 0;
+                beforeMissionNextCounter = initVals;
                 TurnOnMissionMusic();
             }
             if (afterMissionNextCounter == numOfClicksToFinishMission)
             {
                 Invoke("CallToResumeCamera", 1f);
-                afterMissionNextCounter = 0;
+                afterMissionNextCounter = initVals;
                 TurnOffMissionMusic();
                 PauseMenu.updateSave("Island", "Recursion", 1);
                 inMission = false;
+                StatueLimitation.shouldLimit = true;
                 if (missionComplete != null && !GameFlow.finishAllMissions)
                 {
                     SoundEffects soundEffects = missionComplete.GetComponent<SoundEffects>();
@@ -86,6 +87,14 @@ public class RecursionMission : MonoBehaviour
                 }
 
                 StartRecursionMission.startMission = false;
+            }
+
+            if (Input.GetKeyDown("p"))
+            {
+                foreach (GameObject pear in CheatPears)
+                {
+                    pear.SetActive(true);
+                }
             }
         }
 
@@ -184,11 +193,12 @@ public class RecursionMission : MonoBehaviour
     public void StartMission()
     {
         inMission = true;
-        Invoke("ActivateFirstCanvas", 1f);
+        StatueLimitation.shouldLimit = false;
+        Invoke("ActivateFirstCanvas", activateCanvasIn);
         GetComponent<MoveCamera>().InitStartMission();
-        dragonPearsCollected = 0;
-        beforeMissionNextCounter = 0;
-        afterMissionNextCounter = 0;
+        dragonPearsCollected = initVals;
+        beforeMissionNextCounter = initVals;
+        afterMissionNextCounter = initVals;
         collectAll = false;
         backToDragon = false;
 
@@ -215,7 +225,7 @@ public class RecursionMission : MonoBehaviour
                 PoleAndBridge poleAndBridge = child.GetComponent<PoleAndBridge>();
                 if (poleAndBridge != null)
                 {
-                    poleAndBridge.NumOfCollectedPears = 0;
+                    poleAndBridge.NumOfCollectedPears = initVals;
                     poleAndBridge.ZeroPearsCollected = false;
                     poleAndBridge.AllPearsCollected = false;
                 }

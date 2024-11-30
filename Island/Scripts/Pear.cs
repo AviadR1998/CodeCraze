@@ -1,5 +1,7 @@
 using UnityEngine;
 
+
+//This script manage a single pear object related to recursion mission
 public class Pear : MonoBehaviour
 {
     public GameObject RecursionMissionObj;

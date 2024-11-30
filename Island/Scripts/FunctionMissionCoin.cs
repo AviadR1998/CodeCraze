@@ -2,8 +2,9 @@ using System;
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
-using Unity.VisualScripting;
 
+
+//This script manage the floating coin that controls the fumction mission
 public class FunctionMissionCoin : MonoBehaviour
 {
     private int functionCalls;
@@ -14,6 +15,7 @@ public class FunctionMissionCoin : MonoBehaviour
     public TextMeshProUGUI textLitMatch;
     public TextMeshProUGUI textNumOfFunCalls;
     public GameObject TurnOffTorchesParent, InBoxTurnOffTorches, InBoxTurnOnTorches, InBoxMatches, OutsideMatches;
+    public int initNumOfCollected = 0;
 
     private int numOfTorches, numOfMatches;
     private bool isStart = false, finishInstruction = false, endMission = false, initMission = false;
@@ -69,9 +71,9 @@ public class FunctionMissionCoin : MonoBehaviour
     public void InitMission()
     {
         initMission = true;
-        numOfTorches = 0;
-        numOfMatches = 0;
-        functionCalls = 0;
+        numOfTorches = initNumOfCollected;
+        numOfMatches = initNumOfCollected;
+        functionCalls = initNumOfCollected;
         isStart = false;
         finishInstruction = false;
         endMission = false;

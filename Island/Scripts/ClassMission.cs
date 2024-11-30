@@ -1,6 +1,8 @@
 using UnityEngine;
 using UnityEngine.UI;
 
+
+//This script manage the class mission
 public class ClassMission : MonoBehaviour
 {
     public Transform npc, startLocation;
@@ -10,6 +12,8 @@ public class ClassMission : MonoBehaviour
     public Canvas finishMissionCanvas, missionCompletedCanvas, firstMissionCanvas;
     public GameObject arrow;
     public GameObject[] dogBeds;
+    public float MoveToNpcIn = 1f, lookAtYExtra = 0.5f;
+    public int numOfClicksToMove = 3, numOfNeededDog = 7, initVal = 0;
     private int ClicksNextInCanvasCnt = 0, freeCameraClickCnt = 0, dogsCreated = 0, nextBtnOnFinishCanvasCnt = 0;
 
     // Start is called before the first frame update
@@ -30,12 +34,12 @@ public class ClassMission : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (dogsCreated == 7)
+        if (dogsCreated == numOfNeededDog)
         {
             dogsCreated++;
 
             this.GetComponent<BlockPlayerCamera>().stopCamera();
-            Invoke("MoveToNpc", 1f);
+            Invoke("MoveToNpc", MoveToNpcIn);
         }
 
     }
@@ -52,8 +56,8 @@ public class ClassMission : MonoBehaviour
     {
         player.transform.position = startLocation.position;
         player.transform.rotation = startLocation.rotation;
-        player.LookAt(new Vector3(npc.position.x, player.position.y + 0.5f, npc.position.z));
-        mainCamera.transform.LookAt(new Vector3(npc.position.x, player.position.y + 0.5f, npc.position.z));
+        player.LookAt(new Vector3(npc.position.x, player.position.y + lookAtYExtra, npc.position.z));
+        mainCamera.transform.LookAt(new Vector3(npc.position.x, player.position.y + lookAtYExtra, npc.position.z));
         finishMissionCanvas.gameObject.SetActive(true);
     }
 
@@ -64,7 +68,7 @@ public class ClassMission : MonoBehaviour
 
     public void ClickedNextInDogsCanvas()
     {
-        if (++ClicksNextInCanvasCnt == 3)
+        if (++ClicksNextInCanvasCnt == numOfClicksToMove)
         {
             nextBtn.gameObject.SetActive(false);
         }
@@ -72,7 +76,7 @@ public class ClassMission : MonoBehaviour
 
     public void ClickedNextInFinishCanvas()
     {
-        if (++nextBtnOnFinishCanvasCnt == 3)
+        if (++nextBtnOnFinishCanvasCnt == numOfClicksToMove)
         {
             GetComponent<BlockPlayerCamera>().resumeCamera();
             missionCompletedCanvas.gameObject.SetActive(true);
@@ -98,7 +102,7 @@ public class ClassMission : MonoBehaviour
 
     private void FreeCamera()
     {
-        if (++freeCameraClickCnt == 3)
+        if (++freeCameraClickCnt == numOfClicksToMove)
         {
             this.GetComponent<BlockPlayerCamera>().resumeCamera();
 
@@ -118,11 +122,11 @@ public class ClassMission : MonoBehaviour
     public void StartMission()
     {
         npc.GetComponent<MoveCamera>().InitStartMission();
-        Invoke("ActivateFirstCanvas", 1f);
-        ClicksNextInCanvasCnt = 0;
-        freeCameraClickCnt = 0;
-        dogsCreated = 0;
-        nextBtnOnFinishCanvasCnt = 0;
+        Invoke("ActivateFirstCanvas", MoveToNpcIn);
+        ClicksNextInCanvasCnt = initVal;
+        freeCameraClickCnt = initVal;
+        dogsCreated = initVal;
+        nextBtnOnFinishCanvasCnt = initVal;
         DogAnimationController.canBarkWhenClicked = true;
 
         foreach (GameObject dogBed in dogBeds)

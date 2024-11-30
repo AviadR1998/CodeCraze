@@ -1,7 +1,7 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
+
+//This script triger sound effect when enters an object
 public class TriggerSoundEffect : MonoBehaviour
 {
     private void OnTriggerEnter(Collider other)
