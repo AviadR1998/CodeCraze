@@ -139,7 +139,10 @@ public class UpdateSignText : MonoBehaviour
         finishMission.GetComponent<SoundEffects>().PlaySoundClip();
         finishMission.SetActive(true);
         //Update state for saving the game.
-        PauseMenu.updateSave("Forest", "Coffee", 0);
+        if (TaskManager.currentTaskIndex <= 1)
+        {
+            PauseMenu.updateSave("Forest", "Coffee", 0);
+        }
         StartCoroutine(BacktoPosition());
     }
     private IEnumerator ActivateNextTaskWithDelay()

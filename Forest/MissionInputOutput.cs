@@ -96,7 +96,10 @@ public class MissionInputOutput : MonoBehaviour
             finishMission.SetActive(true);
             CompleteTask();
             //Update state.
-            PauseMenu.updateSave("Forest", "Sign", 0);
+            if (TaskManager.currentTaskIndex <= 0)
+            {
+                PauseMenu.updateSave("Forest", "Sign", 0);
+            }
         }
         else
         {

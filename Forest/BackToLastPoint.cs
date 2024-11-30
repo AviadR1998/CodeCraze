@@ -10,9 +10,12 @@ public class BackToLastPoint : MonoBehaviour
     private const int numOfTasks = 7;
     private const int oneSeconds = 1;
     private const int tenSeconds = 10;
+    private AudioSource audioSource;
+    public AudioClip finishAudioSource;
 
     void Start()
     {
+        audioSource = GetComponent<AudioSource>();
         string savedTask = Login.task;
         int taskIndex = GetTaskIndex(savedTask);
         TaskManager.currentTaskIndex = taskIndex;
@@ -73,6 +76,10 @@ public class BackToLastPoint : MonoBehaviour
     private IEnumerator ShowEndCanvasWithDelay()
     {
         yield return new WaitForSeconds(oneSeconds);
+        if (finishAudioSource != null && audioSource != null)
+        {
+            audioSource.PlayOneShot(finishAudioSource);
+        }
         //Open end canvas.
         endAllCanvas.SetActive(true);
         //Wait 10 seconds and close canvas.

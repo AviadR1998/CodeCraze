@@ -171,7 +171,10 @@ public class fishCount : MonoBehaviour
         finishMission.SetActive(true);
         CompleteTask();
         //Save state.
-        PauseMenu.updateSave("Forest", "Bike", 0);
+        if (TaskManager.currentTaskIndex <= 4)
+        {
+            PauseMenu.updateSave("Forest", "Bike", 0);
+        }
         //Wait 5 seconds and let the player do the mission again if he want to.
         StartCoroutine(WaitBeforeDeactivatingTask());
     }
