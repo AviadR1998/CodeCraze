@@ -4,7 +4,6 @@ using TMPro;
 using Unity.Mathematics;
 using Unity.VisualScripting;
 using UnityEngine;
-using static UnityEditor.ShaderGraph.Internal.KeywordDependentCollection;
 using SocketIOClient;
 
 [RequireComponent(typeof(CharacterController))]

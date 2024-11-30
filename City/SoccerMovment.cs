@@ -43,7 +43,8 @@ public class SoccerMovment : MonoBehaviour
     bool kick, endGame, firstFrame;
 
     const int UPPER_LIMIT_ANSWER = 20, DOWN_LIMIT_ANSWER = 10, SCORE = 10, TARGET_SCORE = 3, CAMERA_FAR = 21, CAMERA_NEAR = 60, ROTATE = 13;
-
+    const int SUM_LOW = 3, SUM_HIGH = 8, FACT_LOW = 2, FACT_HIGH = 5, COMPLETE_HIGH1 = 2, COMPLETE_LOW = 5, COMPLETE_HIGH2 = 16, SPEED = 5;
+    const float PLAYER_Y_CICK = 2.1f, INIT_ARROW_X = 6.2f, INIT_ARROW_Y = 0.6f, INIT_ARROW_Z = -0.3f, BACK_POINT = 0.2f;
     // Start is called before the first frame update
     void Start()
     {
@@ -65,7 +66,7 @@ public class SoccerMovment : MonoBehaviour
         firstFrame = turn = true;
         ifInitiateTurn = haveAnswer = endGame = kick = false;
         boy.SetActive(true);
-        initiateTurn(0, 1, 0, new Vector3(0, 2.1f, 0), new Vector3(0, 2f, 0));
+        initiateTurn(0, 1, 0, new Vector3(0, PLAYER_Y_CICK, 0), new Vector3(0, 2f, 0));
         InvokeRepeating("reduceSecond", 1f, 1f);
     }
 
@@ -73,7 +74,7 @@ public class SoccerMovment : MonoBehaviour
     {
         boy.transform.position = pointGame[i].transform.position - boyStart;
         player.transform.position = pointGame[j].transform.position;
-        arrow.transform.position = pointGame[j].transform.position - new Vector3(6.2f, 0.6f, -0.3f);
+        arrow.transform.position = pointGame[j].transform.position - new Vector3(INIT_ARROW_X, INIT_ARROW_Y, INIT_ARROW_Z);
         ball.transform.position = ballPos[ballI].transform.position + ballStart;
         player.transform.LookAt(pointGame[i].transform);
         camera.transform.LookAt(pointGame[i].transform);
@@ -115,7 +116,7 @@ public class SoccerMovment : MonoBehaviour
 
     void sumFor()
     {
-        int range = Random.Range(3, 8), sum = 0;
+        int range = Random.Range(SUM_LOW, SUM_HIGH), sum = 0;
         string questionCode = "int sum = 0;\nfor (int i = 1; i <= " + range + "; i++) {\n\tsum += i;\n}\nSystem.out.println(sum);";
         for (int i = 1; i <= range; i++)
         {
@@ -131,7 +132,7 @@ public class SoccerMovment : MonoBehaviour
 
     void factFor()
     {
-        int range = Random.Range(2, 5), sum = 1;
+        int range = Random.Range(FACT_LOW, FACT_HIGH), sum = 1;
         string questionCode = "int sum = 1;\nfor (int i = 1; i <= " + range + "; i++) {\n\tsum *= i;\n}\nSystem.out.println(sum);";
         for (int i = 2; i <= range; i++)
         {
@@ -147,7 +148,7 @@ public class SoccerMovment : MonoBehaviour
 
     void comleteFor()
     {
-        int option = Random.Range(0, 2), range = Random.Range(5, 16);
+        int option = Random.Range(0, COMPLETE_HIGH1), range = Random.Range(COMPLETE_LOW, COMPLETE_HIGH2);
         string opr = option == 0 ? "<" : "<=";
         string questionCode = "for (int i = 0; i " + opr + " _; i++) {\n\tSystem.out.println(i);\n}";
         string questionText = "complete the for so that it runs " + range + " times.";
@@ -160,7 +161,7 @@ public class SoccerMovment : MonoBehaviour
 
     void breakFor()
     {
-        int range = Random.Range(5, 16);
+        int range = Random.Range(COMPLETE_LOW, COMPLETE_HIGH2);
         int brFor = Random.Range(range / 2, range);
         string questionCode = "for (int i = 0; i < " + range + "; i++) {\n\tif (i == " + brFor + ") {\n\t\tbreak;\n\t}\n\tSystem.out.println(i);\n}";
         string questionText = "how many times the for will run?";
@@ -173,7 +174,7 @@ public class SoccerMovment : MonoBehaviour
 
     void continueFor()
     {
-        int range = Random.Range(5, 16);
+        int range = Random.Range(COMPLETE_LOW, COMPLETE_HIGH2);
         int conFor = Random.Range(range / 2, range);
         string questionCode = "for (int i = 0; i < " + range + "; i++) {\n\tif (i == " + conFor + ") {\n\t\tcontinue;\n\t}\n\tSystem.out.println(i);\n}";
         string questionText = "which number will not be printed?";
@@ -249,7 +250,7 @@ public class SoccerMovment : MonoBehaviour
                     ifInitiateTurn = false;
                     arrow.SetActive(true);
                     pointGame[0].transform.position = startEnemyPos;
-                    initiateTurn(0, 1, 0, new Vector3(0, 2.1f, 0), new Vector3(0, 2f, 0));
+                    initiateTurn(0, 1, 0, new Vector3(0, PLAYER_Y_CICK, 0), new Vector3(0, 2f, 0));
                 }
                 turnText.SetText("Your Turn");
                 turnText.color = Color.green;
@@ -262,7 +263,7 @@ public class SoccerMovment : MonoBehaviour
                     canvasSoccer.SetActive(true);
                     ifInitiateTurn = false;
                     arrow.SetActive(false);
-                    initiateTurn(3, 2, 1, new Vector3(0, 2.1f, 0), new Vector3(0, 1.31f, -0.1f));
+                    initiateTurn(3, 2, 1, new Vector3(0, INIT_ARROW_Z, 0), new Vector3(0, 1.31f, -0.1f));
                     kick = false;
                     Invoke("npcKick", 2);
                 }
@@ -277,11 +278,11 @@ public class SoccerMovment : MonoBehaviour
     {
         if (!kick && (Input.GetKey("right") || Input.GetKey("d")) && pointGame[0].transform.position.z < -12.6f)
         {
-            pointGame[0].transform.position += new Vector3(0, 0, 0.2f);
+            pointGame[0].transform.position += new Vector3(0, 0, BACK_POINT);
         }
         if (!kick && (Input.GetKey("left") || Input.GetKey("a")) && pointGame[0].transform.position.z > -22.4f)
         {
-            pointGame[0].transform.position -= new Vector3(0, 0, 0.2f);
+            pointGame[0].transform.position -= new Vector3(0, 0, BACK_POINT);
         }
         if (!kick && Input.GetKey("space"))
         {
@@ -293,24 +294,24 @@ public class SoccerMovment : MonoBehaviour
         {
             if (rnd == 0)
             {
-                boy.transform.position = Vector3.MoveTowards(boy.transform.position, new Vector3(boy.transform.position.x, boy.transform.position.y, rndf), Time.deltaTime * 5);
+                boy.transform.position = Vector3.MoveTowards(boy.transform.position, new Vector3(boy.transform.position.x, boy.transform.position.y, rndf), Time.deltaTime * SPEED);
             }
             if (rnd == 2 || rnd == 1)
             {
                 if (pointGame[0].transform.position.z > -13.3f)
                 {
-                    boy.transform.position = Vector3.MoveTowards(boy.transform.position, new Vector3(boy.transform.position.x, boy.transform.position.y, -13.3f), Time.deltaTime * 5);
+                    boy.transform.position = Vector3.MoveTowards(boy.transform.position, new Vector3(boy.transform.position.x, boy.transform.position.y, -13.3f), Time.deltaTime * SPEED);
                 }
                 else
                 {
                     if (pointGame[0].transform.position.z < -21.7f)
                     {
-                        boy.transform.position = Vector3.MoveTowards(boy.transform.position, new Vector3(boy.transform.position.x, boy.transform.position.y, -21.7f), Time.deltaTime * 5);
+                        boy.transform.position = Vector3.MoveTowards(boy.transform.position, new Vector3(boy.transform.position.x, boy.transform.position.y, -21.7f), Time.deltaTime * SPEED);
                     }
                     else
                     {
                         float fixKeeperPosition = pointGame[0].transform.position.z - enemyKeeperPos.z;
-                        boy.transform.position = Vector3.MoveTowards(boy.transform.position, pointGame[0].transform.position - new Vector3(0, 2.1f, fixKeeperPosition / 5), Time.deltaTime * 5);
+                        boy.transform.position = Vector3.MoveTowards(boy.transform.position, pointGame[0].transform.position - new Vector3(0, 2.1f, fixKeeperPosition / 5), Time.deltaTime * SPEED);
                     }
                 }
             }
@@ -330,11 +331,11 @@ public class SoccerMovment : MonoBehaviour
     {
         if ((Input.GetKey("right") || Input.GetKey("d")) && player.transform.position.z < -12.6f)
         {
-            player.transform.position += new Vector3(0, 0, 0.2f);
+            player.transform.position += new Vector3(0, 0, BACK_POINT);
         }
         if ((Input.GetKey("left") || Input.GetKey("a")) && player.transform.position.z > -22.4f)
         {
-            player.transform.position -= new Vector3(0, 0, 0.2f);
+            player.transform.position -= new Vector3(0, 0, BACK_POINT);
         }
         if (kick)
         {

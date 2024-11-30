@@ -4,7 +4,6 @@ using System.Collections.Generic;
 using System.Net.Sockets;
 using TMPro;
 using Unity.VisualScripting;
-using UnityEditor.PackageManager.Requests;
 using UnityEngine;
 using UnityEngine.Networking;
 
@@ -77,9 +76,11 @@ public class RaceMovment : MonoBehaviour
     int questionNumber;
     private Material normalRed, normalGreen, glowingRed, glowingGreen, normalYellow, glowingYellow;
 
+    const int DEC_SPEED = 5, BASE_SPEED = 10, QUESTION_NUMBER = 10, ADD_SPEED = 10, SPEED_Z = 6, OBS_NUMBER = 45, CNT_SAME_SIDE = 3, SPACE_DIS = 35, START_SENDING = 4;
+    const float DELAY = 0.5f, START_X = -606, START_Y = 10.1f, RIGHT_Z = 368.5f, LEFT_Z = 362f, OBS_SIZE_X = 2.5f, OBS_SIZE_Y = 3.5f, OBS_SIZE_Z = 5f, REPEAT_SENDING = 0.2f, MAX_Z = 370, MIN_Z = 360.5f;
     private IEnumerator delayPress()
     {
-        yield return new WaitForSeconds(0.5f);
+        yield return new WaitForSeconds(DELAY);
         canPress = true;
     }
 
@@ -139,15 +140,15 @@ public class RaceMovment : MonoBehaviour
 
     void createObs()
     {
-        float distanceX = 0, startX = -606, startY = 10.1f, rightZ = 368.5f, leftZ = 362f;
+        float distanceX = 0, startX = START_X, startY = START_Y, rightZ = RIGHT_Z, leftZ = LEFT_Z;
         int rndNum, lastRnd = -1, cntSameSide = 0;
         string obsList = "";
         if (RoomsMenu.multiplayerStart)
         {
-            while (RoomsMenu.obsList == "") { } // could fix some bugs and could crash the unity
+            while (RoomsMenu.obsList == "") { }
             obsList = RoomsMenu.obsList;
         }
-        for (int i = 0; i < 45; i++)
+        for (int i = 0; i < OBS_NUMBER; i++)
         {
             GameObject newObj = GameObject.CreatePrimitive(PrimitiveType.Cube);
             newObj.name = "Obs-" + i;
@@ -156,7 +157,7 @@ public class RaceMovment : MonoBehaviour
             newObj.GetComponent<Rigidbody>().isKinematic = true;
             newObj.GetComponent<BoxCollider>().isTrigger = true;
             newObj.tag = "Obstacle";
-            newObj.transform.localScale = new Vector3(2.5f, 3.5f, 5f);
+            newObj.transform.localScale = new Vector3(OBS_SIZE_X, OBS_SIZE_Y, OBS_SIZE_Z);
             if (RoomsMenu.multiplayerStart)
             {
                 rndNum = obsList[i] - '0';
@@ -165,7 +166,7 @@ public class RaceMovment : MonoBehaviour
             {
                 rndNum = UnityEngine.Random.Range(0, 2);
             }
-            if (cntSameSide != 3)
+            if (cntSameSide != CNT_SAME_SIDE)
             {
                 cntSameSide = rndNum == lastRnd ? cntSameSide + 1 : 1;
             }
@@ -187,7 +188,7 @@ public class RaceMovment : MonoBehaviour
                 obstaclesL.Add(newObj);
                 allObstacles.Add(newObj);
             }
-            distanceX += 35;
+            distanceX += SPACE_DIS;
         }
         RoomsMenu.obsList = "";
     }
@@ -207,7 +208,7 @@ public class RaceMovment : MonoBehaviour
         obstaclesR = new List<GameObject>();
         if (RoomsMenu.multiplayerStart)
         {
-            InvokeRepeating("sndLocation", 4f, 0.2f);
+            InvokeRepeating("sndLocation", START_SENDING, REPEAT_SENDING);
         }
         createObs();
         canPress = true;
@@ -215,7 +216,7 @@ public class RaceMovment : MonoBehaviour
         questionNumber = 0;
         startSound.Play();
         backgroundSound.Stop();
-        speed = 10f;
+        speed = BASE_SPEED;
         cancelFinish = listReady = first = finish = canDrive = cordBool = false;
         driveAxisZ = 0f;
         raceDetails.SetActive(true);
@@ -223,15 +224,11 @@ public class RaceMovment : MonoBehaviour
         questionList = new List<string>();
         answersList = new List<string>();
         rightAnswerList = new List<string>();
-        //while (AdminMission.geminiActivate) { }
-        for (int i = 0; i < 10; i++)
+        for (int i = 0; i < QUESTION_NUMBER; i++)
         {
             questionList.Add(AdminMission.questions.Pop());
             answersList.Add(AdminMission.answers.Pop());
             rightAnswerList.Add(AdminMission.rightAnswers.Pop());
-            /*questionList.Add("aaa");
-            answersList.Add("bbb");
-            rightAnswerList.Add("1");*/
         }
         StartCoroutine(delayDrive());
     }
@@ -246,9 +243,9 @@ public class RaceMovment : MonoBehaviour
             questionAnswersPanel.SetActive(false);
             endRaceMenu.SetActive(true);
         }
-        if (other.tag.ToString() == "Obstacle" && speed > 10)
+        if (other.tag.ToString() == "Obstacle" && speed > BASE_SPEED)
         {
-            speed -= 5;
+            speed -= DEC_SPEED;
             raceDetails.GetComponentInChildren<TMP_Text>().text = "Speed: " + speed;
         }
     }
@@ -265,15 +262,12 @@ public class RaceMovment : MonoBehaviour
         {
             float newX = Mathf.MoveTowards(raceCar.transform.position.x, recv.GetValue<float>(0), recv.GetValue<int>(3) * Time.deltaTime);
             float newY = Mathf.MoveTowards(raceCar.transform.position.y, recv.GetValue<float>(1), 0);
-            float newZ = Mathf.MoveTowards(raceCar.transform.position.z, recv.GetValue<float>(2), 6 * Time.deltaTime);
+            float newZ = Mathf.MoveTowards(raceCar.transform.position.z, recv.GetValue<float>(2), SPEED_Z * Time.deltaTime);
             raceCar.transform.position = new Vector3(newX, newY, newZ);
-            //raceCar.transform.position = Vector3.MoveTowards(raceCar.transform.position, new Vector3(recv.GetValue<float>(0), recv.GetValue<float>(1), recv.GetValue<float>(2)), Time.deltaTime * recv.GetValue<int>(3));
-            //raceCar.transform.position = new Vector3(recv.GetValue<float>(0), recv.GetValue<float>(1), recv.GetValue<float>(2));
         }
         if (!first)
         {
             PauseMenu.canPause = false;
-            //StartCoroutine(callGemini());
             GameObject.Find("Main Camera").transform.position += new Vector3(0, 2f, 0);
             GameObject.Find("Main Camera").transform.LookAt(GameObject.Find("EndRace(unseen)").transform);
             first = true;
@@ -285,33 +279,33 @@ public class RaceMovment : MonoBehaviour
             canPress = false;
             if ((Input.GetKey(KeyCode.Keypad1) || Input.GetKey("1")) && currentCorrectAnswer == 1)
             {
-                speed += 10;
+                speed += ADD_SPEED;
                 raceDetails.GetComponentInChildren<TMP_Text>().text = "Speed: " + speed;
                 correct = true;
             }
             if ((Input.GetKey(KeyCode.Keypad2) || Input.GetKey("2")) && currentCorrectAnswer == 2)
             {
-                speed += 10;
+                speed += ADD_SPEED;
                 raceDetails.GetComponentInChildren<TMP_Text>().text = "Speed: " + speed;
                 correct = true;
             }
             if ((Input.GetKey(KeyCode.Keypad3) || Input.GetKey("3")) && currentCorrectAnswer == 3)
             {
-                speed += 10;
+                speed += ADD_SPEED;
                 raceDetails.GetComponentInChildren<TMP_Text>().text = "Speed: " + speed;
                 correct = true;
             }
             if ((Input.GetKey(KeyCode.Keypad4) || Input.GetKey("4")) && currentCorrectAnswer == 4)
             {
-                speed += 10;
+                speed += ADD_SPEED;
                 raceDetails.GetComponentInChildren<TMP_Text>().text = "Speed: " + speed;
                 correct = true;
             }
             if (!correct)
             {
-                if (speed > 10)
+                if (speed > BASE_SPEED)
                 {
-                    speed -= 5;
+                    speed -= DEC_SPEED;
                     raceDetails.GetComponentInChildren<TMP_Text>().text = "Speed: " + speed;
                 }
             }
@@ -331,21 +325,21 @@ public class RaceMovment : MonoBehaviour
 
         if (Input.GetKey("p"))
         {
-            speed += 5;
+            speed += DEC_SPEED;
         }
         if (Input.GetKey("m"))
         {
-            speed -= 5;
+            speed -= DEC_SPEED;
         }
-        if ((Input.GetKey("right") || Input.GetKey("d")) && player.transform.position.z > 360.5)
+        if ((Input.GetKey("right") || Input.GetKey("d")) && player.transform.position.z > MIN_Z)
         {
-            driveAxisZ = -6;
+            driveAxisZ = -SPEED_Z;
         }
         else
         {
-            if ((Input.GetKey("left") || Input.GetKey("a")) && player.transform.position.z < 370)
+            if ((Input.GetKey("left") || Input.GetKey("a")) && player.transform.position.z < MAX_Z)
             {
-                driveAxisZ = 6;
+                driveAxisZ = SPEED_Z;
             }
             else
             {

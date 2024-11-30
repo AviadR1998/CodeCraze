@@ -132,6 +132,7 @@ public class RoomsMenu : MonoBehaviour
         string uri = "http://" + MainMenu.serverIp + ":5000/api/Rooms/" + MainMenu.topicListSaved;
         using (UnityWebRequest request = UnityWebRequest.Get(uri))
         {
+            request.SetRequestHeader("authorization", "Bearer " + Login.token);
             yield return request.SendWebRequest();
             if (request.isNetworkError || request.isHttpError)
                 response = request.error;
@@ -150,6 +151,7 @@ public class RoomsMenu : MonoBehaviour
         form.AddField("topics", MainMenu.topicListSaved);
         using (UnityWebRequest request = UnityWebRequest.Post(uri, form))
         {
+            request.SetRequestHeader("authorization", "Bearer " + Login.token);
             yield return request.SendWebRequest();
             if (request.isNetworkError || request.isHttpError)
                 response = request.error;
@@ -170,6 +172,7 @@ public class RoomsMenu : MonoBehaviour
         WWWForm form = new WWWForm();
         using (UnityWebRequest request = UnityWebRequest.Delete(uri))
         {
+            request.SetRequestHeader("authorization", "Bearer " + Login.token);
             yield return request.SendWebRequest();
             if (request.isNetworkError || request.isHttpError)
                 response = request.error;
@@ -189,6 +192,7 @@ public class RoomsMenu : MonoBehaviour
         form.AddField("topics", MainMenu.topicListSaved);
         using (UnityWebRequest request = UnityWebRequest.Post(uri, form))
         {
+            request.SetRequestHeader("authorization", "Bearer " + Login.token);
             yield return request.SendWebRequest();
             if (request.isNetworkError || request.isHttpError)
             {
@@ -214,6 +218,7 @@ public class RoomsMenu : MonoBehaviour
         WWWForm form = new WWWForm();
         using (UnityWebRequest request = UnityWebRequest.Post(uri, form))
         {
+            request.SetRequestHeader("authorization", "Bearer " + Login.token);
             yield return request.SendWebRequest();
             if (request.isNetworkError || request.isHttpError)
                 response = request.error;
@@ -350,7 +355,7 @@ public class RoomsMenu : MonoBehaviour
         }
         else
         {
-            play(POSITION_X, 11.2f, 362f);
+            play(POSITION_X, POSITION_Y_JOIN, POSITION_Z_JOIN);
             raceCar.transform.position = new Vector3(POSITION_X, POSITION_Y_HOST, POSITION_Z_HOST);
         }
         meHost = false;
