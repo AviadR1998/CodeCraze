@@ -1,0 +1,6 @@
+1$,2$,3$,4$,5$,6$,7
+What is the main difference between a do-while loop and a while loop?$,do-while checks the condition first.$,while guarantees execution at least once.$,do-while guarantees execution at least once.$,There is no difference.$,3$,do-while guarantees execution at least once.
+Consider the following code snippet. What is the value of total after execution?~~int total = 0;~int i = 0;~do {~    total += i;~    i += 2;~} while (i < 10);$,10$,20$,30$,25$,2$,'total' is sum of 2,4,6,8.
+What is the output of the following code?~~int i = 0;~do {~    i += 2;~    if (i == 6) break;~} while (i < 10);~System.out.print(i);$,2$,4$,6$,8$,3$,The loop stop when 'i' equals to 6.
+What will happen when the following code is executed?~~int x = 0;~do {~    System.out.print(x + " ");~    x += 1;~} while (x < 3);~while (x < 5) {~    x++;~}~System.out.print(x);$,0 1 2 3 4 5$,0 1 2 3 4$,0 1 2 5$,0 1 2 3$,3$,The first lop printing 0 1 2 and the second loop increasing x to 5 and print it.
+What is the output of the following nested do-while loops?~~int total = 0;~int i = 1;~do {~    int j = 1;~    do {~        total++;~        j++;~    } while (j <= i);~    i++;~} while (i <= 3);~System.out.print(total);$,6$,10$,5$,4$,1$,The loop is addin 1 at the first iteration 2 at the second and 3 at the third.

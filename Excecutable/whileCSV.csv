@@ -1,0 +1,8 @@
+1$,2$,3$,4$,5$,6$,7
+What is the output of the following code?~int i = 0;~while (i < 3) {~    System.out.println(i);~    i++;~}$,0 1 2$,1 2 3$,0 1 2 3$,No output$,1$,The loop print all the numbers from 0 to 3
+What will happen if the condition in a while loop is false the first time it is checked?$,The loop executes once and then stops$,The loop will never execute$,The loop executes twice and then stops$,The loop executes infinitely$,2$,The loop will not executes because when the condition is false. 
+What will be the value of sum after the loop terminates?~~int sum = 0;~int n = 3;~while (n > 0) {~    sum += n;~    n--;~}$,3$,6$,9$,0$,2$,The loop sum in reverse from 3 to 1.
+Which of the following code fragments will result in an infinite loop?~~int x = 10;~while (x > 5) {~    // Code here~}$,x = x - 2;$,x++;$,x = 0;$,x -= 1;$,2$,x will never be less then 5 because he allways increasing.
+What will be the output of the following code?~~int i = 0;~int count = 0;~while (i < 10) {~    if (i % 3 == 0) {~        count++;~    }~    i++;~}~System.out.println(count);$,3$,4$,5$,10$,2$,The loop count all the numbers that divde by 3 from 0 to 9
+What will be the value of product at the end of the loop?~~int i = 1;~int product = 1;~while (i <= 4) {~    product *= i;~    i++;~    if (i == 4) {~        product += 2;~    }~}~System.out.println(product);$,8$,26$,12$,15$,2$,The loop calculate the factorial number to 4 and at the end it is add 2.
+What will be printed after this code runs?~~int i = 1;~int sum = 0;~while (i <= 4) {~    sum += i;~    if (i % 2 == 0) {~        sum += 2;~    }~    i++;~}~System.out.println(sum);$,56$,72$,16$,48$,3$,The loop each iteration increase sum by i and then if i is even it increase sum by 2.

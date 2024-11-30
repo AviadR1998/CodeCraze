@@ -1,0 +1,8 @@
+1$,2$,3$,4$,5$,6$,7
+What is the value of i after the following loop?~~for (int i = 0; i < 5; i++) {}$,4$,5$,0$,3$,2$,The loop run until i = 5 and then stop.
+What will the following code print?~~for (int i = 1; i <= 3; i++) {~    System.out.print(i);~}$,123$,0123$,111$,Nothing$,1$,The loop run from 1 to 3 and print it.
+Which keyword is used to exit a loop early?$,out$,continue$,stop$,break$,4$,'break' is a keyword that force the loop to finish.
+What is the output?~~int total = 0;~for (int i = 1; i < 4; i++) {~    total += i;~}~System.out.println(total);$,6$,7$,9$,10$,1$,Sum all the numbers from 1 to 3
+What is the output?~~int total = 0;~for (int i = 1; i < 5; i++) {~    total += i;~    if (i % 2 == 0) {~        i++;~    }~}~System.out.println(total);$,6$,12$,9$,10$,2$,Sum all the even numbers from 1 to 4 and plus 1.
+What is printed by the following code?~~for (int i = 0; i < 3; i++) {~    for (int j = 0; j < 2; j++) {~        System.out.print(i + j);~    }~}$,011223$,010101$,001122$,020202$,1$,The loop each iteration increase j or increasing i but put the value 0 in j.
+What is the output?~for (int num = 2; num <= 12; num++) {~    boolean prime = true;~    for (int i = 2; i <= Math.sqrt(num); i++) {~        if (num % i == 0) {~            prime = false;~        }~    }~    if (prime) {~        System.out.print(num + " ");~    }~}$,2 3 4 5 6 7 8 9 10 11 12$,6 7 8 9 10 11$,9$,2 3 5 7 11$,4$,The loop printing the prime numbers from 1 to 12.

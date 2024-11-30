@@ -1,0 +1,9 @@
+1$,2$,3$,4$,5$,5$,.
+What is the result of the expression: `True AND True`?$,True$,False$,None$,Error$,1$,The AND operation returns `True` when both conditions are true.
+What is the result of `NOT False`?$,Error$,False$,None$,True$,4$,The NOT operation inverts the condition, so `NOT False` becomes `True`.
+What is the result of `True OR False`?$,True$,False$,None$,Error$,1$,The OR operation returns `True` if at least one of the conditions is true.
+What is the result of `False AND (True OR False)`?$,True$,False$,None$,Error$,2$,The expression inside the parentheses evaluates to `True`, but `False AND True` results in `False`.
+What is the result of `True OR (NOT False)`?$,True$,False$,None$,Error$,1$,`NOT False` becomes `True`, and `True OR True` results in `True`.
+What is the result of `NOT (False OR True)`?$,True$,False$,None$,Error$,2$,`False OR True` evaluates to `True`, and `NOT True` results in `False`.
+What is the result of `(True AND False) OR (True AND (NOT False))`?$,None$,False$,True$,Error$,3$,`(True AND False)` is `False`, but `(True AND True)` is `True`, so the OR operation results in `True`.
+What is the result of `NOT (True AND (False OR (NOT False)))`?$,True$,False$,None$,Error$,2$,The expression inside the parentheses evaluates to `True AND True`, which is `True`. Applying NOT makes it `False`.
