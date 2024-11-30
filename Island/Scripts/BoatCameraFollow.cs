@@ -1,7 +1,5 @@
 using UnityEngine;
 
-
-//This script manage a camera that follows a sailing boat
 public class BoatCameraFollow : MonoBehaviour
 {
     public Transform boat;      // Assign the boat's transform in the Inspector
@@ -19,7 +17,6 @@ public class BoatCameraFollow : MonoBehaviour
     public float lookAtSpeed = 2.0f; // Speed at which camera looks at the lookAtObj
     public float lookAtThreshold = 0.1f; // Threshold when to switch to free-look mode
     private bool isLookingAtTarget = true; // Track if the camera is still looking at the target
-    private float cameraYMaxRotate = 30f, lookOnZAxis = 0;
 
     // Store the camera's final rotation when transitioning to free-look mode
     private Quaternion finalLookAtRotation;
@@ -47,10 +44,10 @@ public class BoatCameraFollow : MonoBehaviour
             rotationY -= Input.GetAxis("Mouse Y") * lookSpeedY; // Vertical mouse movement
 
             // Clamp the vertical rotation to prevent flipping the camera upside down
-            rotationY = Mathf.Clamp(rotationY, -cameraYMaxRotate, cameraYMaxRotate);
+            rotationY = Mathf.Clamp(rotationY, -30f, 30f);
 
             // Update the camera's rotation based on mouse input and the stored final rotation
-            transform.rotation = finalLookAtRotation * Quaternion.Euler(rotationY, rotationX, lookOnZAxis);
+            transform.rotation = finalLookAtRotation * Quaternion.Euler(rotationY, rotationX, 0);
         }
     }
 
