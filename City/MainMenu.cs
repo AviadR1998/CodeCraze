@@ -24,12 +24,13 @@ public class MainMenu : MonoBehaviour
     public GameObject chooseTopicsPanel;
     public GameObject[] topicToggleList;
     public GameObject ipChangeEmpty;
+    public GameObject AIImage;
     public TMP_InputField ipChangeInput;
 
     string[] topicList;
     public static string topicListSaved;
     public static string serverIp = "127.0.0.1";
-    public static bool activateRace = false;
+    public static bool activateRace = false, GPTActive;
 
     private bool[] topicToggleBoolList;
 
@@ -52,6 +53,8 @@ public class MainMenu : MonoBehaviour
 
     void OnEnable()
     {
+        GPTActive = true;
+        AIImage.transform.GetComponent<Image>().sprite = Resources.Load("ChatGPT", typeof(Sprite)) as Sprite;
     }
 
     public void register()
@@ -146,9 +149,9 @@ public class MainMenu : MonoBehaviour
 
     public void practice()
     {
-        canvas.transform.GetComponent<Image>().sprite = Resources.Load("Race", typeof(Sprite)) as Sprite;
         if (Login.world == "Free")
         {
+            canvas.transform.GetComponent<Image>().sprite = Resources.Load("Race", typeof(Sprite)) as Sprite;
             mainMenu.SetActive(false);
             practicePage.SetActive(true);
             topicToggleBoolList = new bool[topicToggleList.Length];
@@ -245,6 +248,19 @@ public class MainMenu : MonoBehaviour
     {
         serverIp = ipChangeInput.text;
         print(serverIp);
+    }
+
+    public void changeModel()
+    {
+        GPTActive = !GPTActive;
+        if (GPTActive)
+        {
+            AIImage.transform.GetComponent<Image>().sprite = Resources.Load("ChatGPT", typeof(Sprite)) as Sprite;
+        }
+        else
+        {
+            AIImage.transform.GetComponent<Image>().sprite = Resources.Load("Gemini", typeof(Sprite)) as Sprite;
+        }
     }
 
     void Update()

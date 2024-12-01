@@ -1,8 +1,8 @@
 1$,2$,3$,4$,5$,5$,.
-What is the type of the value 42?$,char$,float$,int$,string$,3$,42 is a whole number, so its type is int.
-What is the type of the value "Hello, World!"?$,int$,float$,char$,string$,4$,"Hello, World!" is a sequence of characters, so its type is string.
-What is the type of the value 3.14?$,int$,float$,char$,string$,2$,3.14 is a number with a decimal point, so its type is float.
-What is the type of the value 'A'?$,int$,float$,char$,string$,3$,'A' is a single character, so its type is char.
-What is the type of the value True?$,int$,bool$,char$,string$,2$,True is a boolean value, so its type is boolean.
-What is the type of the result of 2 + 3.0?$,int$,float$,char$,string$,2$,When an integer is added to a float, the result is a float.
-What is the type of the value "5"?$,int$,float$,string$,char$,3$,"5" is enclosed in quotes, making it a string, not a int.
+What is the type of the value `42`?$,char$,float$,int$,string$,3$,`42` is a whole number, so its type is `int`.
+What is the type of the value `"Hello, World!"?$,int$,float$,char$,string$,4$,"Hello, World!" is a sequence of characters, so its type is `string`.
+What is the type of the value `3.14`?$,int$,float$,char$,string$,2$,`3.14` is a number with a decimal point, so its type is `float`.
+What is the type of the value `'A'`?$,int$,float$,char$,string$,3$,'A' is a single character, so its type is `char`.
+What is the type of the value `True`?$,int$,bool$,char$,string$,2$,`True` is a boolean value, so its type is `bool`.
+What is the type of the result of `2 + 3.0`?$,int$,float$,char$,string$,2$,When an integer is added to a float, the result is a float.
+What is the type of the value `"5"`?$,int$,float$,string$,char$,3$,"5"is enclosed in quotes, making it a string, not a number.

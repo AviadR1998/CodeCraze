@@ -65,7 +65,11 @@ public class Movement : MonoBehaviour
         raceOn = false;
         if (Login.world != "City")
         {
-            welcomeCanvas.SetActive(true);
+            if (loadOnce)
+            {
+                welcomeCanvas.SetActive(true);
+                loadOnce = false;
+            }
             addingToArrow = DOWN_ARROW;
             arrow.transform.position -= new Vector3(0, DOWN_ARROW, 0);
             for (int i = 0; i < npcs.Length; i++)
