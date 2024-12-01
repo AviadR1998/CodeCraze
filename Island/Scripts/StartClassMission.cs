@@ -7,6 +7,11 @@ public class StartClassMission : MonoBehaviour
     public static bool startMission = false;
     public GameObject classMissionObj;
 
+
+    private void Start()
+    {
+        startMission = false;
+    }
     private void OnTriggerEnter(Collider other)
     {
         if (!startMission)

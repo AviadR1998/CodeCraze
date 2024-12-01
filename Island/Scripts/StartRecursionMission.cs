@@ -8,6 +8,10 @@ public class StartRecursionMission : MonoBehaviour
     public GameObject recursionMissionObj;
     public int beforeQuestions = 0;
 
+    private void Start()
+    {
+        startMission = false;
+    }
     private void OnTriggerEnter(Collider other)
     {
         if (!startMission && (GameFlow.finishAllMissions == true || GameFlow.stateInMission == beforeQuestions))

@@ -10,6 +10,11 @@ public class BoatLocationController : MonoBehaviour
     public static bool goingBack = false;
     private char yAxis = 'y', xAxis = 'x', zAxis = 'z';
 
+
+    private void Start()
+    {
+        goingBack = false;
+    }
     private void OnTriggerEnter(Collider other)
     {
         if (ChangeCameraFocus.isSailing == true && workOnlyOnWayBack == goingBack)

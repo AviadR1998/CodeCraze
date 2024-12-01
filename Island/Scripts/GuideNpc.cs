@@ -14,10 +14,12 @@ public class GuideNpc : MonoBehaviour
     public TextMeshProUGUI guideTxt;
     public float speed = 1;
     public GameObject boatStatueArrow, boatIslandArrow;
+    public float tresh = 0.03f, minusTresh = -0.03f;
+    public string fMissionTitle = "Functions", cMissionTitle = "Classes", rMissionTitle = "Recursion";
     private Vector3 actualPoints;
     private int nextPosition;
     private bool isPlayerNearby = false, qCanvasOn = false, canAnswer = true;
-    private string questionsPath;
+    private string questionsPath, questionsTitle;
     private Canvas currentQCanvas;
     string firstMissionString = "Welcome to your first mission! To begin, search the island for a floating old coin.";
     string completeFMission = "Great job completing the Functions mission! Now, let's test your"
@@ -43,8 +45,7 @@ public class GuideNpc : MonoBehaviour
     {
         if (!isPlayerNearby || !canAnswer)
         {
-            float tresh = 0.03f;
-            float minusTresh = -0.03f;
+
             actualPoints = obj.transform.position;
             obj.transform.position = Vector3.MoveTowards(actualPoints, points[nextPosition].transform.position, speed * Time.deltaTime);
 
@@ -142,7 +143,6 @@ public class GuideNpc : MonoBehaviour
             {
                 guideCanvas.gameObject.SetActive(false);
             }
-            //welcomeCanvas.gameObject.SetActive(false);
         }
     }
 
@@ -170,7 +170,8 @@ public class GuideNpc : MonoBehaviour
                     else
                     {
                         newGuideTxt = completeFMission;
-                        questionsPath = "Assets\\Island\\data\\q_functions.csv";
+                        questionsPath = fPath;
+                        questionsTitle = fMissionTitle;
                     }
                     break;
 
@@ -184,7 +185,8 @@ public class GuideNpc : MonoBehaviour
                     else
                     {
                         newGuideTxt = completeCMission;
-                        questionsPath = "Assets\\Island\\data\\q_classes.csv";
+                        questionsPath = cPath;
+                        questionsTitle = cMissionTitle;
                     }
                     break;
 
@@ -197,7 +199,8 @@ public class GuideNpc : MonoBehaviour
                     else
                     {
                         newGuideTxt = completeRMission;
-                        questionsPath = "Assets\\Island\\data\\q_recursion.csv";
+                        questionsPath = rPath;
+                        questionsTitle = rMissionTitle;
                     }
                     break;
 
@@ -226,7 +229,7 @@ public class GuideNpc : MonoBehaviour
 
     private void StartQuestions()
     {
-        currentQCanvas = qScriptObj.GetComponent<CreateQuestionsCanvas>().CreateQCanvas(questionsPath);
+        currentQCanvas = qScriptObj.GetComponent<CreateQuestionsCanvas>().CreateQCanvas(questionsPath, questionsTitle);
         qCanvasOn = true;
     }
 
@@ -235,14 +238,17 @@ public class GuideNpc : MonoBehaviour
         if (quesIndex == functionMissionIndex)
         {
             questionsPath = fPath;
+            questionsTitle = fMissionTitle;
         }
         else if (quesIndex == classMissionIndex)
         {
             questionsPath = cPath;
+            questionsTitle = cMissionTitle;
         }
         else
         {
             questionsPath = rPath;
+            questionsTitle = rMissionTitle;
         }
 
         StartQuestions();

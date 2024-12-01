@@ -70,16 +70,16 @@ public class RecursionMission : MonoBehaviour
                 PauseMenu.updateSave("Island", "Recursion", 1);
                 inMission = false;
                 StatueLimitation.shouldLimit = true;
-                if (missionComplete != null && !GameFlow.finishAllMissions)
+                if (missionComplete != null)
                 {
                     SoundEffects soundEffects = missionComplete.GetComponent<SoundEffects>();
                     soundEffects.PlaySoundClip();
                     missionComplete.gameObject.SetActive(true);
-                    GameFlow.stateInMission = 1;
                 }
                 if (!GameFlow.finishAllMissions)
                 {
                     gameObject.SetActive(false);
+                    GameFlow.stateInMission = 1;
                 }
                 else
                 {
