@@ -6,8 +6,8 @@ public class GameFlow : MonoBehaviour
 {
     public GameObject functionObject, classObject, recursionObject;
     public Canvas congratulations;
-    public static int mission = 2;
-    public static int stateInMission = 1;
+    public static int mission = 0;
+    public static int stateInMission = 0;
     public int funcMissionIndex = 0, classMissionIndex = 1, recursionMissionIndex = 2;
     public static bool finishAllMissions = false;
     private int beforeQuestions = 0;
@@ -15,7 +15,7 @@ public class GameFlow : MonoBehaviour
 
     void Start()
     {
-        print(Login.world + " " + Login.task + " " + Login.state);
+        finishAllMissions = false;
         mission = GetMissionIndex();
         stateInMission = Login.state;
         print("Mission: " + mission);

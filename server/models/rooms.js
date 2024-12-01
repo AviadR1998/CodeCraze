@@ -12,9 +12,9 @@ async function returnAllRoomsModels(bearer, token, topics) {
         if (data === null) {
             return 401;
         }
-        let myRes = {host : []}
+        let myRes = { host: [] }
         for (let [key, value] of roomsList) {
-            if (value === "--" && (topics + ' ') === roomsListTopics.get(key)){
+            if (value === "--" && (topics + ' ') === roomsListTopics.get(key)) {
                 myRes.host.push(key);
             }
         }
@@ -63,13 +63,12 @@ async function removeRoomModels(bearer, token, username) {
 }
 
 async function joinRoomModels(bearer, token, username, details) {
-    console.log(arrSoc);
     try {
         const data = functions.validateToken(bearer, token);
         if (data === null) {
             return 401;
         }
-        if (roomsList.get(username) === "--") { 
+        if (roomsList.get(username) === "--") {
             roomsList.set(username, details.player);
             arrSoc.get(username).emit('join', details.player);
             return 200;

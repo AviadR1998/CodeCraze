@@ -19,6 +19,8 @@ public class ChangeCameraFocus : MonoBehaviour
 
     void Start()
     {
+        isSailing = false;
+        goingBack = false;
         if (player == null || focusTarget == null)
         {
             Debug.LogError("Player or Focus Target is not assigned.");
