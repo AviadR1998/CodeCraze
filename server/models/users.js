@@ -10,6 +10,7 @@ async function insrtUser(details) {
     try {
         client.connect();
         const db = client.db('CodeCraze');
+        const statistics = db.collection('Statistics');
         const users = db.collection('Users');
         let res = await users.find({ username: details.username }).toArray();
         if (res.length > 0) {
@@ -17,6 +18,7 @@ async function insrtUser(details) {
         } else {
             const ret = { username: details.username, password: details.password, mail: details.mail, age: details.age, world: "Forest", task: "Swing", state: 0, score: 0 };
             await users.insertOne(ret);
+            statistics.insertOne({username: details.username, notAnswered: 0, IO: [0, 0], Vars: [0, 0], Arithmetic: [0, 0], Logic: [0, 0], If: [0, 0], Loops: [0, 0], Arrays: [0, 0], Functions: [0, 0], Class: [0, 0], Recursion: [0, 0]})
             return ret;
         }
     } finally {
@@ -52,7 +54,9 @@ async function delUser(bearer, token) {
         client.connect();
         const db = client.db('CodeCraze');
         const users = db.collection('Users');
+        const statistics = db.collection('Statistics');
         let res = await users.deleteOne({ username: data.username });
+        await statistics.deleteOne({ username: data.username });
         return 200;
     } catch (err) {
         return 401;

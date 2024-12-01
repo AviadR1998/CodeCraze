@@ -18,6 +18,7 @@ public class BoxGame : MonoBehaviour
     public GameObject player;
     public GameObject arrow;
     public GameObject[] lettersObj;
+    public GameObject[] ballObj;
     public GameObject practiceNPC;
     public GameObject missionCompleteCanvas;
     public UnityEngine.UI.Button checkboxButton;
@@ -73,11 +74,8 @@ public class BoxGame : MonoBehaviour
         list.Add(new TextPartition("Now, let's do some exercises!", ""));
         texts.Add(list);
 
-        //list = new List<TextPartition>();
-        //list.Add(new TextPartition("in java we have c", ""));
-
-        checkBoxArr = new bool[7] {false, false, false, false, false, false, false};
-        boxLetters = new char[7] {'\0', '\0', '\0', '\0', '\0', '\0', '\0' };
+        checkBoxArr = new bool[BOX_LEN] {false, false, false, false, false, false, false};
+        boxLetters = new char[BOX_LEN] {'\0', '\0', '\0', '\0', '\0', '\0', '\0' };
         levelFirst = arrayState = firstTouch = canPress = true;
         level3Start = false;
         level = 0;
@@ -139,12 +137,16 @@ public class BoxGame : MonoBehaviour
 
     void level0()
     {
-        balls = new List<GameObject>();
+        //balls = new List<GameObject>();
         boxNumbers = new List<string>();
         ballNumbers = new List<int>();
         orderText.text = "press 'E' button to catch/drop the ball";
-        balls.Add(createBall(ID1, BALL_POS_X1, BALL_POS_Y, BALL_POS_Z1));
-        balls.Add(createBall(ID2, BALL_POS_X2, BALL_POS_Y, BALL_POS_Z1));
+        ballObj[0].transform.position = new Vector3(BALL_POS_X1, BALL_POS_Y, BALL_POS_Z1);
+        ballObj[1].transform.position = new Vector3(BALL_POS_X2, BALL_POS_Y, BALL_POS_Z1);
+        ballObj[0].SetActive(true);
+        ballObj[1].SetActive(true);
+        //balls.Add(createBall(ID1, BALL_POS_X1, BALL_POS_Y, BALL_POS_Z1));
+        //balls.Add(createBall(ID2, BALL_POS_X2, BALL_POS_Y, BALL_POS_Z1));
         ballNumbers.Add(Random.Range(0, BOX_LEN));
         ballNumbers.Add(Random.Range(0, BOX_LEN));
         while (ballNumbers[0] == ballNumbers[1])
@@ -175,12 +177,18 @@ public class BoxGame : MonoBehaviour
 
     void level1()
     {
-        balls = new List<GameObject>();
+        //balls = new List<GameObject>();
         boxNumbers = new List<string>();
         orderText.text = "press 'E' button to catch/drop the ball";
-        balls.Add(createBall(ID1, BALL_POS_X1, BALL_POS_Y, BALL_POS_Z1));
+        /*balls.Add(createBall(ID1, BALL_POS_X1, BALL_POS_Y, BALL_POS_Z1));
         balls.Add(createBall(ID2, BALL_POS_X2, BALL_POS_Y, BALL_POS_Z1));
-        balls.Add(createBall(ID3, BALL_POS_X3, BALL_POS_Y, BALL_POS_Z2));
+        balls.Add(createBall(ID3, BALL_POS_X3, BALL_POS_Y, BALL_POS_Z2));*/
+        ballObj[0].transform.position = new Vector3(BALL_POS_X1, BALL_POS_Y, BALL_POS_Z1);
+        ballObj[1].transform.position = new Vector3(BALL_POS_X2, BALL_POS_Y, BALL_POS_Z1);
+        ballObj[2].transform.position = new Vector3(BALL_POS_X3, BALL_POS_Y, BALL_POS_Z2);
+        ballObj[0].SetActive(true);
+        ballObj[1].SetActive(true);
+        ballObj[2].SetActive(true);
         randomNumber();
         practicalText.text = "insert the balls into box number [" + ballNumbers[0] + "]\nand box number [" + ballNumbers[1] + "]\nand box number [" + ballNumbers[2] + "]\nWhen you finish go back to gradma and press on 'F'";
     }
@@ -250,9 +258,11 @@ public class BoxGame : MonoBehaviour
             StartCoroutine(delayPressLevel4());
             canPress = false;
         }
-        for (int i = 0; i < balls.Count; i++)
+        for (int i = 0; i < ballObj.Length; i++)
         {
-            Destroy(balls[i]);
+            //Destroy(balls[i]);
+            //ballObj[i].transform.position = new Vector3(originalBallPlace[i].x, originalBallPlace[i].y, originalBallPlace[i].z);
+            ballObj[i].SetActive(false);
         }
     }
 
@@ -276,12 +286,14 @@ public class BoxGame : MonoBehaviour
         orderCanvas.SetActive(false);
         cheboxCanvas.SetActive(true);
         checkboxText.text = "In which indexes the balls are?\nplease check the right boxes";
-        balls = new List<GameObject>();
+        //balls = new List<GameObject>();
         randomNumber();
         for (int i = 1; i < BALL_NUMBER + 1; i++)
         {
             Vector3 box = GameObject.Find("BoxArr" + ballNumbers[i - 1]).transform.position;
-            balls.Add(createBall(i, box.x, box.y, box.z));
+            //balls.Add(createBall(i, box.x, box.y, box.z));
+            ballObj[i - 1].SetActive(true);
+            ballObj[i - 1].transform.position = new Vector3(box.x, box.y, box.z);
         }
         practicalText.text = "in which indexes the balls are?";
     }
@@ -437,9 +449,10 @@ public class BoxGame : MonoBehaviour
                 checkLevel3();
                 return;
             }
-            for (int i = 0; i < balls.Count; i++)
+            for (int i = 0; i < ballObj.Length; i++)
             {
-                Destroy(balls[i]);
+                //Destroy(balls[i]);
+                ballObj[i].SetActive(false);
             }
             if (boxNumbers.Count != ballNumbers.Count)
             {

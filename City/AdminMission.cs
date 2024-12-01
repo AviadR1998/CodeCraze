@@ -76,6 +76,7 @@ public class AdminMission : MonoBehaviour
     public static Stack<string> questions;
     public static Stack<string> answers;
     public static Stack<string> rightAnswers;
+    public static string topics;
 
     const int MAX_QUESTION_LENGTH = 300, MIN_LENGTH = 10, MAX_ANSWERS_LENGTH = 300, MAX_QUESTION_NUMBER = 10, TOKKEN_NUMBER = 800;
 
@@ -171,10 +172,58 @@ public class AdminMission : MonoBehaviour
         //listReady = true;
     }
 
+    void splitResponse2(string response)
+    {
+        List<int> indexesStars = splitByStr(response, "**");
+        for (int i = 1; i < indexesStars.Count - 1; i += 3)
+        {
+            print(removeWhiteLetters(response.Substring(indexesStars[i] + 3, indexesStars[i + 1] - indexesStars[i] - 3)));
+            i += 2;
+            if (indexesStars[i + 1] - indexesStars[i] - 3 > MAX_QUESTION_LENGTH || indexesStars[i + 1] - indexesStars[i] - 3 < MIN_LENGTH)
+            {
+                i += 5;
+                continue;
+            }
+            questions.Push(removeWhiteLetters(response.Substring(indexesStars[i] + 3, indexesStars[i + 1] - indexesStars[i] - 3)));
+            i += 2;
+            if (indexesStars[i + 1] - indexesStars[i] - 2 > MAX_ANSWERS_LENGTH || indexesStars[i + 1] - indexesStars[i] - 2 < MIN_LENGTH)
+            {
+                questions.Pop();
+                i += 3;
+                continue;
+            }
+            answers.Push(addEnter(removeWhiteLetters(response.Substring(indexesStars[i] + 3, indexesStars[i + 1] - indexesStars[i] - 3))));
+            i += 3;
+            if (i + 1 >= indexesStars.Count || indexesStars[i + 1] - indexesStars[i] - 2 > 2)
+            {
+                string checkAnswer = response.Substring(indexesStars[i - 1] + 3, 2);
+                if (checkAnswer == " 1" || checkAnswer == " 2" || checkAnswer == " 3" || checkAnswer == " 4")
+                {
+                    rightAnswers.Push(checkAnswer[1].ToString());
+                    i -= 2;
+                    continue;
+                }
+                questions.Pop();
+                answers.Pop();
+                i += 3;
+                continue;
+
+            }
+            rightAnswers.Push(response.Substring(indexesStars[i] + 2, 1));
+        }
+        //listReady = true;
+    }
+
     IEnumerator callGemini()
     {
         string response, tokenGemini = "AIzaSyBPTHuQh9sVyLphL92oIHsF3Aognp0MHn0";
-        string sndJason = "{\"contents\": {\"parts\": {\"text\": \"give me 10 new different easy multiple-choice programing question(max length 200 notes) in java that conneceted to " + MainMenu.topicListSaved + " with 4 different answers(max length 70 notes) that exactly 1 answer from the 4 you gave is correct and give me the answer. please write me your response in the next format(the format is most important!!!): **question**:... **answers(dont help here or gave the answer)**: 1).... 2).... 3).... 4).... **the answer is**: **correct number answer** i don't want explanation. please keep your all response in the format i mentioned it is very importent. don't add any double or more asterisks except the places i told you it is imporatant!!!!.\"}}}";
+        string sndJason = "{\"contents\": {\"parts\": {\"text\": \"give me 10 new different easy multiple-choice " +
+            "programing question(max length 200 notes) in java that related to " + MainMenu.topicListSaved + " with 4 different " +
+            "answers(max length 70 notes) that exactly 1 answer from the 4 you gave is correct and give me the answer. " +
+            "please write me your response in the next format(the format is most important!!!): **topic**:... **question**:... **answers" +
+            "(don't help here or gave the answer)**: 1).... 2).... 3).... 4).... **the answer is**: **correct number answer** " +
+            "i don't want explanation. please keep your all response in the format i mentioned it is very important. " +
+            "don't add any double or more asterisks except the places i told you it is important!!!!.\"}}}";
         Dictionary<string, string> headers = new Dictionary<string, string>();
         headers.Add("Content-Type", "application/json");
         WWW www = new WWW("https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=" + tokenGemini, System.Text.Encoding.UTF8.GetBytes(sndJason), headers); //pro
@@ -186,7 +235,7 @@ public class AdminMission : MonoBehaviour
         else
         {
             print(JsonUtility.FromJson<GiminiJSON>(www.text).candidates[0].content.parts[0].text);
-            splitResponse(JsonUtility.FromJson<GiminiJSON>(www.text).candidates[0].content.parts[0].text);
+            splitResponse2(JsonUtility.FromJson<GiminiJSON>(www.text).candidates[0].content.parts[0].text);
         }
         geminiActivate = false;
         questioNumberText.text = "questions: " + (questions.Count > MAX_QUESTION_NUMBER ? MAX_QUESTION_NUMBER : questions.Count) + "/10";
@@ -201,13 +250,20 @@ public class AdminMission : MonoBehaviour
 
         var jsonData = new
         {
-            model = "gpt-4",
+            model = "gpt-4-turbo",
             //model = "gpt-3.5-turbo",
 
             messages = new[]
             {
                 new { role = "system", content = "You are an assistant helping to create educational questions for a Free Play mode in a Unity programming game for children. The game is designed to teach Java programming concepts." },
-                new { role = "user", content = "give me 10 new different easy multiple-choice programing question(max length 200 notes) in java that related to " + MainMenu.topicListSaved + " with 4 different answers(max length 70 notes) that exactly 1 answer from the 4 you gave is correct and give me the answer. please write me your response in the next format(the format is most important!!!): **question**:... **answers(dont help here or gave the answer)**: 1).... 2).... 3).... 4).... **the answer is**: **1/2/3/4(dont forget double asterisks and only 1 answer from the 4 is correct)** i don't want explanation. please keep your all response in the format i mentioned it is very importent. don't add any double or more asterisks except the places i told you it is imporatant!!!!." }
+                new { role = "user", content = "give me 10 new different easy multiple-choice " +
+                "programing question(max length 200 notes) in java that related to " + MainMenu.topicListSaved + " with 4 different " +
+                "answers(max length 70 notes) that exactly 1 answer from the 4 you gave is correct and give me the answer. " +
+                "please write me your response in the next format(the format is most important!!!): **topic**:... **question**:... **answers" +
+                "(don't help here or gave the answer)**: 1).... 2).... 3).... 4).... **the answer is**: **1/2/3/4" +
+                "(don't forget double asterisks and only 1 answer from the 4 is correct)** i don't want explanation. " +
+                "please keep your all response in the format i mentioned it is very important. don't add any double or more asterisks " +
+                "except the places i told you it is important!!!!." }
             },
             max_tokens = TOKKEN_NUMBER
         };
@@ -229,7 +285,7 @@ public class AdminMission : MonoBehaviour
         {
             Debug.Log(request.downloadHandler.text);
             print(JsonConvert.DeserializeObject<OpenAIResponse>(request.downloadHandler.text).Choices[0].Message.Content);
-            splitResponse(JsonConvert.DeserializeObject<OpenAIResponse>(request.downloadHandler.text).Choices[0].Message.Content);
+            splitResponse2(JsonConvert.DeserializeObject<OpenAIResponse>(request.downloadHandler.text).Choices[0].Message.Content);
         }
         else
         {
@@ -246,7 +302,16 @@ public class AdminMission : MonoBehaviour
         if (MainMenu.activateRace && questions.Count < MAX_QUESTION_NUMBER && !geminiActivate && !loadAll)
         {
             geminiActivate = true;
-            StartCoroutine(callGpt());
+            if (MainMenu.GPTActive)
+            {
+                StartCoroutine(callGpt());
+                print("GPT");
+            }
+            else
+            {
+                StartCoroutine(callGemini());
+                print("Gemini");
+            }
         }
     }
 
