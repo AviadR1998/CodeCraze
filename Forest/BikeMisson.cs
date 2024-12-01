@@ -37,7 +37,7 @@ public class BikeMission : MonoBehaviour
     public AudioSource BackgroundMusic;
     public GameObject bikeCamera;
     public AudioSource bikeAudioSource;
-    private const int minutes = 60;
+    private const int minutes = 30;
     private const int fiveSeconds = 5;
 
     void Start()
@@ -162,6 +162,7 @@ public class BikeMission : MonoBehaviour
             if (WrongSound != null && audioSource != null)
             {
                 audioSource.PlayOneShot(WrongSound);
+                answerInput.image.color = Color.red;
             }
         }
     }

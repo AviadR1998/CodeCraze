@@ -32,7 +32,6 @@ public class SimpleVarsLearning : MonoBehaviour
     private bool canCheck = true;
     private GameObject lastTouchedBox = null;
     private const int fiveSeconds = 5;
-    private const int twoMinutes = 120;
 
     // Start is called before the first frame update
     void Start()
@@ -165,8 +164,12 @@ public class SimpleVarsLearning : MonoBehaviour
 
     private IEnumerator WaitBeforeDeactivatingTask()
     {
-        yield return new WaitForSeconds(twoMinutes);
+        yield return new WaitForSeconds(fiveSeconds);
         isTaskActive = false;
+        arrow.SetActive(true);
+        lastTouchedBox = null;
+        canCheck = true;
+        currentExpressionIndex = 0;
     }
 
     // Update is called once per frame
