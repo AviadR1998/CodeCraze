@@ -178,6 +178,7 @@ public class FireMission : MonoBehaviour
         //Wait 15 seconds and let user do the mission again if he want to.
         yield return new WaitForSeconds(fifteenSeconds);
         isTaskActive = false;
+        arrow.SetActive(true);
     }
 
     public void CompleteTask()
@@ -231,6 +232,5 @@ public class FireMission : MonoBehaviour
     {
         yield return new WaitForSeconds(fifteenSeconds);
         taskManager.ActivateNextTask();
-        arrow.SetActive(true);
     }
 }
