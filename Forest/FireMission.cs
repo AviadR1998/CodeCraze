@@ -68,6 +68,9 @@ public class FireMission : MonoBehaviour
             inputField1.text = "";
             inputField2.text = "";
             inputField3.text = "";
+            inputField4.text = "";
+            inputField5.text = "";
+            inputField6.text = "";
         }
     }
 
@@ -136,9 +139,9 @@ public class FireMission : MonoBehaviour
             //Correct sound.
             audioSource.clip = magClip;
             audioSource.Play();
-            SetInputFieldColor(inputField1, Color.white);
-            SetInputFieldColor(inputField2, Color.white);
-            SetInputFieldColor(inputField3, Color.white);
+            SetInputFieldColor(inputField4, Color.white);
+            SetInputFieldColor(inputField5, Color.white);
+            SetInputFieldColor(inputField6, Color.white);
             canvasGame.SetActive(true);
             firstCanvas.SetActive(false);
         }
@@ -223,11 +226,11 @@ public class FireMission : MonoBehaviour
         }
         CastleBox.SetActive(true);
         CompleteTask();
-        arrow.SetActive(true);
     }
     private IEnumerator ActivateNextTaskWithDelay()
     {
-        yield return new WaitForSeconds(fiveSeconds);
+        yield return new WaitForSeconds(fifteenSeconds);
         taskManager.ActivateNextTask();
+        arrow.SetActive(true);
     }
 }
