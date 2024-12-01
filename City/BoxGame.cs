@@ -46,7 +46,7 @@ public class BoxGame : MonoBehaviour
     bool canPress, firstTouch, arrayState, levelFirst, level3Start;
     string resultLevel3;
 
-    const int DELAY_END = 3, ID1 = 1, ID2 = 2, ID3 = 3, BOX_LEN = 7, BALL_NUMBER = 3, CAMERA_FAR = 21, CAMERA_CLOSE = 60, JUMP = 21, ROTATION = 17, LETTER_JUMP = 3, MIN_LETTER = 3, MAX_LETTER = 8;
+    const int DELAY_END = 3, BOX_LEN = 7, BALL_NUMBER = 3, CAMERA_FAR = 21, CAMERA_CLOSE = 60, JUMP = 21, ROTATION = 17, LETTER_JUMP = 3, MIN_LETTER = 3, MAX_LETTER = 8;
     const float DELAY = 1.5f, BALL_SIZE = 0.5f, BALL_POS_X1 = -1073.52f, BALL_POS_X2 = -1065.36f, BALL_POS_X3 = -1069.36f, BALL_POS_Y = 9.834f, BALL_POS_Z1 = 353.66f, BALL_POS_Z2 = 357.66f, CAMERA_POS_X1 = 0.1645798f, CAMERA_POS_Y1 = 0.0239689f, CAMERA_POS_Z1 = 0.01668368f, CAMERA_POS_X2 = -1069.866f, CAMERA_POS_Y2 = 22.4789f, CAMERA_POS_Z2 = 312.5044f, DOWN_LETTER = 6.35f;
     // Start is called before the first frame update
     void Start()
@@ -137,7 +137,6 @@ public class BoxGame : MonoBehaviour
 
     void level0()
     {
-        //balls = new List<GameObject>();
         boxNumbers = new List<string>();
         ballNumbers = new List<int>();
         orderText.text = "press 'E' button to catch/drop the ball";
@@ -145,8 +144,6 @@ public class BoxGame : MonoBehaviour
         ballObj[1].transform.position = new Vector3(BALL_POS_X2, BALL_POS_Y, BALL_POS_Z1);
         ballObj[0].SetActive(true);
         ballObj[1].SetActive(true);
-        //balls.Add(createBall(ID1, BALL_POS_X1, BALL_POS_Y, BALL_POS_Z1));
-        //balls.Add(createBall(ID2, BALL_POS_X2, BALL_POS_Y, BALL_POS_Z1));
         ballNumbers.Add(Random.Range(0, BOX_LEN));
         ballNumbers.Add(Random.Range(0, BOX_LEN));
         while (ballNumbers[0] == ballNumbers[1])
@@ -177,12 +174,8 @@ public class BoxGame : MonoBehaviour
 
     void level1()
     {
-        //balls = new List<GameObject>();
         boxNumbers = new List<string>();
         orderText.text = "press 'E' button to catch/drop the ball";
-        /*balls.Add(createBall(ID1, BALL_POS_X1, BALL_POS_Y, BALL_POS_Z1));
-        balls.Add(createBall(ID2, BALL_POS_X2, BALL_POS_Y, BALL_POS_Z1));
-        balls.Add(createBall(ID3, BALL_POS_X3, BALL_POS_Y, BALL_POS_Z2));*/
         ballObj[0].transform.position = new Vector3(BALL_POS_X1, BALL_POS_Y, BALL_POS_Z1);
         ballObj[1].transform.position = new Vector3(BALL_POS_X2, BALL_POS_Y, BALL_POS_Z1);
         ballObj[2].transform.position = new Vector3(BALL_POS_X3, BALL_POS_Y, BALL_POS_Z2);
@@ -260,8 +253,6 @@ public class BoxGame : MonoBehaviour
         }
         for (int i = 0; i < ballObj.Length; i++)
         {
-            //Destroy(balls[i]);
-            //ballObj[i].transform.position = new Vector3(originalBallPlace[i].x, originalBallPlace[i].y, originalBallPlace[i].z);
             ballObj[i].SetActive(false);
         }
     }
@@ -286,12 +277,10 @@ public class BoxGame : MonoBehaviour
         orderCanvas.SetActive(false);
         cheboxCanvas.SetActive(true);
         checkboxText.text = "In which indexes the balls are?\nplease check the right boxes";
-        //balls = new List<GameObject>();
         randomNumber();
         for (int i = 1; i < BALL_NUMBER + 1; i++)
         {
             Vector3 box = GameObject.Find("BoxArr" + ballNumbers[i - 1]).transform.position;
-            //balls.Add(createBall(i, box.x, box.y, box.z));
             ballObj[i - 1].SetActive(true);
             ballObj[i - 1].transform.position = new Vector3(box.x, box.y, box.z);
         }
@@ -451,7 +440,6 @@ public class BoxGame : MonoBehaviour
             }
             for (int i = 0; i < ballObj.Length; i++)
             {
-                //Destroy(balls[i]);
                 ballObj[i].SetActive(false);
             }
             if (boxNumbers.Count != ballNumbers.Count)

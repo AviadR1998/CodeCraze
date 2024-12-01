@@ -78,7 +78,7 @@ public class AdminMission : MonoBehaviour
     public static Stack<string> rightAnswers;
     public static string topics;
 
-    const int MAX_QUESTION_LENGTH = 300, MIN_LENGTH = 10, MAX_ANSWERS_LENGTH = 300, MAX_QUESTION_NUMBER = 10, TOKKEN_NUMBER = 800;
+    const int MAX_QUESTION_LENGTH = 300, MIN_LENGTH = 10, MAX_ANSWERS_LENGTH = 300, MAX_QUESTION_NUMBER = 10, TOKKEN_NUMBER = 800 , NEXT_STAR = 3;
 
     public void ok()
     {
@@ -135,26 +135,26 @@ public class AdminMission : MonoBehaviour
     void splitResponse(string response)
     {
         List<int> indexesStars = splitByStr(response, "**");
-        for (int i = 1; i < indexesStars.Count - 1; i += 3)
+        for (int i = 1; i < indexesStars.Count - 1; i += NEXT_STAR)
         {
-            if (indexesStars[i + 1] - indexesStars[i] - 3 > MAX_QUESTION_LENGTH || indexesStars[i + 1] - indexesStars[i] - 3 < MIN_LENGTH)
+            if (indexesStars[i + 1] - indexesStars[i] - NEXT_STAR > MAX_QUESTION_LENGTH || indexesStars[i + 1] - indexesStars[i] - NEXT_STAR < MIN_LENGTH)
             {
                 i += 5;
                 continue;
             }
-            questions.Push(removeWhiteLetters(response.Substring(indexesStars[i] + 3, indexesStars[i + 1] - indexesStars[i] - 3)));
+            questions.Push(removeWhiteLetters(response.Substring(indexesStars[i] + 3, indexesStars[i + 1] - indexesStars[i] - NEXT_STAR)));
             i += 2;
             if (indexesStars[i + 1] - indexesStars[i] - 2 > MAX_ANSWERS_LENGTH || indexesStars[i + 1] - indexesStars[i] - 2 < MIN_LENGTH)
             {
                 questions.Pop();
-                i += 3;
+                i += NEXT_STAR;
                 continue;
             }
-            answers.Push(addEnter(removeWhiteLetters(response.Substring(indexesStars[i] + 3, indexesStars[i + 1] - indexesStars[i] - 3))));
-            i += 3;
+            answers.Push(addEnter(removeWhiteLetters(response.Substring(indexesStars[i] + NEXT_STAR, indexesStars[i + 1] - indexesStars[i] - NEXT_STAR))));
+            i += NEXT_STAR;
             if (i + 1 >= indexesStars.Count || indexesStars[i + 1] - indexesStars[i] - 2 > 2)
             {
-                string checkAnswer = response.Substring(indexesStars[i - 1] + 3, 2);
+                string checkAnswer = response.Substring(indexesStars[i - 1] + NEXT_STAR, 2);
                 if (checkAnswer == " 1" || checkAnswer == " 2" || checkAnswer == " 3" || checkAnswer == " 4")
                 {
                     rightAnswers.Push(checkAnswer[1].ToString());
@@ -163,40 +163,38 @@ public class AdminMission : MonoBehaviour
                 }
                 questions.Pop();
                 answers.Pop();
-                i += 3;
+                i += NEXT_STAR;
                 continue;
 
             }
             rightAnswers.Push(response.Substring(indexesStars[i] + 2, 1));
         }
-        //listReady = true;
     }
 
     void splitResponse2(string response)
     {
         List<int> indexesStars = splitByStr(response, "**");
-        for (int i = 1; i < indexesStars.Count - 1; i += 3)
+        for (int i = 1; i < indexesStars.Count - 1; i += NEXT_STAR)
         {
-            print(removeWhiteLetters(response.Substring(indexesStars[i] + 3, indexesStars[i + 1] - indexesStars[i] - 3)));
             i += 2;
-            if (indexesStars[i + 1] - indexesStars[i] - 3 > MAX_QUESTION_LENGTH || indexesStars[i + 1] - indexesStars[i] - 3 < MIN_LENGTH)
+            if (indexesStars[i + 1] - indexesStars[i] - NEXT_STAR > MAX_QUESTION_LENGTH || indexesStars[i + 1] - indexesStars[i] - NEXT_STAR < MIN_LENGTH)
             {
                 i += 5;
                 continue;
             }
-            questions.Push(removeWhiteLetters(response.Substring(indexesStars[i] + 3, indexesStars[i + 1] - indexesStars[i] - 3)));
+            questions.Push(removeWhiteLetters(response.Substring(indexesStars[i] + NEXT_STAR, indexesStars[i + 1] - indexesStars[i] - NEXT_STAR)));
             i += 2;
             if (indexesStars[i + 1] - indexesStars[i] - 2 > MAX_ANSWERS_LENGTH || indexesStars[i + 1] - indexesStars[i] - 2 < MIN_LENGTH)
             {
                 questions.Pop();
-                i += 3;
+                i += NEXT_STAR;
                 continue;
             }
-            answers.Push(addEnter(removeWhiteLetters(response.Substring(indexesStars[i] + 3, indexesStars[i + 1] - indexesStars[i] - 3))));
-            i += 3;
+            answers.Push(addEnter(removeWhiteLetters(response.Substring(indexesStars[i] + NEXT_STAR, indexesStars[i + 1] - indexesStars[i] - NEXT_STAR))));
+            i += NEXT_STAR;
             if (i + 1 >= indexesStars.Count || indexesStars[i + 1] - indexesStars[i] - 2 > 2)
             {
-                string checkAnswer = response.Substring(indexesStars[i - 1] + 3, 2);
+                string checkAnswer = response.Substring(indexesStars[i - 1] + NEXT_STAR, 2);
                 if (checkAnswer == " 1" || checkAnswer == " 2" || checkAnswer == " 3" || checkAnswer == " 4")
                 {
                     rightAnswers.Push(checkAnswer[1].ToString());
@@ -205,13 +203,12 @@ public class AdminMission : MonoBehaviour
                 }
                 questions.Pop();
                 answers.Pop();
-                i += 3;
+                i += NEXT_STAR;
                 continue;
 
             }
             rightAnswers.Push(response.Substring(indexesStars[i] + 2, 1));
         }
-        //listReady = true;
     }
 
     IEnumerator callGemini()
@@ -220,7 +217,7 @@ public class AdminMission : MonoBehaviour
         string sndJason = "{\"contents\": {\"parts\": {\"text\": \"give me 10 new different easy multiple-choice " +
             "programing question(max length 200 notes) in java that related to " + MainMenu.topicListSaved + " with 4 different " +
             "answers(max length 70 notes) that exactly 1 answer from the 4 you gave is correct and give me the answer. " +
-            "please write me your response in the next format(the format is most important!!!): **topic**:... **question**:... **answers" +
+            "please write me your response in the next format(the format is most important!!!): **question**:... **answers" +
             "(don't help here or gave the answer)**: 1).... 2).... 3).... 4).... **the answer is**: **correct number answer** " +
             "i don't want explanation. please keep your all response in the format i mentioned it is very important. " +
             "don't add any double or more asterisks except the places i told you it is important!!!!.\"}}}";
@@ -235,7 +232,7 @@ public class AdminMission : MonoBehaviour
         else
         {
             print(JsonUtility.FromJson<GiminiJSON>(www.text).candidates[0].content.parts[0].text);
-            splitResponse2(JsonUtility.FromJson<GiminiJSON>(www.text).candidates[0].content.parts[0].text);
+            splitResponse(JsonUtility.FromJson<GiminiJSON>(www.text).candidates[0].content.parts[0].text);
         }
         geminiActivate = false;
         questioNumberText.text = "questions: " + (questions.Count > MAX_QUESTION_NUMBER ? MAX_QUESTION_NUMBER : questions.Count) + "/10";
@@ -251,7 +248,6 @@ public class AdminMission : MonoBehaviour
         var jsonData = new
         {
             model = "gpt-4-turbo",
-            //model = "gpt-3.5-turbo",
 
             messages = new[]
             {
@@ -259,7 +255,7 @@ public class AdminMission : MonoBehaviour
                 new { role = "user", content = "give me 10 new different easy multiple-choice " +
                 "programing question(max length 200 notes) in java that related to " + MainMenu.topicListSaved + " with 4 different " +
                 "answers(max length 70 notes) that exactly 1 answer from the 4 you gave is correct and give me the answer. " +
-                "please write me your response in the next format(the format is most important!!!): **topic**:... **question**:... **answers" +
+                "please write me your response in the next format(the format is most important!!!): **question**:... **answers" +
                 "(don't help here or gave the answer)**: 1).... 2).... 3).... 4).... **the answer is**: **1/2/3/4" +
                 "(don't forget double asterisks and only 1 answer from the 4 is correct)** i don't want explanation. " +
                 "please keep your all response in the format i mentioned it is very important. don't add any double or more asterisks " +
@@ -268,7 +264,6 @@ public class AdminMission : MonoBehaviour
             max_tokens = TOKKEN_NUMBER
         };
 
-        //string json = JsonUtility.ToJson(jsonData);
         string json = JsonConvert.SerializeObject(jsonData);
 
         UnityWebRequest request = new UnityWebRequest(url, "POST");
@@ -285,7 +280,7 @@ public class AdminMission : MonoBehaviour
         {
             Debug.Log(request.downloadHandler.text);
             print(JsonConvert.DeserializeObject<OpenAIResponse>(request.downloadHandler.text).Choices[0].Message.Content);
-            splitResponse2(JsonConvert.DeserializeObject<OpenAIResponse>(request.downloadHandler.text).Choices[0].Message.Content);
+            splitResponse(JsonConvert.DeserializeObject<OpenAIResponse>(request.downloadHandler.text).Choices[0].Message.Content);
         }
         else
         {
