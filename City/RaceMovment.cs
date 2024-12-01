@@ -63,7 +63,6 @@ public class RaceMovment : MonoBehaviour
     public GameObject Barriers;
     public static List<GameObject> obstaclesR;
     public static List<GameObject> obstaclesL;
-    //public static List<GameObject> allObstacles;
     public static bool cancelFinish;
 
     List<string> questionList;
@@ -151,14 +150,6 @@ public class RaceMovment : MonoBehaviour
         }
         for (int i = 0; i < OBS_NUMBER; i++)
         {
-            /*GameObject newObj = GameObject.CreatePrimitive(PrimitiveType.Cube);
-            newObj.name = "Obs-" + i;
-            newObj.AddComponent<Rigidbody>();
-            newObj.GetComponent<Rigidbody>().useGravity = false;
-            newObj.GetComponent<Rigidbody>().isKinematic = true;
-            newObj.GetComponent<BoxCollider>().isTrigger = true;
-            newObj.tag = "Obstacle";
-            newObj.transform.localScale = new Vector3(OBS_SIZE_X, OBS_SIZE_Y, OBS_SIZE_Z);*/
             if (RoomsMenu.multiplayerStart)
             {
                 rndNum = obsList[i] - '0';
@@ -179,17 +170,13 @@ public class RaceMovment : MonoBehaviour
             lastRnd = rndNum;
             if (rndNum == 0)
             {
-                //newObj.transform.position = new Vector3(startX + distanceX, startY, rightZ);
                 Barriers.transform.GetChild(i).position = new Vector3(startX + distanceX, startY, rightZ);
                 obstaclesR.Add(Barriers.transform.GetChild(i).gameObject);
-                //allObstacles.Add(newObj);
             }
             else
             {
-                //newObj.transform.position = new Vector3(startX + distanceX, startY, leftZ);
                 Barriers.transform.GetChild(i).position = new Vector3(startX + distanceX, startY, leftZ);
                 obstaclesL.Add(Barriers.transform.GetChild(i).gameObject);
-                //allObstacles.Add(newObj);
             }
             distanceX += SPACE_DIS;
         }
@@ -206,7 +193,6 @@ public class RaceMovment : MonoBehaviour
         questionsText.text = "Rules:\n1. move with the arrows keys or with A, D keys\n2. avoid from the obstacles.\n3. answer the question by pressing the answer's number.\n4. finish first and have fun!!!!";
         answersText.text = "loading questions and answers...";
         iniColors();
-        //allObstacles = new List<GameObject>();
         obstaclesL = new List<GameObject>();
         obstaclesR = new List<GameObject>();
         if (RoomsMenu.multiplayerStart)

@@ -4,7 +4,6 @@ import usersRouter from './routes/users.js';
 import tokensRouter from './routes/tokens.js';
 import questionsRouter from './routes/questions.js';
 import roomsRouter from './routes/rooms.js';
-import explanationsRouter from './routes/explanations.js';
 import { roomsList, roomsListTopics } from "./models/rooms.js";
 import cors from 'cors';
 const app = express();
@@ -56,7 +55,6 @@ app.use('/api/Users', usersRouter);
 app.use('/api/Tokens', tokensRouter);
 app.use('/api/Questions', questionsRouter);
 app.use('/api/Rooms', roomsRouter);
-app.use('/api/Explanations', explanationsRouter);
 app.use((req, res, next) => {
     console.log(`Unhandled route: ${req.method} ${req.originalUrl}`);
     res.status(404).json({ error: "Not Found" });

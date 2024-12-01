@@ -48,7 +48,7 @@ public class MainMenu : MonoBehaviour
         {
             StartCoroutine(delayLogo());
         }
-        topicList = new string[] { "Vars", "IO", "Arithmetic", "Logic", "If", "Loops", "Arrays", "Functions", "Class", "Recursion" };
+        topicList = new string[] { "Vars", "Input Output without files", "Arithmetic", "Logic", "If", "Loops", "Arrays", "Functions", "Class", "Recursion" };
     }
 
     void OnEnable()
