@@ -33,6 +33,7 @@ public class UpdateSignText : MonoBehaviour
     {
         if (other.tag == "Player" && !isTaskActive && !NotSimultTasks.someMission)
         {
+            PauseMenu.canPause = false;
             NotSimultTasks.someMission = true;
             BackgroundMusic.Pause();
             isTaskActive = true;
@@ -138,6 +139,7 @@ public class UpdateSignText : MonoBehaviour
         //Send player to next mission.
         finishMission.GetComponent<SoundEffects>().PlaySoundClip();
         finishMission.SetActive(true);
+        PauseMenu.canPause = true;
         //Update state for saving the game.
         if (TaskManager.currentTaskIndex <= 1)
         {

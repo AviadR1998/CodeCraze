@@ -35,6 +35,7 @@ public class MissionInputOutput : MonoBehaviour
     {
         if (other.tag == "Player" && !isTaskActive && !NotSimultTasks.someMission)
         {
+            PauseMenu.canPause = false;
             NotSimultTasks.someMission = true;
             BackgroundMusic.Pause();
             isTaskActive = true;
@@ -94,6 +95,7 @@ public class MissionInputOutput : MonoBehaviour
             //Finish mission canvas.
             finishMission.GetComponent<SoundEffects>().PlaySoundClip();
             finishMission.SetActive(true);
+            PauseMenu.canPause = true;
             CompleteTask();
             //Update state.
             if (TaskManager.currentTaskIndex <= 0)

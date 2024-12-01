@@ -42,6 +42,7 @@ public class FireMission : MonoBehaviour
     {
         if (other.gameObject.tag == "Player" && !isTaskActive && !NotSimultTasks.someMission)
         {
+            PauseMenu.canPause = false;
             NotSimultTasks.someMission = true;
             BackgroundMusic.Pause();
             isTaskActive = true;
@@ -220,6 +221,7 @@ public class FireMission : MonoBehaviour
         //Finish task sound.
         finishMission.GetComponent<SoundEffects>().PlaySoundClip();
         finishMission.SetActive(true);
+        PauseMenu.canPause = true;
         //Updae state.
         if (TaskManager.currentTaskIndex <= 6)
         {

@@ -49,6 +49,7 @@ public class BikeMission : MonoBehaviour
     {
         if (other.gameObject.tag == "Player" && !isTaskActive && !NotSimultTasks.someMission)
         {
+            PauseMenu.canPause = false;
             NotSimultTasks.someMission = true;
             //Close background music.
             BackgroundMusic.Pause();
@@ -307,6 +308,7 @@ public class BikeMission : MonoBehaviour
         //Finish mission sound + canvas.
         finishMission.GetComponent<SoundEffects>().PlaySoundClip();
         finishMission.SetActive(true);
+        PauseMenu.canPause = true;
         //Send player to next mission.
         CompleteTask();
         StartCoroutine(ResetBikePositionWithDelay());

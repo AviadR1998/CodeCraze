@@ -41,6 +41,7 @@ public class learnIntCoffee : MonoBehaviour
     {
         if (other.gameObject.tag == "Player" && !isTaskActive && !NotSimultTasks.someMission)
         {
+            PauseMenu.canPause = false;
             NotSimultTasks.someMission = true;
             BackgroundMusic.Pause();
             isTaskActive = true;
@@ -95,6 +96,7 @@ public class learnIntCoffee : MonoBehaviour
     {
         finishMission.GetComponent<SoundEffects>().PlaySoundClip();
         finishMission.SetActive(true);
+        PauseMenu.canPause = true;
         //Save state.
         if (TaskManager.currentTaskIndex <= 2)
         {

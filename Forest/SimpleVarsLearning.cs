@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
 using System;
-using TreeEditor;
 
 public class SimpleVarsLearning : MonoBehaviour
 {
@@ -43,6 +42,7 @@ public class SimpleVarsLearning : MonoBehaviour
     {
         if (other.gameObject.tag == "Player" && !isTaskActive && !NotSimultTasks.someMission)
         {
+            PauseMenu.canPause = false;
             NotSimultTasks.someMission = true;
             isTaskActive = true;
 
@@ -208,6 +208,7 @@ public class SimpleVarsLearning : MonoBehaviour
         //Finish mission sound + canvas.
         finishMission.GetComponent<SoundEffects>().PlaySoundClip();
         finishMission.SetActive(true);
+        PauseMenu.canPause = true;
         //Update state.
         if (TaskManager.currentTaskIndex <= 3)
         {

@@ -46,6 +46,7 @@ public class fishCount : MonoBehaviour
     {
         if (other.gameObject.tag == "Player" && !isTaskActive && !NotSimultTasks.someMission)
         {
+            PauseMenu.canPause = false;
             NotSimultTasks.someMission = true;
             BackgroundMusic.Pause();
             isTaskActive = true;
@@ -169,6 +170,7 @@ public class fishCount : MonoBehaviour
         //Finish mission Sounds.
         finishMission.GetComponent<SoundEffects>().PlaySoundClip();
         finishMission.SetActive(true);
+        PauseMenu.canPause = true;
         CompleteTask();
         //Save state.
         if (TaskManager.currentTaskIndex <= 4)
